@@ -9,7 +9,9 @@ import csv
 def main():
 
     # open the file
-    with open('/home/jvwong/Projects/GCIF/data/2014_gcif.csv', 'rb') as csvfile:
+    fname = '/home/jvwong/Projects/GCIF/data/2008_gcif.csv'
+    # fname = '/home/jvwong/Projects/GCIF/data/2014_gcif.csv'
+    with open(fname, 'rb') as csvfile:
 
         #Instantiate a csv reader
         csvreader = csv.reader(csvfile, delimiter=',')
