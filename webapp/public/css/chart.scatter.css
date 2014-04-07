@@ -1,0 +1,39 @@
+/*
+ * chart.scatter.css
+ * scatter plot feature styles
+*/
+.chart-scatter.background.scatter {
+    fill: #d3d3d3;
+}
+
+.chart-scatter.foreground.scatter {
+    fill: steelblue;
+}
+
+.chart-scatter.axis text {
+    font: 0.7em sans-serif;
+}
+.chart-scatter.axis .axis-label {
+    font: 1.0em sans-serif;
+}
+
+.chart-scatter.axis path,
+.chart-scatter.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.chart-scatter.reset {
+    position: absolute;
+    top: 3em;
+    right: 1em;
+    padding-left: 1em;
+    font-size: smaller;
+    color: darkred;
+}
+
+.chart-scatter.brush rect.extent{
+    fill : lightsalmon;
+    opacity : 0.20;
+}

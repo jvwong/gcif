@@ -1,0 +1,62 @@
+/*
+ * chart.graphpad.css
+ * bar chart feature styles
+*/
+
+.chart-graphpad.bar.graph,
+.chart-graphpad.table.graph,
+.chart-graphpad.scatter.graph{
+  position            : absolute;
+  background-color    : lightgoldenrodyellow;
+  border              : ridge;
+
+  resize              : both;
+}
+
+.chart-graphpad.bar.graph{
+  float         : left;
+  min-width     : 8em;
+  min-height    : 4em;
+  overflow-y    : auto;
+  overflow-x    : hidden;
+
+}
+
+.chart-graphpad.table.graph{
+  position       : relative;
+  overflow-y     : hidden;
+  min-width     : 12em;
+  min-height    : 4em;
+}
+
+.chart-graphpad.scatter.graph{
+    float: left;
+    overflow: hidden;
+}
+
+.chart-graphpad .title{
+    position: relative;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    font: 1.1em sans-serif;
+    font-weight: 400;
+    color : #111122;
+    width: 100%;
+    height: 25px;
+    background-color: #C6C6AA;
+    box-shadow: 2px 2px 1px #888888;
+    overflow-x: hidden;
+    padding-top: 0.2em;
+
+    resize              : none;
+}
+
+.chart-graphpad.update{
+    position: relative;
+    clear: both;
+    bottom: 0px;
+    left: 0px;
+    z-index: 0;
+}
+

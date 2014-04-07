@@ -1,0 +1,159 @@
+/**/
+/** chart.chat.css*/
+/** Chat feature styles*/
+/**/
+
+.chart-chooser-sizer-box-title{
+  color: #d3d3d3;
+}
+
+.chart-slider.chooser{
+  position      : fixed;
+  top           : 4em;
+  left          : 0em;
+  bottom        : 0em;
+  width         : 20em;
+  background    : linear-gradient(#3C3C3C, #111111);
+
+  color         : #ffffff;
+
+  border-width     : medium;
+  border-style     : solid;
+  border-color     : #454545;
+}
+
+  .chart-slider-head{
+    position      : absolute;
+    top           : 0em;
+    right         : 0em;
+    width         : 100%;
+    height        : 2.5em;
+
+    line-height   : 2.5em;
+    border-radius : 0.5em 0 0 0;
+    background    : linear-gradient(#3C3C3C, #111111);
+  }
+
+    .chart-slider-head-title{
+      position      : absolute;
+      left          : 50%;
+      width         : 16em;
+      margin-left   : -8em;
+
+      float         : left;
+
+      font-size     : 1.2em;
+      font-weight   : bold;
+      text-align    : center;
+    }
+
+    .chart-slider-head-min{
+      position      : absolute;
+      top           : 0em;
+      right         : 0em;
+      bottom        : 0em;
+      width         : 1.5em;
+
+      line-height   : 1.5em;
+      font-size     : 1.5em;
+      font-weight   : bold;
+      text-align    : center;
+
+      background: green;
+
+      border-width     : thin;
+      border-style     : solid;
+      border-color     : #eeeeee;
+    }
+
+    .chart-slider-head-min:hover
+    {
+      cursor : pointer;
+    }
+
+
+
+
+/* SLIDER CONTENT */
+.chart-slider-sizer{
+  position         : absolute;
+  top              : 2.5em;
+  right            : 0em;
+  width            : 100%;
+  bottom           : 0em;
+  min-height       : 30em;
+  margin-right     : 2%;
+
+  font-size        : 1.2em;
+  background       : linear-gradient(#3C3C3C, #111111);
+
+  /*border-width     : medium;*/
+  /*border-style     : solid;*/
+  /*border-color     : blue;*/
+}
+
+
+  /* File select block */
+  .chart-slider-sizer-chooser {
+    position   : relative;
+    top        : 0em;
+    left       : 0em;
+    bottom     : 0em;
+    width      : 100%;
+    min-height : 10em;
+    overflow-y : auto;
+    padding    : 2%;
+
+    border-width     : medium;
+    border-style     : solid;
+    border-color     : #454545;
+  }
+
+    .chart-slider-chooser-select-in {
+      position        : relative;
+      left            : 0em;
+      right           : 0em;
+      min-height      : 6em;
+      max-height      : 14em;
+
+      margin          : 2% 2%;
+      overflow        : hidden;
+
+      background      : #000000;
+      padding         : 0.5em;
+      border-radius   : 0 1em 0 0;
+
+      border-width    : medium;
+      border-style    : solid;
+      border-color    : #00ff00;
+    }
+
+
+    .chart-slider-chooser-select-in input[type=file] {
+      width       : 100%;
+      height      : 2em;
+      line-height : 1.5em;
+
+      padding     : 0 0.5em;
+      border      : 0;
+      /*background  : #ddd;*/
+      /*color       : #666;*/
+    }
+
+    .chart-slider-chooser-select-submit {
+      position    : absolute;
+      top         : 2.5em;
+      left        : 1em;
+      width       : 5em%;
+      line-height : 2em;
+      text-align  : center;
+      color       : #fff;
+      cursor      : pointer;
+
+      border-width     : medium;
+      border-style     : solid;
+      border-color     : #ffbbbb;
+    }
+
+
+
