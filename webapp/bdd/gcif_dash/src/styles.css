@@ -1,264 +1,230 @@
-/* chart styling */
-    .row {
+.row {
     clear: both;
-    }
-    .span4, .span6, .span12 {
+}
+.span4, .span6, .span12 {
     float: left;
-    }
+}
 
-    .dc-chart rect.bar {
+.dc-chart rect.bar {
     stroke: none;
     fill: steelblue;
-    }
+}
 
-    .dc-chart rect.bar:hover {
+.dc-chart rect.bar:hover {
     fill-opacity: .5;
     }
 
-    .dc-chart rect.stack1 {
+.dc-chart rect.stack1 {
     stroke: none;
     fill: red;
-    }
+}
 
-    .dc-chart rect.stack2 {
+.dc-chart rect.stack2 {
     stroke: none;
     fill: green;
-    }
+}
 
-    .dc-chart rect.deselected {
+.dc-chart rect.deselected {
     stroke: none;
     fill: #ccc;
-    }
+}
 
-    .dc-chart .sub .bar {
+.dc-chart .sub .bar {
     stroke: none;
     fill: #ccc;
-    }
+}
 
-    .dc-chart .pie-slice {
+.dc-chart .pie-slice {
     fill: white;
     font-size: 12px;
     cursor: pointer;
-    }
+}
 
-    .dc-chart .pie-slice :hover{
+.dc-chart .pie-slice :hover{
     fill-opacity: .8;
-    }
+}
 
-    .dc-chart .selected path{
+.dc-chart .selected path{
     stroke-width: 3;
     stroke: #ccc;
     fill-opacity: 1;
-    }
+}
 
-    .dc-chart .deselected path{
-    strok: none;
+.dc-chart .deselected path{
+    stroke: none;
     fill-opacity: .5;
     fill: #ccc;
-    }
+}
 
-    .dc-chart .axis path, .axis line {
+.dc-chart .axis path, .axis line {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
-    }
+}
 
-    .dc-chart .axis text {
+.dc-chart .axis text {
     font: 10px sans-serif;
-    }
+}
 
-    .dc-chart .grid-line line {
+.dc-chart .grid-line line {
     fill: none;
     stroke: #ccc;
     opacity: .5;
     shape-rendering: crispEdges;
-    }
+}
 
-    .dc-chart .brush rect.background {
+.dc-chart .brush rect.background {
     z-index: -999;
-    }
+}
 
-    .dc-chart .brush rect.extent {
+.dc-chart .brush rect.extent {
     fill: steelblue;
     fill-opacity: .125;
-    }
+}
 
-    .dc-chart .brush .resize path {
+.dc-chart .brush .resize path {
     fill: #eee;
     stroke: #666;
-    }
+}
 
-    .dc-chart path.line {
+.dc-chart path.line {
     fill: none;
     stroke: steelblue;
     stroke-width: 1.5px;
-    }
+}
 
-    .dc-chart circle.dot{
+.dc-chart circle.dot{
     fill: steelblue;
-    }
+}
 
-    .dc-chart g.stack1 path.line {
+.dc-chart g.stack1 path.line {
     stroke: green;
-    }
+}
 
-    .dc-chart g.stack1 circle.dot{
+.dc-chart g.stack1 circle.dot{
     fill: green;
-    }
+}
 
-    .dc-chart g.stack2 path.line {
+.dc-chart g.stack2 path.line {
     stroke: red;
-    }
+}
 
-    .dc-chart g.stack2 circle.dot{
+.dc-chart g.stack2 circle.dot{
     fill: red;
-    }
+}
 
-    .dc-chart g.dc-tooltip path{
+.dc-chart g.dc-tooltip path{
     fill: none;
     stroke: grey;
     stroke-opacity: .8;
-    }
+}
 
-    .dc-chart path.area {
+.dc-chart path.area {
     fill: steelblue;
     fill-opacity: .3;
     stroke: none;
-    }
+}
 
-    .dc-chart g.stack1 path.area {
+.dc-chart g.stack1 path.area {
     fill: green;
-    }
+}
 
-    .dc-chart g.stack2 path.area {
+.dc-chart g.stack2 path.area {
     fill: red;
-    }
+}
 
-    .dc-chart .node {
+.dc-chart .node {
     font-size: 0.7em;
     cursor: pointer;
-    }
+}
 
-    .dc-chart .node :hover{
+.dc-chart .node :hover{
     fill-opacity: .8;
-    }
+}
 
-    .dc-chart .selected circle {
+.dc-chart .selected circle {
     stroke-width: 3;
     stroke: #ccc;
     fill-opacity: 1;
-    }
+}
 
-    .dc-chart .deselected circle {
+.dc-chart .deselected circle {
     strok: none;
     fill-opacity: .5;
     fill: #ccc;
-    }
+}
 
-    .dc-chart .bubble {
+.dc-chart .bubble {
     stroke: none;
     fill-opacity: 0.6;
-    }
+}
 
-    .dc-data-count {
+.dc-data-count {
     float: right;
     margin-top: 15px;
     margin-right: 15px;
-    }
+}
 
-    .dc-data-count .filter-count {
+.dc-data-count .filter-count {
     color: #3182bd;
     font-weight: bold;
-    }
+}
 
-    .dc-data-count .total-count {
+.dc-data-count .total-count {
     color: #3182bd;
     font-weight: bold;
-    }
+}
 
-    .dc-data-table {}
+.dc-data-table {}
 
-    .dc-chart g.state{
+.dc-chart g.state{
     cursor: pointer;
-    }
+}
 
-    .dc-chart g.state :hover{
+.dc-chart g.state :hover{
     fill-opacity: .8;
-    }
+}
 
-    .dc-chart g.state path {
+.dc-chart g.state path {
     stroke: white;
-    }
+}
 
-    .dc-chart g.selected path {
-    }
+.dc-chart g.selected path {
+}
 
-    .dc-chart g.deselected path {
-     fill: grey;
-    }
+.dc-chart g.deselected path {
+    font:;ill: grey;
+}
 
-    .dc-chart g.selected text {
-    }
+.dc-chart g.selected text {
+}
 
-    .dc-chart g.deselected text {
-        display: none;
-    }
+.dc-chart g.deselected text {
+    display: none;
+}
 
-    .dc-chart g.county path {
-        stroke: white;
-        fill: none;
-    }
+.dc-chart g.county path {
+    stroke: white;
+    fill: none;
+}
 
-    .dc-chart g.debug rect{
-        fill: blue;
-        fill-opacity: .2;
-    }
+.dc-chart g.debug rect{
+    fill: blue;
+    fill-opacity: .2;
+}
 
-    .dc-chart g.row rect {
-        fill-opacity: 0.8;
-        cursor: pointer;
-    }
+.dc-chart g.row rect {
+    fill-opacity: 0.8;
+    cursor: pointer;
+}
 
-    .dc-chart g.row rect:hover {
-     fill-opacity: 0.6;
-    }
+.dc-chart g.row rect:hover {
+    fill-opacity: 0.6;
+}
 
-    .dc-chart g.row text {
-        fill: black; /*modified from white by Eamonn O'Loughlin */
-        font-size: 12px;
-    }
+.dc-chart g.row text {
+    fill: black; /*modified from white by Eamonn O'Loughlin */
+    font-size: 12px;
+}
 
 
-/* page styling */
-    body{
-        font-family: Arial, Helvetica, Sans-serif;
-    }
-
-    .container{
-        max-width: 800px;
-        margin: auto auto;
-    }
-
-    /* table styling */
-    #dc-table-graph{
-     width: 700px;
-    }
-
-    #dc-table-graph .header{
-        text-align: center;
-        background: steelblue;
-        border: none;
-    }
-
-    #dc-table-graph .header th{
-     width: 25%;
-    }
-
-    #dc-table-graph tbody td{
-        text-align: center;
-        font-size: 0.9em;
-    }
-
-    #dc-table-graph tbody tr:nth-child(even) {
-     background: #CCC
-    }
