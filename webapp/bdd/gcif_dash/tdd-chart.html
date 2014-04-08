@@ -280,77 +280,86 @@
     <body>
 
         <div class="content">
-        <div class="container">
+            <div class="container">
 
-        <div class="row">
-        <div class="span6" id="dc-day-chart">
-        <h4>Daily Expenses</h4>
-        </div>
-        </div>
+                <div class="row">
+                    <div class="span6" id="dc-day-chart">
+                        <h4>Daily Expenses</h4>
+                    </div>
+                </div>
 
-        <div class="row">
-        <div class="span4" id="dc-month-chart">
-        <h4>Monthly Expenses</h4>
-        </div>
-        <div class="span4" id="dc-detail-chart">
-        <h4>Expense by Location</h4>
-        </div>
-        <div class="span4" id="dc-name-chart">
-        <h4>Expense by user</h4>
-        </div>
-        </div>
+                <div class="row">
+                    <div class="span4" id="dc-month-chart">
+                        <h4>Monthly Expenses</h4>
+                    </div>
+                    <div class="span4" id="dc-detail-chart">
+                        <h4>Expense by Location</h4>
+                    </div>
+                    <div class="span4" id="dc-name-chart">
+                        <h4>Expense by user</h4>
+                    </div>
+                </div>
 
-        <div class="row">
-        <div class="span12" id="table-chart">
-        <table class="table table-hover" id="dc-table-graph">
-        <thead>
-        <tr class="header">
-        <th>Date</th>
-        <th>Amount</th>
-        <th>Detail</th>
-        <th>Who</th>
-        </tr>
-        </thead>
-        </table>
+                <div class="row">
+                    <div class="span12" id="table-chart">
+                        <table class="table table-hover" id="dc-table-graph">
+                            <thead>
+                                <tr class="header">
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Detail</th>
+                                    <th>Who</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
 
-        </div>
-        </div>
-
-        </div>
+            </div>
         </div>
 
     <script>
         var
-        dayChart, monthChart, nameChart, dataTable, detailChart,
-        dtgFormat2, monthNames, parseDate
+          dayChart
+        , monthChart
+        , nameChart
+        , dataTable
+        , detailChart
+        , dtgFormat2
+        , monthNames
+        , parseDate
         ;
 
         //Utilities
         parseDate = d3.time.format("%Y-%b-%d");
-        monthNames = [ "jan", "feb", "mar", "apr", "may", "jun",
-        "jul", "aug", "sep", "oct", "nov", "dec" ];
+        monthNames = [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" ];
 
 
         /* plots dc-2.0.0 charts */
         function generate(data) {
             var
-            facts,
-            dayDimension, dayDimensionGroup,
-            monthDimension, monthDimensionGroup,
-            nameDimension, nameDimensionGroup,
-            detailDimension, detailDimensionGroup,
-            all,allDetail,
+            facts
+            , dayDimension
+            , dayDimensionGroup
+            , monthDimension
+            , monthDimensionGroup
+            , nameDimension
+            , nameDimensionGroup
+            , detailDimension
+            , detailDimensionGroup
+            , all
+            , allDetail
+            , margins_template
+            , span_height
+            , span4_width
+            , span6_width
+            , span12_width
 
-
-            margins_template,
-            span_height, span4_width, span6_width, span12_width,
-
-
-
-            start_dayChart, end_dayChart,
-            start_monthChart, end_monthChart
+            , start_dayChart
+            , end_dayChart
+            , start_monthChart
+            , end_monthChart
             ;
-
 
             //formatting and utilities
             margins_template = {top: 10, right: 10, bottom: 80, left: 60};
@@ -358,7 +367,6 @@
             span4_width = 250;
             span6_width = 400;
             span12_width = 700;
-
 
             data.forEach(function(d) {
                 d.date = parseDate.parse(d.date);
