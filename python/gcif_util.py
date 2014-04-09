@@ -1,15 +1,50 @@
 import csv
 import re
 
-# function: compileCsv
-# @description: A function that aggregates csv files
-# @pre-condition: a valid path to containing directory
+
+# function: formatHeaders
+# @description: A function that will take the headers from a csv file and output
+# d3-friendly dict assignment statements (e.g. use in a forEach() javascript mapping function)
+# @pre-condition: a valid csv file with headers
 # @input:
-#   froot - directory path
+#   file - path to the csv file with headers
 # @output:
-#   none
-def compile_csv(froot):
-    data = []
+#   output - write to file
+def formatHeaders(file):
+
+    output = []
+
+    # open the file
+    with open(file, 'rb') as csvfile:
+
+        #Instantiate a csv reader
+        csvreader = csv.reader(csvfile, delimiter=',')
+
+        #Read in first row of headers
+        headers = csvreader.next()
+
+        # loop through each header
+        for header in headers:
+
+            #Ignore comments and URLs
+            if not re.match('(?:comment)|(?:n/a)', header.lower()):
+                #Generate a custom string for assignment in d3.js; this should be paired with a DB schema
+                # Check if it's a "DataYear_X" field
+                if re.match('(?:datayear_)|(?:data year_)|(?:type of government_)', header.lower()):
+                    statement = "d['%s'] = formatYear.parse(d['%s'])" % (header, header)
+
+                # If it is a text column do not alter
+                elif re.match('(?:country_)|(?:region_)', header.lower()):
+                    statement = "d['%s'] = d['%s']" % (header, header)
+
+                #Assume the rest are Numbers
+                else:
+                    statement = "d['%s'] = +d['%s']" % (header, header)
+
+                #default
+                output.append(statement)
+
+    return output
 
 
 
