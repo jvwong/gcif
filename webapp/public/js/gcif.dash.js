@@ -261,7 +261,7 @@ gcif.dash = (function () {
         $container.html(configMap.main_html);
         setJqueryMap();
 
-        setDataUrl('src/clean_compile.csv');
+        setDataUrl('./clean_compile.csv');
 
     };
     // End PUBLIC method /initModule/

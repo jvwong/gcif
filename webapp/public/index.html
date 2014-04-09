@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+    <head>
+        <link rel="stylesheet" type="text/css" href="src/styles.css">
+        <link rel="stylesheet" type="text/css" href="src/custom.css">
+
+        <script src="js/lib/jquery-1.11.0/jquery-1.11.0.min.js" charset="utf-8"></script>
+        <script src="js/lib/d3-3.4.4/d3.min.js"></script>
+        <script src="js/lib/crossfilter/crossfilter.min.js" charset="utf-8"></script>
+        <script src="js/lib/dc-1.6.0/dc.min.js" charset="utf-8"></script>
+        <!--<script src="http://cdnjs.cloudflare.com/ajax/js/libs/dc/1.6.0/dc.min.js" charset="utf-8"></script>-->
+
+        <!--gcif javascript-->
+        <script src="js/gcif.js" charset="utf-8"></script>
+        <script src="js/gcif.util.js" charset="utf-8"></script>
+        <script src="js/gcif.shell.js" charset="utf-8"></script>
+        <script src="js/gcif.dash.js" charset="utf-8"></script>
+
+        <!-- outer element for gcif -->
+        <script>
+            $(function () { gcif.initModule( $('#dash') ); });
+        </script>
+    </head>
+    <body>
+        <div id="dash"></div>
+    </body>
+</html>
+
