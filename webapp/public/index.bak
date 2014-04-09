@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="A GCIF sample dashboard">
+        <meta name="author" content="Jeffrey V Wong">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bootstrap 101 Template</title>
+
+        <!-- third party stylesheets -->
+        <!-- Bootstrap -->
+        <link rel="stylesheet" type="text/css" href="js/lib/bootstrap/css/bootstrap.min.css">
+        <!--<link rel="stylesheet" type="text/css" href="css/dc.css">-->
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+        <!-- stylesheets -->
+        <!--<link rel="stylesheet" type="text/css" href="css/gcif.css">-->
+        <!--<link rel="stylesheet" type="text/css" href="css/gcif.shell.css">-->
+        <!--<link rel="stylesheet" type="text/css" href="css/gcif.dash.css">-->
+
+    </head>
+    <body>
+        <div id="dash"></div>
+
+        <!--third party libraries-->
+        <script src="js/lib/jquery-1.11.0/jquery-1.11.0.min.js" charset="utf-8"></script>
+        <script src="js/lib/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+
+        <script src="js/lib/d3-3.4.4/d3.min.js"></script>
+        <script src="js/lib/crossfilter/crossfilter.min.js" charset="utf-8"></script>
+        <!--<script src="js/lib/dc-1.6.0/dc.min.js" charset="utf-8"></script>-->
+
+
+        <!--gcif javascript-->
+        <script src="js/gcif.js" charset="utf-8"></script>
+        <script src="js/gcif.shell.js" charset="utf-8"></script>
+        <!--<script src="js/gcif.util.js" charset="utf-8"></script>-->
+        <!--<script src="js/gcif.dash.js" charset="utf-8"></script>-->
+
+        <!-- outer element for gcif -->
+        <script>$(function () { gcif.initModule( $('#dash') ); });</script>
+
+
+    </body>
+
+</html>
+
