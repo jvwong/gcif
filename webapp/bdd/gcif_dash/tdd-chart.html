@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-  <head>
+    <head>
 
-    <link rel="stylesheet" type="text/css" href="src/styles.css">
-    <link rel="stylesheet" type="text/css" href="src/custom.css">
+        <link rel="stylesheet" type="text/css" href="src/styles.css">
+        <link rel="stylesheet" type="text/css" href="src/custom.css">
 
-    <script src="lib/jquery-1.11.0/jquery-1.11.0.min.js" charset="utf-8"></script>
-    <script src="lib/d3-3.4.4/d3.min.js"></script>
-    <script src="lib/crossfilter/crossfilter.min.js" charset="utf-8"></script>
-    <script src="lib/dc-1.6.0/dc.min.js" charset="utf-8"></script>
-    <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.6.0/dc.min.js" charset="utf-8"></script>-->
+        <script src="lib/jquery-1.11.0/jquery-1.11.0.min.js" charset="utf-8"></script>
+        <script src="lib/d3-3.4.4/d3.min.js"></script>
+        <script src="lib/crossfilter/crossfilter.min.js" charset="utf-8"></script>
+        <script src="lib/dc-1.6.0/dc.min.js" charset="utf-8"></script>
+        <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.6.0/dc.min.js" charset="utf-8"></script>-->
 
-  </head>
+        <!--gcif javascript-->
+        <script src="src/gcif.js" charset="utf-8"></script>
+        <script src="src/util.js" charset="utf-8"></script>
+
+        <script>
+            $(function () { gcif.initModule( $('.content') ); });
+        </script>
+
+    </head>
     <body>
 
         <div class="content">
@@ -56,9 +64,6 @@
         , parseDate
         ;
 
-        //Utilities
-        parseDate = d3.time.format("%Y-%b-%d");
-        monthNames = [ "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" ];
 
         /* plots dc-2.0.0 charts */
         function generate(data) {
@@ -99,9 +104,10 @@
 
             data.forEach(function(d) {
 
-                console.log(d);
-//                console.log(+d["Country's GDP (US$)_67"]);
-                //Country's GDP (US$)_67
+                if( (d["CityName"]).toUpperCase() === "TORONTO"){
+                    gcif.util.parseData(d);
+                    console.log(d);
+                }
 
 
 //                d.date = parseDate.parse(d.date);
@@ -110,7 +116,11 @@
 //                d._month = monthNames[d.date.getMonth()];
 //                d.day = d.date.getDate().toString();
 //                d.amount = +d.amount.toFixed(2);
+
+//                console.log(d);
             });
+
+
 
 //            // Run the data through crossfilter and load our 'facts'
 //            facts = crossfilter(data);

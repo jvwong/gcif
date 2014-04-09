@@ -30,21 +30,30 @@ def formatHeaders(file):
             if not re.match('(?:comment)|(?:n/a)', header.lower()):
                 #Generate a custom string for assignment in d3.js; this should be paired with a DB schema
                 # Check if it's a "DataYear_X" field
-                if re.match('(?:datayear_)|(?:data year_)|(?:type of government_)', header.lower()):
-                    statement = "d['%s'] = formatYear.parse(d['%s'])" % (header, header)
+                if re.match('(?:datayear_)|(?:data year_)', header.lower()):
+                    statement = 'd["%s"] = formatYear.parse(d["%s"])' % (header, header)
 
                 # If it is a text column do not alter
-                elif re.match('(?:country_)|(?:region_)', header.lower()):
-                    statement = "d['%s'] = d['%s']" % (header, header)
+                elif re.match('(?:country_)|(?:region_)|(?:cityname)|(?:climate type_)|(?:type of government_)', header.lower()):
+                    statement = 'd["%s"] = d["%s"]' % (header, header)
 
                 #Assume the rest are Numbers
                 else:
-                    statement = "d['%s'] = +d['%s']" % (header, header)
+                    statement = 'd["%s"] = +d["%s"]' % (header, header)
 
                 #default
+                statement += ';\n'
                 output.append(statement)
 
-    return output
+    jsText = 'function parseData(d){\n\tvar formatYear = d3.time.format("%Y");\n\n'
+
+    for o in output:
+        jsText += '\t' + o
+
+
+    jsText += "}"
+
+    return jsText
 
 
 

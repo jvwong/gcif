@@ -4,14 +4,10 @@ from gcif_util import checkHeaders, cleanCells, formatHeaders
 def main():
 
     #Automated d3 data type processing
-    assignments = formatHeaders('/home/jvwong/Projects/GCIF/data/clean_compile.csv')
-    with open('d3-headers.txt', 'wb') as fout:
+    jsText = formatHeaders('/home/jvwong/Projects/GCIF/data/clean_compile.csv')
 
-        for cell in assignments:
-            fout.write(cell)
-            fout.write("\n")
-
-
+    with open('/home/jvwong/Projects/GCIF/webapp/bdd/gcif_dash/src/util.js', 'wb') as fout:
+        fout.write(jsText)
 
     ##### Initial data cleaning
     # fin = '/home/jvwong/Documents/GCIF/data/2014_gcif.csv'
