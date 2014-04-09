@@ -12,12 +12,17 @@
 /*global $, gcif:true */
 
 gcif = (function () {
-  'use strict';
+    'use strict';
+    var initModule;
 
-  var initModule = function ( $content ) {
-    gcif.util.initModule();
-  };
+    initModule = function ( $container ) {
 
-  return { initModule: initModule };
+
+        if ( gcif.shell && $container ){
+            gcif.shell.initModule( $container );
+        }
+    };
+
+    return { initModule: initModule };
 }());
 

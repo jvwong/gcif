@@ -34,7 +34,7 @@ def formatHeaders(file):
                     statement = 'd["%s"] = formatYear.parse(d["%s"])' % (header, header)
 
                 # If it is a text column do not alter
-                elif re.match('(?:country_)|(?:region_)|(?:cityname)|(?:climate type_)|(?:type of government_)', header.lower()):
+                elif re.match('(?:country_)|(?:region_)|(?:cityname)|(?:climate type_)|(?:type of government)', header.lower()):
                     statement = 'd["%s"] = d["%s"]' % (header, header)
 
                 #Assume the rest are Numbers
@@ -45,13 +45,13 @@ def formatHeaders(file):
                 statement += ';\n'
                 output.append(statement)
 
-    jsText = 'function parseData(d){\n\tvar formatYear = d3.time.format("%Y");\n\n'
+    jsText = 'parseData = function( d ){\n\n\ttry{\n'
 
     for o in output:
-        jsText += '\t' + o
+        jsText += '\t\t' + o
 
 
-    jsText += "}"
+    jsText += "\t}\n\tcatch(err){\n\t\tconsole.error(err);\n\t}\n};"
 
     return jsText
 

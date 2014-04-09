@@ -6,7 +6,7 @@ def main():
     #Automated d3 data type processing
     jsText = formatHeaders('/home/jvwong/Projects/GCIF/data/clean_compile.csv')
 
-    with open('/home/jvwong/Projects/GCIF/webapp/bdd/gcif_dash/src/util.js', 'wb') as fout:
+    with open('/home/jvwong/Projects/GCIF/webapp/bdd/gcif_dash/src/parseData.js', 'wb') as fout:
         fout.write(jsText)
 
     ##### Initial data cleaning

@@ -13,191 +13,162 @@
 
         <!--gcif javascript-->
         <script src="src/gcif.js" charset="utf-8"></script>
-        <script src="src/util.js" charset="utf-8"></script>
+        <script src="src/gcif.util.js" charset="utf-8"></script>
+        <script src="src/gcif.shell.js" charset="utf-8"></script>
 
         <script>
-            $(function () { gcif.initModule( $('.content') ); });
+            $(function () { gcif.initModule( $('#dash') ); });
         </script>
 
     </head>
     <body>
 
-        <div class="content">
-            <div class="container">
+        <div id="dash"></div>
 
-                <div class="row">
-                    <div class="span6" id="dc-barChart-population">
-                        <h4>Population</h4>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="span12" id="">
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="span12" id="table-chart">
-                        <table class="table table-hover" id="dc-dataTable-data">
-                            <thead>
-                                <tr class="header">
-                                    <th>Date</th>
-                                    <th>Amount</th>
-                                    <th>Detail</th>
-                                    <th>Who</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    <script>
-        var
-          dayChart
-        , dataTable
-
-        , dtgFormat2
-        , monthNames
-        , parseDate
-        ;
-
-
-        /* plots dc-2.0.0 charts */
-        function generate(data) {
-
+        <script>
             var
-              facts
+              dayChart
+            , dataTable
 
-            , dayDimension
-            , dayDimensionGroup
-
-            , margins_template
-
-            , span_height
-            , span4_width
-            , span6_width
-            , span12_width
-
-            , nestByCity
-
-            , start_dayChart
-            , end_dayChart
-
+            , dtgFormat2
+            , monthNames
+            , parseDate
             ;
 
-            //formatting and utilities
-            margins_template = {top: 10, right: 10, bottom: 80, left: 60};
-            span_height = 350;
-            span4_width = 250;
-            span6_width = 400;
-            span12_width = 700;
+
+            /* plots dc-2.0.0 charts */
+            function generate(data) {
+
+                var
+                  facts
+
+                , dayDimension
+                , dayDimensionGroup
+
+                , margins_template
+
+                , span_height
+                , span4_width
+                , span6_width
+                , span12_width
+
+                , nestByCity
+
+                , start_dayChart
+                , end_dayChart
+
+                ;
+
+                //formatting and utilities
+                margins_template = {top: 10, right: 10, bottom: 80, left: 60};
+                span_height = 350;
+                span4_width = 250;
+                span6_width = 400;
+                span12_width = 700;
 
 
 
-            // data variable formatting
+                // data variable formatting
 
-            // A nest operator, for grouping the flight list.
-            nestByCity = d3.nest().key(function(data) { return d3.time.day(d.date); });
+                // A nest operator, for grouping the flight list.
+                nestByCity = d3.nest().key(function(data) { return d3.time.day(d.date); });
 
-            data.forEach(function(d) {
+                data.forEach(function(d) {
 
-                if( (d["CityName"]).toUpperCase() === "TORONTO"){
-                    gcif.util.parseData(d);
-                    console.log(d);
-                }
-
-
-//                d.date = parseDate.parse(d.date);
-//                d.month = d3.time.month(d.date);
-//                d.year = d.date.getFullYear().toString();
-//                d._month = monthNames[d.date.getMonth()];
-//                d.day = d.date.getDate().toString();
-//                d.amount = +d.amount.toFixed(2);
-
-//                console.log(d);
-            });
+                    if( (d["CityName"]).toUpperCase() === "TORONTO"){
+                        gcif.util.parseData(d);
+                        console.log(d);
+                    }
 
 
+    //                d.date = parseDate.parse(d.date);
+    //                d.month = d3.time.month(d.date);
+    //                d.year = d.date.getFullYear().toString();
+    //                d._month = monthNames[d.date.getMonth()];
+    //                d.day = d.date.getDate().toString();
+    //                d.amount = +d.amount.toFixed(2);
 
-//            // Run the data through crossfilter and load our 'facts'
-//            facts = crossfilter(data);
-//
-//            // Create crossfilter dimensions
-//            dayDimension = facts.dimension(function(d) { return d3.time.day(d.date); });
-//            dayDimensionGroup = dayDimension.group().reduceSum(function(d) { return d.amount; });
-//
-//            //// Receipts by day
-//            start_dayChart = d3.time.day.offset(d3.extent(data, function(d){ return d.date; })[0], -1);
-//            end_dayChart  = d3.time.day.offset(d3.extent(data, function(d){ return d.date; })[1], +1);
-//            dayChart.width(span12_width)
-//                    .height(span_height)
-//                    .margins(margins_template)
-//                    .dimension(dayDimension)
-//                    .group(dayDimensionGroup)
-//                    .title("Daily Expenses")
-//                    .transitionDuration(500)
-//                    .centerBar(true)
-//                    .gap(1)
-//                    .xUnits(d3.time.days)
-//                    .x(d3.time.scale().domain([start_dayChart, end_dayChart]) )
-//                    .elasticY(true)
-//                    .xAxis();
-//
-//            // Table of receipt data
-//            dataTable.width( span12_width )
-//                    .dimension( dayDimension )
-//                    .group(function() {
-//                      return "";
-//                    })
-//                    .size(10).order(d3.descending)
-//                    .columns([
-//                      function(d) { return d.date.toDateString(); },
-//                      function(d) { return d.amount; },
-//                      function(d) { return d.detail; },
-//                      function(d) { return d.name; },
-//                    ]);
-//
-//
-//            // Render the Charts
-//            dc.renderAll();
-//
-//            // Adjust axes
-//            d3.select("#dc-day-chart .axis.x")
-//                    .selectAll("text")
-//                    .style("text-anchor", "end")
-//                    .attr("dx", "-.8em")
-//                    .attr("dy", ".15em")
-//                    .attr("transform", function() {
-//                      return "rotate(-45)";
-//                    });
+    //                console.log(d);
+                });
 
-        }
 
-        function init() {
 
-            // Create the dc-2.0.0 chart objects & link to div
-            dayChart = dc.barChart("#dc-barChart-population");
-            dataTable = dc.dataTable("#dc-dataTable-data");
+    //            // Run the data through crossfilter and load our 'facts'
+    //            facts = crossfilter(data);
+    //
+    //            // Create crossfilter dimensions
+    //            dayDimension = facts.dimension(function(d) { return d3.time.day(d.date); });
+    //            dayDimensionGroup = dayDimension.group().reduceSum(function(d) { return d.amount; });
+    //
+    //            //// Receipts by day
+    //            start_dayChart = d3.time.day.offset(d3.extent(data, function(d){ return d.date; })[0], -1);
+    //            end_dayChart  = d3.time.day.offset(d3.extent(data, function(d){ return d.date; })[1], +1);
+    //            dayChart.width(span12_width)
+    //                    .height(span_height)
+    //                    .margins(margins_template)
+    //                    .dimension(dayDimension)
+    //                    .group(dayDimensionGroup)
+    //                    .title("Daily Expenses")
+    //                    .transitionDuration(500)
+    //                    .centerBar(true)
+    //                    .gap(1)
+    //                    .xUnits(d3.time.days)
+    //                    .x(d3.time.scale().domain([start_dayChart, end_dayChart]) )
+    //                    .elasticY(true)
+    //                    .xAxis();
+    //
+    //            // Table of receipt data
+    //            dataTable.width( span12_width )
+    //                    .dimension( dayDimension )
+    //                    .group(function() {
+    //                      return "";
+    //                    })
+    //                    .size(10).order(d3.descending)
+    //                    .columns([
+    //                      function(d) { return d.date.toDateString(); },
+    //                      function(d) { return d.amount; },
+    //                      function(d) { return d.detail; },
+    //                      function(d) { return d.name; },
+    //                    ]);
+    //
+    //
+    //            // Render the Charts
+    //            dc.renderAll();
+    //
+    //            // Adjust axes
+    //            d3.select("#dc-day-chart .axis.x")
+    //                    .selectAll("text")
+    //                    .style("text-anchor", "end")
+    //                    .attr("dx", "-.8em")
+    //                    .attr("dy", ".15em")
+    //                    .attr("transform", function() {
+    //                      return "rotate(-45)";
+    //                    });
 
-            var dataPath = "src/clean_compile.csv"
-            d3.csv(dataPath, function(error, rawData) {
+            }
 
-                if (error){
-                    console.log("error: %s", error);
-                }else{
-                    generate(rawData);
-                }
+            function init() {
 
-            });
+                // Create the dc-2.0.0 chart objects & link to div
+                dayChart = dc.barChart("#dc-barChart-population");
+                dataTable = dc.dataTable("#dc-dataTable-data");
 
-        }
+                var dataPath = "src/clean_compile.csv"
+                d3.csv(dataPath, function(error, rawData) {
 
-        init();
+                    if (error){
+                        console.log("error: %s", error);
+                    }else{
+                        generate(rawData);
+                    }
 
-    </script>
+                });
+
+            }
+
+            init();
+
+        </script>
 
     </body>
 </html>

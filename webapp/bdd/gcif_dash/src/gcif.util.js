@@ -105,7 +105,7 @@ gcif.util = (function () {
             d["DataYear_60"] = formatYear.parse(d["DataYear_60"]);
             d["Commercial/industrial assessment as a percentage of total assessment_61"] = +d["Commercial/industrial assessment as a percentage of total assessment_61"];
             d["DataYear_61"] = formatYear.parse(d["DataYear_61"]);
-            d["Type of government (e.g. Local, Regional, County)_30"] = +d["Type of government (e.g. Local, Regional, County)_30"];
+            d["Type of government (e.g. Local, Regional, County)_30"] = d["Type of government (e.g. Local, Regional, County)_30"];
             d["DataYear_30"] = formatYear.parse(d["DataYear_30"]);
             d["Gross operating budget per capita (US$) _32"] = +d["Gross operating budget per capita (US$) _32"];
             d["DataYear_32"] = formatYear.parse(d["DataYear_32"]);
@@ -424,13 +424,12 @@ gcif.util = (function () {
             d["Data Year_177"] = formatYear.parse(d["Data Year_177"]);
         }
         catch(err){
-          console.error(err);
+            console.error(err);
         }
-
     };
     // End Public method /parseData/
 
-    initModule = function ( $content ) {
+    initModule = function ( $container ) {
         //do nothing
     };
 
