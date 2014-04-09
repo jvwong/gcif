@@ -22,39 +22,13 @@ gcif.shell = (function () {
 
             '<div class="content">' +
                 '<div class="container">' +
-
-                    '<div class="row">' +
-                        '<div class="span6" id="dc-barChart-population">' +
-                            '<h4>Population</h4>' +
-                        '</div>' +
-                    '</div>' +
-
-                    '<div class="row">' +
-                        '<div class="span12" id="">' +
-                        '</div>' +
-                   ' </div>' +
-
-                    '<div class="row">' +
-                        '<div class="span12" id="table-chart">' +
-                            '<table class="table table-hover" id="dc-dataTable-data">' +
-                                '<thead>' +
-                                    '<tr class="header">' +
-                                        '<th>Date</th>' +
-                                        '<th>Amount</th>' +
-                                        '<th>Detail</th>' +
-                                        '<th>Who</th>' +
-                                    '</tr>' +
-                                '</thead>' +
-                            '</table>' +
-                        '</div>' +
-                    '</div>' +
-
+                    '<p>summy content</p>'+
                 '</div>' +
             '</div>'
 
     }
     , stateMap = {
-        $container : undefined
+        $outerDiv : undefined
     }
     , jqueryMap = {}
     , setJqueryMap
@@ -67,12 +41,12 @@ gcif.shell = (function () {
 
     setJqueryMap = function(){
         var
-          $container = stateMap.$container
+          $outerDiv = stateMap.$outerDiv
 
         jqueryMap = {
-            $container    : $container
-    //      , $header       : $container.find('.chart-shell-header')
-
+            $outerDiv   : $outerDiv
+          , $content    : $outerDiv.find('.content')
+          , $container  : $outerDiv.find('.container')
 
         };
     };
@@ -101,12 +75,15 @@ gcif.shell = (function () {
     //   and then configures and initializes feature modules.
     // Returns   : none
     // Throws    : none
-    initModule = function ( $container ) {
+    initModule = function ( $outerDiv ) {
 
         //store container in stateMap
-        stateMap.$container = $container;
-        $container.html(configMap.main_html);
+        stateMap.$outerDiv = $outerDiv;
+        $outerDiv.html(configMap.main_html);
         setJqueryMap();
+
+        // configure and initialize feature modules
+        gcif.dash.initModule( jqueryMap.$container );
 
     };
     // End PUBLIC method /initModule/

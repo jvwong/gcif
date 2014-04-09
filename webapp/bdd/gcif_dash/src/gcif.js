@@ -15,11 +15,11 @@ gcif = (function () {
     'use strict';
     var initModule;
 
-    initModule = function ( $container ) {
+    initModule = function ( $outerDiv ) {
 
 
-        if ( gcif.shell && $container ){
-            gcif.shell.initModule( $container );
+        if ( gcif.shell && $outerDiv ){
+            gcif.shell.initModule( $outerDiv );
         }
     };
 
