@@ -1,0 +1,1431 @@
+
+Annual average temperature (Celsius)_27
+	0
+	
+Annual average unemployment rate_60
+	0
+	
+Annual inflation rate based on average of last 5 years_52
+	0
+	
+Annual number of public transit trips per capita_52
+	187.08
+	
+Annual population change _65
+	0
+	
+Areal size of informal settlements as a percent of city area_210
+	0
+	
+Average annual hours of water service interruption per household_207
+	0
+	
+Average annual rainfall (mm)_28
+	0
+	
+Average annual snowfall (cm)_29
+	0
+	
+Average household income (US$)_51
+	0
+	
+Average length of electrical interruptions (in hours)_159
+	1.35
+	
+Average life expectancy_198
+	0
+	
+Capital spending as percentage of total expenditures_109
+	17.79
+	
+Capital spending_109
+	1851131718
+	
+Children completing primary education_139
+	26029
+	
+Children completing secondary education_140
+	17710.25
+	
+Citizen's representation: number of local officials elected to office per 100,000 population_115
+	3
+	
+City product as percentage of Country's GDP_56
+	0
+	
+City product per capita (US$)_69
+	0
+	
+City product per capita_119
+	42372.81
+	
+City product_119
+	115682000000
+	
+City unemployment rate_212
+	7.87
+	
+CityName
+	"TORONTO"
+	
+CityUniqueID
+	1
+	
+CityUniqueID_
+	1
+	
+Climate Type_64
+	"CONTINENTAL"
+	
+Comments_103
+	"THIS IS A UNIVERSAL SERVICE"
+	
+Comments_104
+	"TORONTOS RESULT INCLUDE...BE 1953 KWH PER CAPITA."
+	
+Comments_106
+	""
+	
+Comments_107
+	"CURRENT YEAR TAX COLLEC... OR PENALTIES/INTERESTS"
+	
+Comments_108
+	""
+	
+Comments_109
+	"CURRENT FIGURE INCLUDES AMT FOR UNFUNDED LIAB"
+	
+Comments_113
+	"GREEN AREA INCLUDES PAR... AND UTILITY CORRIDORS."
+	
+Comments_114
+	"NOTE : DATA SHOWN RELAT...NT WORLD CITIES (I.E. V"
+	
+Comments_115
+	"MAYOR AND 44 COUNCILLOR...STRICT SCHOOL BOARD- 12"
+	
+Comments_119
+	"RESULT IS IN US BASED O...NGE RATES FOR EACH YEAR"
+	
+Comments_121
+	"MOST RECENT DATA AVAILA...04 = 9.34 TONNES/CAPITA"
+	
+Comments_122
+	"NO AREAS OF THE CITY OF...MS PROVIDED BY THE GCIF"
+	
+Comments_124
+	"THE 27.2 RESULT BASED O... 2005 INCOME TAX FILES."
+	
+Comments_125
+	"SOURCE: INTERNET WORLD ...IS BASED ON CONNECTIONS"
+	
+Comments_126
+	"LATEST DATA IS 2006 RESIDENTIAL TELEPHONE SURVEY"
+	
+Comments_139
+	"PUBLIC AND CATHOLIC SCHOOL SYSTEMS"
+	
+Comments_140
+	"PUBLIC AND CATHOLIC SCHOOL SYSTEMS"
+	
+Comments_141
+	"CATHOLIC SCHOOL SYSTEMS...ERAS SCHOOL AGED CHILDR"
+	
+Comments_142
+	"CATHOLIC SCHOOL SYSTEMS...ERAS SCHOOL AGED CHILDR"
+	
+Comments_143
+	"THIS INCLUDES RESIDENTI...FER STATIONS FOR ULTIMA"
+	
+Comments_144
+	""
+	
+Comments_145
+	""
+	
+Comments_146
+	"THIS PERCENTAGE RELATES... 2008 FOR HOUSES WAS 59"
+	
+Comments_147
+	""
+	
+Comments_154
+	"NUMERATOR AND DENOMINATOR IS IN LITRES"
+	
+Comments_155
+	"NUMERATOR AND DENOMINATOR IS IN LITRES"
+	
+Comments_156
+	"NUMERATOR AND DENOMINATOR IS IN LITRES"
+	
+Comments_157
+	"NUMERATOR AND DENOMINATOR IS IN LITRES"
+	
+Comments_158
+	"SYSTEM AVERAGE INTERRUP...BY THE IEEE SPECIFICATI"
+	
+Comments_159
+	"SYSTEM AVERAGE INTERRUP...S (MED) AS DEFINED BY T"
+	
+Comments_160
+	"THE FIGURES SUPPLIED IN...NTO POLICE SERVICES AND"
+	
+Comments_176
+	"LATEST DATA IS 2006 RESIDENTIAL TELEPHONE SURVEY"
+	
+Comments_177
+	"LATEST DATA IS 2006 RESIDENTIAL TELEPHONE SURVEY"
+	
+Comments_197
+	""
+	
+Comments_198
+	""
+	
+Comments_199
+	"NURSES AND MIDWIVES DAT...TIONERS).Â  DTAA ON MID"
+	
+Comments_200
+	"2008- INCLUDES 61.9 KM ... GO TRANSIT RAIL SYSTEM"
+	
+Comments_201
+	"2008- INCLUDES 304.8 KM...SWAYS AND 6.4 KM OF LRT"
+	
+Comments_202
+	"INCLUDES TWO-WHEEL MOTO...Y OF TORONTO RESIDENTS."
+	
+Comments_203
+	"REPRESENTS TOTAL ACTIVE...LES AND MOPED VEHICLES."
+	
+Comments_204
+	"THIS IS A UNIVERSAL SERVICE IN TORONTO"
+	
+Comments_205
+	"RESULT IN LITRES PER DAY."
+	
+Comments_206
+	""
+	
+Comments_207
+	"WE DO NOT ACTIVELY TRACK THIS NUMBER"
+	
+Comments_208
+	"KILOWATT HOURS"
+	
+Comments_209
+	"JOBS ARE AS REPORTED BY...LY IN CENSUS YEARS. PRO"
+	
+Comments_210
+	"INFORMAL SETTLEMENTS AR...LEGAL THEY ARE REMOVED."
+	
+Comments_211
+	"THE 82600 JOBS IN THE C... GUARD AT A MUSEUM). IF"
+	
+Comments_212
+	""
+	
+Comments_213
+	""
+	
+Comments_214
+	"UNITS ARE UG/M3 (MICROG...A NATIONAL AIR POLLUTIO"
+	
+Comments_215
+	"ALL PROPERTIES IN TOORN... THIS MEASURE WILL BE 0"
+	
+Comments_216
+	"RESULTS REPRESENT THE A...ERS HEALTH AND TREATMEN"
+	
+Comments_217
+	""
+	
+Comments_218
+	"BASED ON 2006 CENSUS"
+	
+Comments_219
+	""
+	
+Comments_26
+	"PUBLIC AND CATHOLIC SCHOOL SYSTEMS"
+	
+Comments_27
+	"CATHOLIC SCHOOL SYSTEMS...ERAS SCHOOL AGED CHILDR"
+	
+Comments_28
+	"2006 IS LATEST DATA AVA...OL BOARD (PUBLIC) ONLY."
+	
+Comments_32
+	"INCLUDES ALL SUPPRESSIO... MANAGEMENT IN TORONTO."
+	
+Comments_36
+	"INCLUDES RESIDENTIAL AN...TAINED DURING A FIRE IN"
+	
+Comments_37
+	"TIME FROM WHEN CALL REC...S NOT INCLUDE 911 TIME)"
+	
+Comments_38
+	"MOST RECENT DATA AVAILABLE IS FOR 2005."
+	
+Comments_40
+	"DATA IS AS OF MARCH 31 OF THE APPLICABLE YEAR"
+	
+Comments_41
+	"VALUES HAVE BEEN RE-STA...TOR: 27.3 RESULT: 99.63"
+	
+Comments_42
+	"INDOOR RECREATION FACIL... ALONE ARENAS AND POOLS"
+	
+Comments_43
+	"NUMERATOR INCLUDES ALL ...RM OF CONTROLLED ACCESS"
+	
+Comments_44
+	""
+	
+Comments_45
+	""
+	
+Comments_46
+	"THE TORONTO POLICE SERV...HE REQUESTED CALCULATIO"
+	
+Comments_47
+	"THIS IS A UNIVERSAL SER...ANIC WASTE AND GARBAGE."
+	
+Comments_52
+	"2008 INCLUDED 466.7 MIL...ION IN GO TRANSIT TRIPS"
+	
+Comments_53
+	"2008- CANADIAN CITIES -...THER INTERNATIONAL - 97"
+	
+Comments_55
+	"FATALITIES RELATED TO V...EDESTRIANS AND CYCLISTS"
+	
+Comments_56
+	"THIS IS A UNIVERSAL SERVICE IN TORONTO"
+	
+Comments_59
+	"THIS IS A UNIVERSAL SERVICE IN TORONTO"
+	
+Comments_61
+	"RESULTS IN LITRES PER DAY"
+	
+Commercial Air Connectivity (number of nonstop commercial air destinations)_53
+	177
+	
+Commercial/industrial assessment as a percentage of total assessment_61
+	0
+	
+Cost of living_53
+	0
+	
+Country's GDP (US$)_67
+	0
+	
+Country's GDP per capita (US$)_55
+	0
+	
+Country_70
+	""
+	
+Data Year_103
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_104
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_106
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_107
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_108
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_109
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_113
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_114
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_115
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_119
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_121
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_122
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_124
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_125
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_126
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_139
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_140
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_141
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_142
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_143
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_144
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_145
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_146
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_147
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_154
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_155
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_156
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_157
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_158
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_159
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_160
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_176
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_177
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_197
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_198
+	null
+	
+Data Year_199
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_200
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_201
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_202
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_203
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_204
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_205
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_206
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_207
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_208
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_209
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_210
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_211
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_212
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_213
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_214
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_215
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_216
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_217
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_218
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_219
+	null
+	
+Data Year_26
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_27
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_28
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_32
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_36
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_37
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_38
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_40
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_41
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_42
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_43
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_44
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_45
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_46
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_47
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_52
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_53
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_55
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_56
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_59
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+Data Year_61
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+DataYear_18
+	null
+	
+DataYear_23
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+DataYear_27
+	null
+	
+DataYear_28
+	null
+	
+DataYear_29
+	null
+	
+DataYear_30
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+DataYear_31
+	null
+	
+DataYear_32
+	null
+	
+DataYear_33
+	null
+	
+DataYear_34
+	null
+	
+DataYear_35
+	Date {Mon Jan 01 2007 00:00:00 GMT-0500 (EST)}
+	
+DataYear_36
+	Date {Mon Jan 01 2007 00:00:00 GMT-0500 (EST)}
+	
+DataYear_37
+	null
+	
+DataYear_38
+	null
+	
+DataYear_39
+	null
+	
+DataYear_40
+	null
+	
+DataYear_41
+	null
+	
+DataYear_42
+	null
+	
+DataYear_43
+	null
+	
+DataYear_44
+	null
+	
+DataYear_45
+	null
+	
+DataYear_46
+	null
+	
+DataYear_47
+	null
+	
+DataYear_48
+	null
+	
+DataYear_49
+	null
+	
+DataYear_50
+	null
+	
+DataYear_51
+	null
+	
+DataYear_52
+	null
+	
+DataYear_53
+	null
+	
+DataYear_54
+	null
+	
+DataYear_55
+	null
+	
+DataYear_56
+	null
+	
+DataYear_57
+	null
+	
+DataYear_58
+	null
+	
+DataYear_59
+	null
+	
+DataYear_60
+	null
+	
+DataYear_61
+	null
+	
+DataYear_63
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+DataYear_64
+	Date {Tue Jan 01 2008 00:00:00 GMT-0500 (EST)}
+	
+DataYear_65
+	null
+	
+DataYear_66
+	null
+	
+DataYear_67
+	null
+	
+DataYear_69
+	null
+	
+DataYear_70
+	null
+	
+Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)_106
+	7.95
+	
+Dwelling density (per Square Kilometer)_50
+	0
+	
+Electrical use in kilowatt hours per year_104
+	25760000000
+	
+Eligible voters_114
+	1521121
+	
+Employment percentage change based on the last 5 years_66
+	0
+	
+Employment percentage change since base year (Base Year is 1991)_58
+	0
+	
+Green area (hectares) per 100,000 population_113
+	484.34
+	
+Green area in hectares_113
+	13222.5
+	
+Greenhouse gas emissions in tonnes_121
+	25578524
+	
+Greenhouse gas emissions measured in tonnes per capita_121
+	9.34
+	
+Gross capital budget (US$)_33
+	0
+	
+Gross capital budget per capita (US$)_34
+	0
+	
+Gross operating budget (US$)_31
+	0
+	
+Gross operating budget per capita (US$) _32
+	0
+	
+Income distribution (Gini Coefficient)_54
+	0
+	
+Jobs/Housing ratio_209
+	1.21
+	
+Km of high capacity public transit system per 100,000 population_200
+	16.55
+	
+Km of light passenger transit system per 100,000 population_201
+	272.54
+	
+Labour force_212
+	1447520
+	
+Land Area (Square Kilometers)_23
+	634
+	
+Male to female ratio (# of males per 100 females)_42
+	0
+	
+N/A__198
+	""
+	
+N/A__206
+	""
+	
+N/A__37
+	""
+	
+N/A__53
+	""
+	
+N/A___198
+	""
+	
+N/A___206
+	""
+	
+N/A___37
+	""
+	
+N/A___53
+	""
+	
+Number of Firefighters_32
+	2782
+	
+Number of Students_28
+	252203.9
+	
+Number of Teachers_28
+	16161.3
+	
+Number of businesses per 1000 Population_59
+	0
+	
+Number of cell phone connections per 100,000 population_177
+	49256.41
+	
+Number of cell phone connections_177
+	1344700
+	
+Number of children in school cohort_140
+	23143
+	
+Number of dwelling units_209
+	1073840
+	
+Number of female school aged population enrolled at primary and secondary levels in public and private schools_141
+	172973
+	
+Number of fire related deaths per 100,000 population_36
+	0.66
+	
+Number of fire related deaths_36
+	18
+	
+Number of firefighters per 100,000 population_32
+	0.1
+	
+Number of higher education degrees per 100,000_218
+	41896.89
+	
+Number of homeless people per 100,000 population_216
+	188.28
+	
+Number of homeless people_216
+	5140
+	
+Number of homicides per 100,000 population_44
+	3.08
+	
+Number of homicides_44
+	84
+	
+Number of households without registered legal title_215
+	0
+	
+Number of in-patient hospital beds per 100,000 population_40
+	345.38
+	
+Number of in-patient hospital beds_40
+	9429
+	
+Number of internet connections per 100,000 population_125
+	0
+	
+Number of internet connections_125
+	0
+	
+Number of jobs in the cultural sector_211
+	82600
+	
+Number of landline phone connections per 100,000 population_176
+	58732.6
+	
+Number of landline phone connections_176
+	1603400
+	
+Number of live births divided by 1,000_38
+	30.08
+	
+Number of local officials elected to office_115
+	82
+	
+Number of male school aged population enrolled at primary and secondary levels in public and private schools_142
+	183966
+	
+Number of new patents per 100,000 per year_217
+	31.43
+	
+Number of new patents per year_217
+	858
+	
+Number of nurses and midwives_199
+	26821
+	
+Number of nursing and midwifery personnel per 100,000 population_199
+	982.45
+	
+Number of people served by wastewater collection_56
+	2730100
+	
+Number of people within the city that are served by a potable water supply_59
+	2730100
+	
+Number of personal automobiles per capita_202
+	0.34
+	
+Number of persons in full time employment_213
+	1113660
+	
+Number of physicians per 100,000 population_41
+	345.38
+	
+Number of physicians_41
+	9429
+	
+Number of police officers per 100,000 population_45
+	201.5
+	
+Number of police officers_45
+	5501
+	
+Number of post-secondary degrees_218
+	1143785
+	
+Number of pupils in school cohort_139
+	26029
+	
+Number of students in school cohort_26
+	49172
+	
+Number of telephone connections (landlines and cell phones) per 100,000 population_126
+	107989.01
+	
+Number of telephone connections in the city including land lines and cellular connections_126
+	2948100
+	
+Number of transit trips_52
+	510755200
+	
+Number of two-wheel motorized vehicles per capita_203
+	0.01
+	
+Number of violent crimes_46
+	11812
+	
+Number of women employees in the city government workforce_160
+	21123
+	
+Own-source revenue as a percent of total revenues_108
+	78.19
+	
+Own-source revenue_108
+	6689504064
+	
+PM10 Concentration_214
+	10.24
+	
+PM2.5 Concentration_219
+	0
+	
+Participating voters_114
+	597754
+	
+Percentage of city population living in poverty_124
+	27.2
+	
+Percentage of city population living in slums_122
+	0
+	
+Percentage of city population served by wastewater collection_56
+	100
+	
+Percentage of city population with authorized electrical service_103
+	100
+	
+Percentage of city population with potable water supply service_59
+	100
+	
+Percentage of city population with regular solid waste collection_47
+	100
+	
+Percentage of city population with sustainable access to an improved water source_204
+	100
+	
+Percentage of country's population_37
+	0
+	
+Percentage of female population enrolled in schools_141
+	82.16
+	
+Percentage of households that exist without registered legal titles_215
+	0
+	
+Percentage of jobs in the cultural sector_211
+	6.65
+	
+Percentage of male population enrolled in schools_142
+	82.48
+	
+Percentage of non-residential area (square kilometers)_18
+	0
+	
+Percentage of persons in full time employment_213
+	40.79
+	
+Percentage of population that are adult (aged 25-64)_40
+	0
+	
+Percentage of population that are children (aged 0-14)_38
+	0
+	
+Percentage of population that are migrating from elsewhere in the country_46
+	0
+	
+Percentage of population that are new immigrants_45
+	0
+	
+Percentage of population that are senior citizens (aged 65+)_41
+	0
+	
+Percentage of population that are youth (aged 15-24) _39
+	0
+	
+Percentage of school-aged population enrolled in schools_27
+	82.32
+	
+Percentage of students completing primary and secondary education: survival rate_26
+	88.95
+	
+Percentage of students completing primary education_139
+	100
+	
+Percentage of students completing secondary education_140
+	76.53
+	
+Percentage of the city's solid waste that is burned openly_197
+	0
+	
+Percentage of the city's solid waste that is disposed of by other means_147
+	0
+	
+Percentage of the city's solid waste that is disposed of in a sanitary landfill_143
+	62.38
+	
+Percentage of the city's solid waste that is disposed of in an incinerator_144
+	0
+	
+Percentage of the city's solid waste that is disposed of in an open dump_145
+	0
+	
+Percentage of the city's solid waste that is recycled_146
+	37.62
+	
+Percentage of the city's wastewater receiving primary treatment_155
+	100
+	
+Percentage of the city's wastewater receiving secondary treatment_156
+	99.87
+	
+Percentage of the city's wastewater receiving tertiary treatment_157
+	0
+	
+Percentage of the city's wastewater that has received no treatment_154
+	0
+	
+Percentage of water loss_206
+	8.4
+	
+Percentage of women employed in the city government workforce_160
+	40.12
+	
+Persons per unit_49
+	0
+	
+Population Dependency Ratio _44
+	0
+	
+Population density (per square kilometer)_36
+	4292
+	
+Population divided by 100,000_217
+	27.3
+	
+Population divided by 100,000_218
+	27.3
+	
+Population living in poverty_124
+	742587
+	
+Population living in slums_122
+	0
+	
+Population percentage change since base year (base year is 1991)_43
+	0
+	
+Population with access to the following types of water supply: piped water, public tap, borehole or pump, protected well, prote
+	2730100
+	
+Population with authorized electrical service_103
+	2730100
+	
+Population with regular solid waste collection_47
+	2730100
+	
+Population_103
+	2730100
+	
+Population_104
+	2730100
+	
+Population_119
+	2730100
+	
+Population_202
+	2730100
+	
+Population_203
+	2730100
+	
+Population_204
+	2730100
+	
+Population_205
+	2730100
+	
+Population_208
+	2730100
+	
+Population_42
+	2730100
+	
+Population_43
+	2730100
+	
+Population_52
+	2730100
+	
+Population_56
+	2730100
+	
+Population_59
+	2730100
+	
+Population_61
+	2730100
+	
+Public indoor recreation space in square meters_42
+	378982
+	
+Public outdoor recreation space in square meters_43
+	80420000
+	
+Region_63
+	"NORTH AMERICA"
+	
+Residential electrical use in kilowatt hours per year_208
+	5332000000
+	
+Response time for fire department from initial call_37
+	7.34
+	
+Size of informal settlements_210
+	0
+	
+Square meters of public indoor recreation space per capita_42
+	0.14
+	
+Square metres of public outdoor recreation space per capita_43
+	29.46
+	
+Student/teacher ratio_28
+	15.61
+	
+Students completing primary and secondary education_26
+	43739.25
+	
+Sum of all customer interruption duration_159
+	0
+	
+Sum of each interruption of hours of service interrupted times number of households impacted_207
+	0
+	
+Tax billed_107
+	5207453134
+	
+Tax collected as percentage of tax billed_107
+	96.75
+	
+Tax collected_107
+	5038442853
+	
+The average number of electrical interruptions per customer per year_158
+	2
+	
+Tonnes disposed of by other means_147
+	0
+	
+Tonnes disposed of in a sanitary landfill_143
+	669909
+	
+Tonnes disposed of in an incinerator_144
+	0
+	
+Tonnes disposed of in an open dump_145
+	0
+	
+Tonnes of solid waste that is burned openly_197
+	0
+	
+Tonnes recycled_146
+	404040
+	
+Total Population_47
+	2730100
+	
+Total amount of solid waste_143
+	1073949
+	
+Total amount of solid waste_144
+	1073949
+	
+Total amount of solid waste_145
+	1073949
+	
+Total amount of solid waste_147
+	1073949
+	
+Total amount of solid waste_197
+	1073949
+	
+Total amount of waste_146
+	1073949
+	
+Total city area_210
+	63406
+	
+Total city population_213
+	2730100
+	
+Total city population_35
+	2721400
+	
+Total domestic water consumption in litres per day_61
+	601868493
+	
+Total domestic water consumption per capita (litres/day)_61
+	220.46
+	
+Total electrical use per capita (kWh/year)_104
+	9435.55
+	
+Total employment_57
+	0
+	
+Total expenditures_109
+	10406759654
+	
+Total km of high capacity public transportation system_200
+	451.9
+	
+Total km of light transit transportation system_201
+	7440.4
+	
+Total long-term debt servicing costs_106
+	531735845
+	
+Total mass of collected particles in the PM10 size range_214
+	0
+	
+Total mass of collected particles that are 2.5 microns or less in diameter_219
+	0
+	
+Total number of customer interruptions per year_158
+	0
+	
+Total number of customer interruptions_159
+	1
+	
+Total number of customers served per year_158
+	1
+	
+Total number of employees in the city government workforce_160
+	52654
+	
+Total number of female school aged population_141
+	210525
+	
+Total number of households_207
+	1073800
+	
+Total number of households_215
+	1073800
+	
+Total number of households_47
+	0
+	
+Total number of jobs_209
+	1298700
+	
+Total number of jobs_211
+	1242215
+	
+Total number of male school aged population_142
+	223050
+	
+Total number of occupied dwelling units (owned & rented)_48
+	0
+	
+Total number of registered automobiles_202
+	940973
+	
+Total number of school aged population enrolled at primary and secondary schools in public and private schools_27
+	356939
+	
+Total number of school aged population_27
+	433575
+	
+Total number of transportation fatalities_55
+	52
+	
+Total number of two-wheel motorized vehicles_203
+	14260
+	
+Total number of unemployed_212
+	113990
+	
+Total own source revenue_106
+	6689504064
+	
+Total population divided by 100,000_113
+	27.3
+	
+Total population divided by 100,000_115
+	27.3
+	
+Total population divided by 100,000_125
+	27.3
+	
+Total population divided by 100,000_126
+	27.3
+	
+Total population divided by 100,000_176
+	27.3
+	
+Total population divided by 100,000_177
+	27.3
+	
+Total population divided by 100,000_199
+	27.3
+	
+Total population divided by 100,000_200
+	27.3
+	
+Total population divided by 100,000_201
+	27.3
+	
+Total population divided by 100,000_216
+	27.3
+	
+Total population divided by 100,000_32
+	27301
+	
+Total population divided by 100,000_36
+	27.3
+	
+Total population divided by 100,000_40
+	27.3
+	
+Total population divided by 100,000_41
+	27.3
+	
+Total population divided by 100,000_44
+	27.3
+	
+Total population divided by 100,000_45
+	27.3
+	
+Total population divided by 100,000_46
+	27.3
+	
+Total population divided by 100,000_55
+	27.3
+	
+Total population_121
+	2738600
+	
+Total population_122
+	2730100
+	
+Total population_124
+	2730100
+	
+Total residential electrical use per capita (kWh/year)_208
+	1953.04
+	
+Total revenue_108
+	8555627936
+	
+Total water consumption in litres per day_205
+	955347945
+	
+Total water consumption per capita (litres/day)_205
+	349.93
+	
+Transportation fatalities per 100,000 population_55
+	1.9
+	
+Type of government (e.g. Local, Regional, County)_30
+	"SINGLE TIER MUNICIPALITY"
+	
+Under age five mortality per 1,000 live births_38
+	7.41
+	
+Under age five mortality_38
+	223
+	
+Violent crime rate per 100,000 population_46
+	432.67
+	
+Volume of air sampled_214
+	1
+	
+Volume of air sampled_219
+	0
+	
+Volume of all wastewater collected_154
+	396395000000
+	
+Volume of all wastewater collected_155
+	396395000000
+	
+Volume of all wastewater collected_156
+	396395000000
+	
+Volume of all wastewater collected_157
+	396395000000
+	
+Volume of water receiving no treatment_154
+	0
+	
+Volume of water receiving primary treatment_155
+	396395000000
+	
+Volume of water receiving secondary treatment_156
+	395881000000
+	
+Volume of water receiving tertiary treatment_157
+	0
+	
+Voter participation in last municipal election (as a percent of eligible voters)_114
+	39.3
+	
+collection_year
+	2008
