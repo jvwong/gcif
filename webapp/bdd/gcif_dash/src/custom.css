@@ -1,0 +1,33 @@
+/* page styling */
+    body{
+        font-family: Arial, Helvetica, Sans-serif;
+    }
+
+    .container{
+        max-width: 800px;
+        margin: auto auto;
+    }
+
+    /* table styling */
+    #dc-dataTable-data{
+        width: 700px;
+    }
+
+    #dc-dataTable-data .header{
+        text-align: center;
+        background: steelblue;
+        border: none;
+    }
+
+    #dc-dataTable-data .header th{
+        width: 25%;
+    }
+
+    #dc-dataTable-data tbody td{
+        text-align: center;
+        font-size: 0.9em;
+    }
+
+    #dc-dataTable-data tbody tr:nth-child(even) {
+        background: #CCC
+    }
