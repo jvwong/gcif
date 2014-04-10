@@ -9,7 +9,7 @@
  regexp : true,    sloppy : true,       vars : false,
  white  : true
  */
-/*global $, d3, gcif, chart */
+/*global $, d3, gcif */
 
 gcif.table = (function () {
     'use strict';
@@ -20,6 +20,7 @@ gcif.table = (function () {
 
         main_html : String() +
 
+            '<h4 class="sub-header">Sample Table</h4>' +
                 '<div class="table-responsive">' +
                     '<table class="table table-striped">' +
                         '<thead>' +
@@ -51,12 +52,12 @@ gcif.table = (function () {
                 '</div>'
     }
     , stateMap = {
-        $container : undefined
+          $container : undefined
+        , $dataUrl   : undefined
     }
     , jqueryMap = {}
     , setJqueryMap
     , setDataUrl
-    , renderGraphs
     , initModule;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
@@ -84,9 +85,20 @@ gcif.table = (function () {
 
     //------------------- BEGIN PUBLIC METHODS -------------------
 
+    // Begin Public method /setDataurl/
+    // Example   : gcif.table.setDataUrl( "/path/to/data" );
+    // Purpose   :
+    //   Sets the stateMap key for $dataurl
+    // Arguments :
+    //   * absolute path to a valid csv file
+    // Action    :
+    //   Populates $dataUrl value
+    // Returns   : none
+    // Throws    : none
     setDataUrl = function(url){
-        // do  nothing
+        stateMap.$dataUrl = url;
     };
+    // End PUBLIC method /setDataurl/
 
     // Begin Public method /initModule/
     // Example   : chart.dash.initModule( $('.container') );

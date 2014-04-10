@@ -108,37 +108,22 @@ gcif.dash = (function () {
         , span6_width
         , span12_width
 
-        , nestByCity
-
-        , start_dayChart
-        , end_dayChart
-
-        ;
+        , nestByCityYear = d3.nest()
+                             .key(function(d) { return d["CityName"]; })
+                             .key(function(d) { return d["collection_year"]; })
 
         //formatting and utilities
-        margins_template = {top: 10, right: 10, bottom: 80, left: 60};
-        span_height = 350;
-        span4_width = 250;
-        span6_width = 400;
-        span12_width = 700;
+        , margins_template = { top: 10, right: 10, bottom: 80, left: 60 }
+        ;
 
-
-
-        // data variable formatting
-
-        // A nest operator, for grouping the flight list.
-        nestByCity = d3.nest().key(function(data) { return d3.time.day(d.date); });
-
+        // data variable formatting. This is done in a semi automated fashion with the function
+        // gcif.util.parseData(d). I produced this function using the Python script
+        // function: formatHeaders in gcif_util.py
         data.forEach(function(d) {
-
-            if( (d["CityName"]).toUpperCase() === "TORONTO"){
-                gcif.util.parseData(d);
-                console.log(d);
-            }
-
+            gcif.util.parseData(d);
         });
 
-
+        console.log((data).length)
 
         //            // Run the data through crossfilter and load our 'facts'
         //            facts = crossfilter(data);

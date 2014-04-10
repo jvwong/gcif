@@ -25,7 +25,6 @@ def perCityFilter(file):
 
         #Read in first row of headers
         headers = csvreader.next()
-        headers.append("column_count")
 
         #rewind up to the header
         csvfile.seek(0)
@@ -47,10 +46,7 @@ def perCityFilter(file):
                 elif not re.match('(?:comment)|(?:n/a)|(?:datayear_)|(?:data year_)|(?:country_)|(?:region_)|\
                                  (?:climate type_)|(?:type of government)', headers[idxc].lower()):
                     rowout.append(indicator)
-                    if indicator:
-                        count += 1
 
-            rowout.append(count)
             output.append(rowout)
     return output
 

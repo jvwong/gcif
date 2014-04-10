@@ -5,7 +5,7 @@ def main():
 
     ### *********** Per city indicators (remove comment, n/a, data year)
     fin = '/home/jvwong/Projects/GCIF/data/clean_compile.csv'
-    fout = "filtered_" + fin.split('/')[-1]
+    fout = "noText_" + fin.split('/')[-1]
     csvout = perCityFilter(fin)
 
     with open(fout, 'wb') as fout:
