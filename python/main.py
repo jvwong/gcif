@@ -1,28 +1,32 @@
-from gcif_util import checkHeaders, cleanCells, formatHeaders
+from gcif_util import *
 
 
 def main():
 
-    #Automated d3 data type processing
-    jsText = formatHeaders('/home/jvwong/Projects/GCIF/data/clean_compile.csv')
+    ### *********** Per city indicators (remove comment, n/a, data year)
+    fin = '/home/jvwong/Projects/GCIF/data/clean_compile.csv'
+    fout = "filtered_" + fin.split('/')[-1]
+    csvout = perCityFilter(fin)
 
-    with open('/home/jvwong/Projects/GCIF/webapp/bdd/gcif_dash/src/parseData.js', 'wb') as fout:
-        fout.write(jsText)
+    with open(fout, 'wb') as fout:
+        writer = csv.writer(fout)
+        writer.writerows(csvout)
 
-    ##### Initial data cleaning
+
+    ### *********** Automated d3 data type processing
+    # jsText = formatHeaders('/home/jvwong/Projects/GCIF/data/clean_compile.csv')
+    #
+    # with open('/home/jvwong/Projects/GCIF/webapp/bdd/gcif_dash/src/parseData.js', 'wb') as fout:
+    #     fout.write(jsText)
+
+    ### ***********Initial data cleaning
     # fin = '/home/jvwong/Documents/GCIF/data/2014_gcif.csv'
     # fout = fin.split('/')[-1]
-
-    #Check headers
-    #mismatch = checkHeaders('/home/jvwong/Documents/GCIF/data/2008_gcif.csv', '/home/jvwong/Documents/GCIF/data/2014_gcif.csv')
-
-    # Write out cleaned data to csv files
+    # mismatch = checkHeaders('/home/jvwong/Documents/GCIF/data/2008_gcif.csv', '/home/jvwong/Documents/GCIF/data/2014_gcif.csv')
     # csvOut = cleanCells(fin)
     # with open(fout, 'wb') as fout:
     #     writer = csv.writer(fout)
     #     writer.writerows(csvOut)
-
-    ##### Initial data cleaning
     # fin = '/home/jvwong/Documents/GCIF/data/2014_gcif.csv'
     # fout = fin.split('/')[-1]
 

@@ -2,6 +2,60 @@ import csv
 import re
 
 
+# function: perCityFilter
+# @description: Takes the cleaned complied indicator data and extracts the actual indicators into a new csv
+# This will exclude the "data year", "n/a", "comment" to get a first pass at the per-City information density
+# @pre-condition: a valid csv file with headers of indicators
+# @input:
+#   file - a valid csv with headers
+# @output:
+#   output - the same csv file with columns removed
+def perCityFilter(file):
+
+    output = []
+
+    # open the file
+    with open(file, 'rb') as csvfile:
+
+        #declare a data out array
+        output = []
+
+        #Instantiate a csv reader
+        csvreader = csv.reader(csvfile, delimiter=',')
+
+        #Read in first row of headers
+        headers = csvreader.next()
+        headers.append("column_count")
+
+        #rewind up to the header
+        csvfile.seek(0)
+
+
+        # loop through each header
+        for idxr, cityRow in enumerate(csvreader):
+
+            #reset the row counts and data
+            count = 0
+            rowout = []
+
+            for idxc, indicator in enumerate(cityRow):
+
+                if re.match('(?:cityname)|(?:collection_year)|(?:cityuniqueid_)', headers[idxc].lower()):
+                    rowout.append(indicator)
+
+                # If the column header indicates it is a comment, data year, etc then ignore it
+                elif not re.match('(?:comment)|(?:n/a)|(?:datayear_)|(?:data year_)|(?:country_)|(?:region_)|\
+                                 (?:climate type_)|(?:type of government)', headers[idxc].lower()):
+                    rowout.append(indicator)
+                    if indicator:
+                        count += 1
+
+            rowout.append(count)
+            output.append(rowout)
+    return output
+
+
+
 # function: formatHeaders
 # @description: A function that will take the headers from a csv file and output
 # d3-friendly dict assignment statements (e.g. use in a forEach() javascript mapping function)
