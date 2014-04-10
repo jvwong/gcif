@@ -18,33 +18,61 @@ gcif.shell = (function () {
     var
     configMap = {
 
-        main_html : String() +
+        navigation_html : String() +
 
-             '<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">' +
-                  '<div class="container">' +
-                    '<div class="navbar-header">' +
-                      '<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">' +
-                        '<span class="sr-only">Toggle navigation</span>' +
-                        '<span class="icon-bar"></span>' +
-                        '<span class="icon-bar"></span>' +
-                        '<span class="icon-bar"></span>' +
-                      '</button>' +
-                      '<a class="navbar-brand" href="#">Project name</a>' +
-                    '</div>' +
-                    '<div class="collapse navbar-collapse">' +
-                      '<ul class="nav navbar-nav">' +
-                        '<li class="active"><a href="#">Home</a></li>' +
-                        '<li><a href="#about">About</a></li>' +
-                        '<li><a href="#contact">Contact</a></li>' +
-                      '</ul>' +
-                    '</div><!--/.nav-collapse -->' +
-                  '</div>' +
+            '<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">' +
+              '<div class="container-fluid">' +
+                '<div class="navbar-header">' +
+                  '<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">' +
+                    '<span class="sr-only">Toggle navigation</span>' +
+                    '<span class="icon-bar"></span>' +
+                    '<span class="icon-bar"></span>' +
+                    '<span class="icon-bar"></span>' +
+                  '</button>' +
+                  '<a class="navbar-brand" href="#">Global City Indicators Facility</a>' +
                 '</div>' +
+                '<div class="navbar-collapse collapse">' +
+                  '<ul class="nav navbar-nav navbar-right">' +
+                    '<li><a href="#">Dashboard</a></li>' +
+                    '<li><a href="#">Settings</a></li>' +
+                    '<li><a href="#">Profile</a></li>' +
+                    '<li><a href="#">Help</a></li>' +
+                  '</ul>' +
+                  '<form class="navbar-form navbar-right">' +
+                    '<input type="text" class="form-control" placeholder="Search...">' +
+                  '</form>' +
+                '</div>' +
+              '</div>' +
+            '</div>',
 
-            '<div class="content">' +
-                '<div class="container">' +
+        sidebar_html : String() +
+
+            ' <div class="container-fluid">' +
+                '<div class="row">' +
+
+                    '<div class="col-sm-3 col-md-2 sidebar">' +
+                        '<ul class="nav nav-sidebar">' +
+                            '<li class="active"><a href="#">Overview</a></li>' +
+                            '<li><a href="#">Reports</a></li>' +
+                            '<li><a href="#">Analytics</a></li>' +
+                            '<li><a href="#">Export</a></li>' +
+                        '</ul>' +
+                        '<ul class="nav nav-sidebar">' +
+                            '<li><a href="">Nav item 1</a></li>' +
+                            '<li><a href="">Nav item 2</a></li>' +
+                        '</ul>' +
+                        '<ul class="nav nav-sidebar">' +
+                            '<li><a href="">Nav item 3</a></li>' +
+                            '<li><a href="">Nav item 4</a></li>' +
+                        '</ul>' +
+                    '</div>' +
+
+                    '<div id="content"></div>' +
+
                 '</div>' +
             '</div>'
+
+
 
 
     }
@@ -66,8 +94,7 @@ gcif.shell = (function () {
 
         jqueryMap = {
             $outerDiv   : $outerDiv
-          , $content    : $outerDiv.find('.content')
-          , $container  : $outerDiv.find('.container')
+          , $content    : $outerDiv.find('#content')
 
         };
     };
@@ -100,11 +127,12 @@ gcif.shell = (function () {
 
         //store container in stateMap
         stateMap.$outerDiv = $outerDiv;
-        $outerDiv.html(configMap.main_html);
+        $outerDiv.html(configMap.navigation_html);
+        $outerDiv.append(configMap.sidebar_html);
         setJqueryMap();
 
         // configure and initialize feature modules
-//        gcif.dash.initModule( jqueryMap.$container );
+        gcif.dash.initModule( jqueryMap.$content );
 
     };
     // End PUBLIC method /initModule/
