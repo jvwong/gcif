@@ -20,7 +20,7 @@ var
 , app     = express()
 , server  = http.createServer( app )
 
-,port_default = 9000;
+, port_default = 9000;
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
 
@@ -69,9 +69,9 @@ routes.configRoutes( app, server );
 
 // ----------------- BEGIN START SERVER -------------------
 server.listen( port_default );
-//console.log(
-//  'Express server listening on port %d in %s mode',
-//   server.address().port, app.settings.env
-//);
+console.log(
+  'Express server listening on port %d in %s mode',
+   server.address().port, app.settings.env
+);
 // ------------------ END START SERVER --------------------
 

@@ -16,7 +16,6 @@ var
 //    authenticate, isValidUser
     configRoutes
   , crud        = require( './crud' )
-  , chat        = require( './chat' )
   , makeMongoId = crud.makeMongoId;
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
@@ -72,11 +71,7 @@ var
 configRoutes = function ( app, server ) {
 
   app.get( '/', function ( request, response ) {
-    response.redirect( '/webapp' );
-  });
-
-  app.get( '/webapp', function ( request, response ) {
-      response.redirect( '/webapp.html' );
+      response.redirect( '/index.html' );
   });
 
 //  app.all( '/:obj_type/*?', function ( request, response, next ) {
@@ -126,10 +121,7 @@ configRoutes = function ( app, server ) {
 //    );
 //  });
 //
-  chat.connect( server );
 };
 
-module.exports = { configRoutes : configRoutes
-//                   , authenticate : authenticate
-                  };
+module.exports = { configRoutes : configRoutes };
 // ----------------- END PUBLIC METHODS -------------------

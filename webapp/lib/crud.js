@@ -13,7 +13,7 @@
 // ------------ BEGIN MODULE SCOPE VARIABLES --------------
 'use strict';
 var
-  loadSchema,   checkSchema,  clearIsOnline,
+  loadSchema,   checkSchema,
   checkType,    constructObj, readObj,
   updateObj,    destroyObj,
 
@@ -48,16 +48,6 @@ checkSchema = function ( obj_type, obj_map, callback ) {
   callback( report_map.errors );
 };
 
-clearIsOnline = function () {
-  updateObj(
-    'user',
-    { is_online : true  },
-    { is_online : false },
-    function ( response_map ) {
-      console.log( 'All users set to offline', response_map );
-    }
-  );
-};
 // ----------------- END UTILITY METHODS ------------------
 
 // ---------------- BEGIN PUBLIC METHODS ------------------
@@ -198,7 +188,7 @@ module.exports = {
 // ------------- BEGIN MODULE INITIALIZATION --------------
 dbHandle.open( function () {
   console.log( '** Connected to MongoDB **' );
-  clearIsOnline();
+
 });
 
 // load schemas into memory (objTypeMap)
