@@ -99,7 +99,7 @@ def getDocs(schemacsv, datacsv):
                 indicator_dict = schemadict[indicator_name]
                 indicator_dict["value"] = datarow[indc]
 
-                # add a new entry
+                # add a new entry for each header name
                 doc[headname] = indicator_dict
 
             docs.append(doc)
@@ -108,27 +108,32 @@ def getDocs(schemacsv, datacsv):
 
 
 def main():
-    ###******** prepare gcif collection
-    # schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
-    # datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
-    # docs = getDocs(schemacsv, datacsv)
-    #
-    # print docs[0]["Type of government (e,g, Local, Regional, County)_30"]
-    #insert
-    # gcif_handle.members_recent_gcif.insert(docs, safe=True)
 
+    #*** open the gcif database
     gcifname = "gcif"
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
-    # sample query
-    results = gcif_handle.members_recent_gcif.find({"CityName.value": "ZARQA"}).limit(1)
-    for r in results:
-        print r.get("CityName").get("value")
+    ###******** prepare gcif collection
+    schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
+    datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif_tiny.csv"
+    docs = getDocs(schemacsv, datacsv)
+
+    print (docs[0]["CityName"]["value"])
+    print (docs[1]["CityName"]["value"])
+
+    # print docs[0]["Type of government (e,g, Local, Regional, County)_30"]
+    #insert
+    # gcif_handle.members_recent_gcif.insert(docs, safe=True)
 
 
 
+    # # sample query: get out city ZARQA
+    # results = gcif_handle.members_recent_gcif.find().limit(10)
+    # for r in results:
+    #     print r.get("CityName")
 
+    # sample query 2: find all files with
 
 
 if __name__ == "__main__":
