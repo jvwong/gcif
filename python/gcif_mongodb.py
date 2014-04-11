@@ -5,6 +5,8 @@
 
 import sys
 import csv
+import re
+
 from pymongo import Connection
 from pymongo.errors import ConnectionFailure
 
@@ -89,32 +91,44 @@ def getDocs(schemacsv, datacsv):
             #loop over each entry
             for indc, cell in enumerate(datarow):
 
+                # Get the header name. Gotta replace any dots (.) with comma
+                headname = re.sub('\.', ',', dataheaders[indc])
+
                 # get the indicator name, get out the schema values, and push in the data
                 indicator_name = dataheaders[indc]
                 indicator_dict = schemadict[indicator_name]
                 indicator_dict["value"] = datarow[indc]
 
                 # add a new entry
-                doc[dataheaders[indc]] = indicator_dict
+                doc[headname] = indicator_dict
 
             docs.append(doc)
 
-    print (docs[0]["Commercial/industrial assessment as a percentage of total assessment_61"])
-
-    return 0
+    return docs
 
 
 def main():
-    # gcifname = "gcif"
-    # gcifhost = "localhost"
+    ###******** prepare gcif collection
+    # schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
+    # datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
+    # docs = getDocs(schemacsv, datacsv)
     #
-    # gcif_handle = getdbhandle(gcifhost, gcifname)
-    # gcif_handle.testcollection.insert(testdoc, safe=True)
+    # print docs[0]["Type of government (e,g, Local, Regional, County)_30"]
+    #insert
+    # gcif_handle.members_recent_gcif.insert(docs, safe=True)
 
-    schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
-    datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
-    docs = getDocs(schemacsv, datacsv)
-    print docs
+    gcifname = "gcif"
+    gcifhost = "localhost"
+    gcif_handle = getdbhandle(gcifhost, gcifname)
+
+    # sample query
+    results = gcif_handle.members_recent_gcif.find({"CityName.value": "ZARQA"}).limit(1)
+    for r in results:
+        print r.get("CityName").get("value")
+
+
+
+
 
 
 if __name__ == "__main__":
