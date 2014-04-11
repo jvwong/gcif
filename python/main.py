@@ -29,7 +29,5 @@ def main():
         writer = csv.writer(fout)
         writer.writerows(csvOut)
 
-
-
 if __name__ == "__main__":
     main()
