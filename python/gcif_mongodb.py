@@ -24,7 +24,7 @@ def getdbhandle(hostname="localhost", db_name="test"):
 
     try:
         connection = Connection(host=hostname, port=27017)
-        print "Successfully connected to MongoDB"
+        # print "Successfully connected to MongoDB"
 
     except ConnectionFailure, err:
         sys.stderr.write("Could not connect to MongoDB: %s" % err)
@@ -35,7 +35,7 @@ def getdbhandle(hostname="localhost", db_name="test"):
 
     # Check the connection
     assert db_handle.connection == connection
-    print "Database handle OK"
+    # print "Database handle OK"
 
     return db_handle
 
@@ -97,9 +97,6 @@ def getDocs(schemacsv, datacsv):
             #loop over each entry
             for indc, cell in enumerate(datarow):
 
-            #loop over each entry
-            for indc, cell in enumerate(datarow):
-
                 # Get the header name. Gotta replace any dots (.) with comma
                 headname = re.sub('\.', ',', dataheaders[indc])
 
@@ -126,26 +123,32 @@ def main():
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
     ###******** prepare gcif collection
-    schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
-    datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
-    dlist = getDocs(schemacsv, datacsv)
+    #schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
+    #datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
+    #dlist = getDocs(schemacsv, datacsv)
 
     #insert
-    gcif_handle.members_recent_gcif.insert(dlist, safe=True)
-    datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif_tiny.csv"
-    docs = getDocs(schemacsv, datacsv)
+    #gcif_handle.members_recent_gcif.insert(dlist, safe=True)
 
     # print docs[0]["Type of government (e,g, Local, Regional, County)_30"]
     #insert
     # gcif_handle.members_recent_gcif.insert(docs, safe=True)
 
-    # # sample query: get out city ZARQA
-    # results = gcif_handle.members_recent_gcif.find().limit(10)
-    # for r in results:
-    #     print r.get("CityName")
+    # # sample query 1: get out city name for TORONTO
+    # results = gcif_handle.members_recent_gcif.find_one({"CityName.value": "TORONTO"})
+    # if results:
+    #     print "found matching records"
+    #     print results.get("CityName").get("value")
+    # else:
+    #     print "no matching records"
 
-    # sample query 2: find all files with
+    # sample query 2: find all field names that are core for TORONTO
+    results = gcif_handle.members_recent_gcif.find().limit(1)
+    for doc in results:
+        print "City: %s\n" % doc.get("CityName").get("value")
 
+        for key in doc:
+            print "%s: %s" % (key, doc[key]["type"])
 
 if __name__ == "__main__":
     main()
