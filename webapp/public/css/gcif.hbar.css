@@ -1,0 +1,33 @@
+.gcif-hbar.chart svg {
+  font: 10px sans-serif;
+}
+
+.gcif-hbar.chart.bar rect {
+  fill: steelblue;
+}
+
+.gcif-hbar.chart.bar:hover rect {
+  fill: brown;
+}
+
+.gcif-hbar.chart.value {
+  fill: white;
+}
+
+.gcif-hbar.chart.axis {
+  shape-rendering: crispEdges;
+}
+
+.gcif-hbar.chart.axis path {
+  stroke: none;
+}
+
+.gcif-hbar.chart.x.axis line {
+  stroke: #fff;
+  stroke-opacity: .8;
+}
+
+.gcif-hbar.chart.y.axis path {
+  stroke: black;
+}
+
