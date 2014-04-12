@@ -48,7 +48,9 @@ gcif.dash = (function () {
 
                 '<h3 class="sub-header">Visualization Section</h3>' +
 
-                '<div class="graph table"></div>'
+                '<div class="graph table"></div>' +
+                '<div class="dc barChart"></div>'
+
     }
     , stateMap = {
         $container : undefined
@@ -92,27 +94,13 @@ gcif.dash = (function () {
           dayChart
         , dataTable
 
-        , dtgFormat2
-        , monthNames
-        , parseDate
-
-        , facts
-
-        , dayDimension
-        , dayDimensionGroup
-
-        , margins_template
-
-        , span_height
-        , span4_width
-        , span6_width
-        , span12_width
-
         , nestByCityYear = d3.nest()
                              .key(function(d) { return d["CityName"]; })
                              .key(function(d) { return d["collection_year"]; })
 
-        //formatting and utilities
+        , databyCityYear
+        , citiesDB
+         //formatting and utilities
         , margins_template = { top: 10, right: 10, bottom: 80, left: 60 }
         ;
 
@@ -123,14 +111,28 @@ gcif.dash = (function () {
             gcif.util.parseData(d);
         });
 
-        console.log((data).length)
+        databyCityYear = nestByCityYear.entries(data);
+        citiesDB = TAFFY(databyCityYear);
 
-        //            // Run the data through crossfilter and load our 'facts'
-        //            facts = crossfilter(data);
-        //
-        //            // Create crossfilter dimensions
-        //            dayDimension = facts.dimension(function(d) { return d3.time.day(d.date); });
-        //            dayDimensionGroup = dayDimension.group().reduceSum(function(d) { return d.amount; });
+        // example of retrieving city data
+        var citiesList = citiesDB().get();
+        console.log(citiesList[0]);        // returning city name
+        console.log(citiesList[0].values); // returning year data list
+
+
+        //Crossfilter stuff here
+        var
+          facts
+        , cityDimension
+        , cityDimensionGroup
+        ;
+
+        // Run the data through crossfilter and load our 'facts'
+        facts = crossfilter(data);
+        cityDimension = facts.dimension(function(d) { return d.key; }); //the first level key is city
+        cityDimensionGroup = cityDimension.group().reduceSum(function(d) { return d.amount; });
+
+
         //
         //            //// Receipts by day
         //            start_dayChart = d3.time.day.offset(d3.extent(data, function(d){ return d.date; })[0], -1);
@@ -182,7 +184,7 @@ gcif.dash = (function () {
 
         // Create the dc-2.0.0 chart objects & link to div
         dayChart = dc.barChart("#dc-barChart-population");
-        dataTable = dc.dataTable("#dc-dataTable-data");
+        dataTable = dc.dataTable(".dc.barChart");
 
 
     };
