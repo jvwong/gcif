@@ -21,34 +21,59 @@ gcif.hbar = (function () {
         main_html : String() +
 
             '<h3 class="sub-header">Core Indicators</h3>' +
-            '<div class="gcif-hbar chart">' +
-                '<div class="row">' +
 
-                    '<div class="col-lg-5">' +
-                        '<span class="gcif-hbar menu">' +
-                            'Category: <select></select>' +
-                        '</span>' +
-                    '</div>' +
-                    '<div class="col-lg-4">' +
-                        '<span class="input-group-addon gcif-hbar sort">' +
-                            'Sort By Name: <input type="checkbox">' +
-                        '</span>' +
-                    '</div>' +
-                    '<div class="col-lg-3">' +
-                        '<span class="gcif-hbar number">' +
-                            'Number of Cities:' +
-                            '<select>' +
-                                '<option value="25">25</option>' +
-                                '<option value="50">50</option>' +
-                                '<option value="100">100</option>' +
-                                '<option value="200">200</option>' +
-                                '<option value="1000">All</option>' +
-                            '</select>' +
-                        '</span>' +
-                    '</div>' +
+            '<div class="row">' +
 
-                '<div>' +
-            '</div>'
+                '<div class="col-sm-12 col-md-4 col-lg-6">' +
+                    '<span class="gcif-hbar menu">' +
+                        '<select></select>' +
+                    '</span>' +
+                '</div>' +
+                '<div class="col-sm-12 col-md-4 col-lg-3">' +
+                    '<span class="gcif-hbar number">' +
+                        'Show: ' +
+                        '<select>' +
+                            '<option value="25">25</option>' +
+                            '<option value="50">50</option>' +
+                            '<option value="100">100</option>' +
+                            '<option value="200">200</option>' +
+                            '<option value="1000">All</option>' +
+                        '</select>' +
+                    '</span>' +
+                '</div>' +
+                '<div class="col-sm-12 col-md-4 col-lg-3">' +
+                    '<span class="gcif-hbar sort">' +
+                        'Sort By Name: <input type="checkbox">' +
+                    '</span>' +
+                '</div>' +
+            '<div>' +
+
+
+            '<div class="row">' +
+                '<div class="gcif-hbar chart scol-lg-6">' +
+                '</div>' +
+
+                '<div class="gcif-hbar table col-lg-6">' +
+                    '<table class="table table-striped">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th>Indicator</th>' +
+                                '<th>Value</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                            '<tr>' +
+                                '<td>' + 'Dummy key' + '</td>' +
+                                '<td>' + 'Dummy value' + '</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                '</div>' +
+
+            '<div>'
+
+
+
     }
     , stateMap = {
           $container : undefined
@@ -78,10 +103,11 @@ gcif.hbar = (function () {
 
     setd3Map = function(){
         d3Map = {
-              d3bar  : d3.select(".gcif-hbar.chart")
-            , d3category : d3.select(".gcif-hbar.menu select")
-            , d3sort : d3.select(".gcif-hbar.sort input")
-            , d3number : d3.select(".gcif-hbar.number select")
+              d3bar       : d3.select(".gcif-hbar.chart")
+            , d3table     : d3.select(".gcif-hbar.table")
+            , d3category  : d3.select(".gcif-hbar.menu select")
+            , d3sort      : d3.select(".gcif-hbar.sort input")
+            , d3number    : d3.select(".gcif-hbar.number select")
         };
     };
 
@@ -90,12 +116,15 @@ gcif.hbar = (function () {
     render = function(dataurl){
 
         var
-          margin = {top: 50, right: 40, bottom: 10, left: 150}
-        , width = 900
-        , height = 3000 - margin.top - margin.bottom
+          margin = {top: 50, right: 40, bottom: 10, left: 145}
+        , width = 700
+        , height = 2500 - margin.top - margin.bottom
 
         , cities
         , categories
+        , memberData
+        , categoryIndicators
+
         , defaultCategory = "all"
         , nCore = 40
 
@@ -113,6 +142,12 @@ gcif.hbar = (function () {
                     .attr("height", height + margin.top + margin.bottom)
                   .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+        /* add the tool tip*/
+        , tooltip = d3Map.d3bar.append("div")
+                     .attr("class", "tooltip")
+                     .style("opacity", 0);
+
         ;
 
         /* append axes */
@@ -124,7 +159,6 @@ gcif.hbar = (function () {
           .append("line")
             .attr("class", "domain")
             .attr("y2", height);
-
 
         /* register event listeners*/
         d3Map.d3category.on("change", change);
@@ -160,6 +194,54 @@ gcif.hbar = (function () {
 
             redraw();
         });
+
+        /* read in the full member data  */
+        d3.json('./member_core_byID.json', function(data) {
+            memberData = data;
+        });
+        /* read in the category --> indicator mapping */
+        d3.json('./category_indicators.json', function(data) {
+            categoryIndicators = data;
+        });
+
+
+        function getIndicators(data){
+
+            var
+              html
+            , category_indicators
+            , cityData
+            , keys
+            ;
+
+            //open the list
+            html = String() +
+                '<ul>'
+            ;
+
+            //get the member data by CityUniqueID_
+            cityData = memberData[ data["CityUniqueID_"] ];
+
+            keys = d3.keys(cityData);
+
+            for (var i=0; i<keys.length; i++){
+
+                html += '<li>' +
+                            keys[i] + ": " + cityData[keys[i]]
+                        '</li>'
+            }
+
+            //close the list
+            html += '</ul>'
+            ;
+
+
+
+
+            return html;
+
+        }
+
 
         function change() {
             d3.transition()
@@ -221,6 +303,22 @@ gcif.hbar = (function () {
                   .attr("y", y.rangeBand() / 2)
                   .attr("dy", ".35em")
                   .attr("text-anchor", "end");
+
+
+            /* tooltip */
+            barEnter.on("mouseover", function(d) {
+                     tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                     tooltip.html( getIndicators(d) )
+                        .style("left", (width + 200) + "px")
+                        .style("top", (d3.event.pageY - 50) + "px");
+                    })
+                    .on("mouseout", function(d) {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
 
             // setting category here as the value of the selected current_scategory
             x.domain([0, nCore ]);

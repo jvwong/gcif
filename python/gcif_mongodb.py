@@ -192,16 +192,16 @@ def getCoreList(dbhandle):
 
 
 # function: getCoreJson
-# @description: gets a json list of the cities and core indicator values
+# @description: outputs json of the cities (key = CityUniqueID_) and data for core indicators
 # @pre-condition: valid mongo collections
 # @input:
 #   dbhandle - the pymongo data base handle
 # @output:
-#   coreOut - a json list of cities and core indicator values
+#   coreOut - a json of { CityUniqueID_: [{core_indicator1: val1,...,core_indicatorN: valN}] }
 def getCoreJson(dbhandle):
 
-    # A list to store the csv
-    coreOut = []
+    #Output as json
+    cityjson = {}
 
     # Get the document collections for the schema and data
     schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
@@ -215,52 +215,16 @@ def getCoreJson(dbhandle):
     ###loop over each city (255)
     for city in cities:
 
-        citydoc = {}
+        #store the embedded json of data here
+        citydata = {}
 
         ### loop over the core indicator names (39)
         for corename in corenames:
-            citydoc[corename] = (city[corename]).encode('UTF-8')
+            citydata[corename] = (city[corename]).encode('UTF-8')
 
-        coreOut.append(copy.deepcopy(citydoc))
+        cityjson[city["CityUniqueID_"]] = copy.deepcopy(citydata)
 
-    return coreOut
-
-
-
-# function: getCoreCounts
-# @description: gets a csv of the cities and their counts under each category
-# @pre-condition: valid mongo collections
-# @input:
-#   dbhandle - the pymongo data base handle
-# @output:
-#   coreOut - a csv of cities (255) and indicator counts for each category
-def getCoreJson(dbhandle):
-
-    # A list to store the csv
-    coreOut = []
-
-    # Get the document collections for the schema and data
-    schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.members_recent_gcif_simple.find()
-
-    # Write out the core indicator list
-    corenames = [core.get("name").encode('UTF-8') for core in schema]
-    corenames.insert(0, 'CityUniqueID_')
-    corenames.insert(0, 'CityName')
-
-    ###loop over each city (255)
-    for city in cities:
-
-        citydoc = {}
-
-        ### loop over the core indicator names (39)
-        for corename in corenames:
-            citydoc[corename] = (city[corename]).encode('UTF-8')
-
-        coreOut.append(copy.deepcopy(citydoc))
-
-    return coreOut
-
+    return cityjson
 
 
 
@@ -350,15 +314,15 @@ def main():
     # gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
-    ## ************** Generate a json list of cities and it's core indicators
-    # foutcore = '/home/jvwong/Projects/GCIF/python/member_core.json'
+    ## ************** Data: Generate a json of cities and it's core indicators
+    # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
     # corejson = getCoreJson(gcif_handle)
     #
     # with open(foutcore, 'wb') as ffoutcore:
     #     ffoutcore.write(json.dumps(corejson))
 
 
-    ## **************  Generate a json list of categories and corresponding indicators
+    ## **************  Schema: Generate a json list of categories and corresponding indicators
     # foutcat = '/home/jvwong/Projects/GCIF/python/category_indicators.json'
     # catlist = getCategoryLists(gcif_handle)
     # print json.dumps(catlist)
@@ -367,14 +331,13 @@ def main():
     #     ffoutcat.write(json.dumps(catlist))
 
 
-
-    ## ************** Generate a csv of cities and their per-category counts
-    foutcat = '/home/jvwong/Projects/GCIF/data/category_counts.csv'
-    catcounts = getCategoryCounts(gcif_handle)
-
-    with open(foutcat, 'wb') as ffoutcatcount:
-        writer = csv.writer(ffoutcatcount)
-        writer.writerows(catcounts)
+    # ## ************** Counts: Generate a csv of cities and their per-category counts
+    # foutcat = '/home/jvwong/Projects/GCIF/data/category_counts.csv'
+    # catcounts = getCategoryCounts(gcif_handle)
+    #
+    # with open(foutcat, 'wb') as ffoutcatcount:
+    #     writer = csv.writer(ffoutcatcount)
+    #     writer.writerows(catcounts)
 
 
 if __name__ == "__main__":

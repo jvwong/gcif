@@ -25,7 +25,7 @@ gcif.dash = (function () {
 
                 '<div class="row placeholders">' +
                     '<div class="col-xs-3 col-sm-3">' +
-                        '<a href="">' +
+                        '<a href="#">' +
                             '<img src="assets/blue-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
                             '<h4>Member</h4>' +
                             '<span class="text-muted">255 Total</span>' +
@@ -48,8 +48,8 @@ gcif.dash = (function () {
                     '</div>' +
                  '</div>' +
 
-                '<div class="gcif-shell-dash-hbar"></div>' +
-                '<div class="gcif-shell-dash-table"></div>'
+                '<div class="gcif-shell-dash-hbar"></div>'
+
 
     }
     , stateMap = {
