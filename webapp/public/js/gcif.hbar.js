@@ -53,18 +53,16 @@ gcif.hbar = (function () {
                 '<div class="gcif-hbar chart scol-lg-6">' +
                 '</div>' +
 
-                '<div class="gcif-hbar table col-lg-6">' +
-                    '<table class="table table-striped">' +
+                '<div class="gcif-hbar table col-lg-6 table-responsive">' +
+                    '<table class="table table-bordered table-hover table-condensed">' +
                         '<thead>' +
                             '<tr>' +
-                                '<th>Indicator</th>' +
+                                '<th>Indicator (Core)</th>' +
                                 '<th>Value</th>' +
                             '</tr>' +
                         '</thead>' +
                         '<tbody>' +
                             '<tr>' +
-                                '<td>' + 'Dummy key' + '</td>' +
-                                '<td>' + 'Dummy value' + '</td>' +
                             '</tr>' +
                         '</tbody>' +
                     '</table>' +
@@ -142,12 +140,6 @@ gcif.hbar = (function () {
                     .attr("height", height + margin.top + margin.bottom)
                   .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-
-        /* add the tool tip*/
-        , tooltip = d3Map.d3bar.append("div")
-                     .attr("class", "tooltip")
-                     .style("opacity", 0);
-
         ;
 
         /* append axes */
@@ -208,38 +200,38 @@ gcif.hbar = (function () {
         function getIndicators(data){
 
             var
-              html
-            , category_indicators
+              html = String()
             , cityData
             , keys
+            , cat
             ;
 
-            //open the list
-            html = String() +
-                '<ul>'
-            ;
+            //Reset the header
+            d3Map.d3table.select("th").html("Indicators (" + data["CityName"] + ")");
 
             //get the member data by CityUniqueID_
             cityData = memberData[ data["CityUniqueID_"] ];
 
-            keys = d3.keys(cityData);
+            //get the keys according to the category
+            cat = d3Map.d3category.property("value");
 
-            for (var i=0; i<keys.length; i++){
-
-                html += '<li>' +
-                            keys[i] + ": " + cityData[keys[i]]
-                        '</li>'
+            //if "all"
+            if(cat === "all"){
+                keys = d3.keys(cityData);
+                keys.splice(keys.indexOf("CityName"),1);
+                keys.splice(keys.indexOf("CityUniqueID_"),1);
+            }else{
+                keys = categoryIndicators[cat];
             }
 
-            //close the list
-            html += '</ul>'
-            ;
-
-
-
+            for (var i=0; i<keys.length; i++){
+                    html += '<tr>' +
+                                '<td>' + keys[i] + '</td>' +
+                                '<td>' + cityData[keys[i]] + '</td>' +
+                            '</tr>';
+            }
 
             return html;
-
         }
 
 
@@ -304,23 +296,17 @@ gcif.hbar = (function () {
                   .attr("dy", ".35em")
                   .attr("text-anchor", "end");
 
-
-            /* tooltip */
-            barEnter.on("mouseover", function(d) {
-                     tooltip.transition()
-                        .duration(200)
-                        .style("opacity", .9);
-                     tooltip.html( getIndicators(d) )
-                        .style("left", (width + 200) + "px")
-                        .style("top", (d3.event.pageY - 50) + "px");
-                    })
-                    .on("mouseout", function(d) {
-                        tooltip.transition()
-                            .duration(500)
-                            .style("opacity", 0);
-                    });
-
             // setting category here as the value of the selected current_scategory
+            barEnter.on("click", function(d) {
+
+                var tbody  = d3Map.d3table.select("tbody");
+                tbody.html("");
+
+                tbody.transition()
+                    .duration(200);
+
+                tbody.html( getIndicators(d) );
+            });
             x.domain([0, nCore ]);
 
             var barUpdate = d3.transition(bar)

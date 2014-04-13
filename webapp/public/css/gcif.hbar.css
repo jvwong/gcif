@@ -10,15 +10,11 @@
 }
 
 .gcif-hbar.chart.bar rect {
-  fill: steelblue;
+  fill: #8EB4E6;
 }
 
 .gcif-hbar.chart.bar:hover rect {
-  fill: brown;
-}
-
-.gcif-hbar.chart.value {
-  fill: white;
+  fill: rgba(76, 80, 169, 0.20);
 }
 
 .gcif-hbar.chart.axis {
@@ -44,25 +40,16 @@
 
 .gcif-hbar.chart.value{
     font-size: 0.8em;
-}
-
-div.gcif-hbar.chart.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 100px;
-  height: 28px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: lightcoral;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
+    fill: white;
 }
 
 div.gcif-hbar.table{
-    position: relative;
-    top : 0;
-    right: 0;
-
+    margin-top: 5em;
 }
+
+div.gcif-hbar.table tr:hover td{
+    background-color: rgba(76, 80, 169, 0.20);
+}
+
+
 
