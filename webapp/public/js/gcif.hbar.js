@@ -20,10 +20,34 @@ gcif.hbar = (function () {
 
         main_html : String() +
 
-            '<h4 class="sub-header">Indicator Counts</h4>' +
+            '<h3 class="sub-header">Core Indicators</h3>' +
             '<div class="gcif-hbar chart">' +
-                '<p class="gcif-hbar menu"><b>Indicator Category</b>' +
-                '<br>Category: <select></select>' +
+                '<div class="row">' +
+
+                    '<div class="col-lg-5">' +
+                        '<span class="gcif-hbar menu">' +
+                            'Category: <select></select>' +
+                        '</span>' +
+                    '</div>' +
+                    '<div class="col-lg-4">' +
+                        '<span class="input-group-addon gcif-hbar sort">' +
+                            'Sort By Name: <input type="checkbox">' +
+                        '</span>' +
+                    '</div>' +
+                    '<div class="col-lg-3">' +
+                        '<span class="gcif-hbar number">' +
+                            'Number of Cities:' +
+                            '<select>' +
+                                '<option value="25">25</option>' +
+                                '<option value="50">50</option>' +
+                                '<option value="100">100</option>' +
+                                '<option value="200">200</option>' +
+                                '<option value="1000">All</option>' +
+                            '</select>' +
+                        '</span>' +
+                    '</div>' +
+
+                '<div>' +
             '</div>'
     }
     , stateMap = {
@@ -55,7 +79,9 @@ gcif.hbar = (function () {
     setd3Map = function(){
         d3Map = {
               d3bar  : d3.select(".gcif-hbar.chart")
-            , d3menu : d3.select(".gcif-hbar.menu select")
+            , d3category : d3.select(".gcif-hbar.menu select")
+            , d3sort : d3.select(".gcif-hbar.sort input")
+            , d3number : d3.select(".gcif-hbar.number select")
         };
     };
 
@@ -63,34 +89,30 @@ gcif.hbar = (function () {
     // BEGIN private method /render/
     render = function(dataurl){
 
-
         var
-          margin = {top: 20, right: 40, bottom: 10, left: 40}
-        , width = 960
-        , height = 250 - margin.top - margin.bottom
+          margin = {top: 50, right: 40, bottom: 10, left: 150}
+        , width = 900
+        , height = 3000 - margin.top - margin.bottom
 
-        , format = d3.format(".1%")
         , cities
         , categories
         , defaultCategory = "all"
+        , nCore = 40
 
         , x = d3.scale.linear().range([0, width])
-        , y = d3.scale.ordinal().rangeRoundBands([0, height], .1)
+        , y = d3.scale.ordinal().rangeBands([0, height], .1, .1)
 
         , xAxis = d3.svg.axis()
                         .scale(x)
                         .orient("top")
                         .tickSize(-height - margin.bottom)
-                        .tickFormat(format)
 
         /* append main svg */
         , svg = d3Map.d3bar.append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
-                    .style("margin-left", -margin.left + "px")
-
-        , g = svg.append("g")
-                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                  .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
         ;
 
         /* append axes */
@@ -105,8 +127,12 @@ gcif.hbar = (function () {
 
 
         /* register event listeners*/
-        d3Map.d3menu.on("change", change);
+        d3Map.d3category.on("change", change);
+        d3Map.d3sort.on("change", change);
+        d3Map.d3number.on("change", change);
 
+
+        /* read in the data */
         d3.csv(dataurl, function(data) {
 
             //global variable
@@ -119,101 +145,117 @@ gcif.hbar = (function () {
 
             cities.forEach(function(city) {
                 categories.forEach(function(category){
-
-                    city["CityUniqueID_"] = +city["CityUniqueID_"];
                     city[category] = +city[category];
-
                 });
             });
 
-            d3Map.d3menu.selectAll("option")
+            d3Map.d3category.selectAll("option")
                         .data(categories)
                        .enter()
                         .append("option")
-                        .text(function(category) { return category; });
+                        .text(function(cat) { return cat; });
 
-            d3Map.d3menu.property("value", defaultCategory);
+            d3Map.d3category.property("value", defaultCategory);
+            d3Map.d3number.property("value", 100);
 
             redraw();
         });
 
-//       var altKey;
-//        d3.select(window)
-//            .on("keydown", function() { altKey = d3.event.altKey; })
-//            .on("keyup", function() { altKey = false; });
-
         function change() {
-          d3.transition()
-              .duration(altKey ? 7500 : 750)
-              .each(redraw);
+            d3.transition()
+                .duration(750)
+                .each(redraw);
         }
 
         function redraw() {
 
             //get the category
             var
-              current_category = d3Map.d3menu.property("value")
-            //sort by total number of categories reported and return the top N cities
-            , top = cities.sort(function(a, b) { return b[current_category] - a[current_category]; }).slice(0, 10);
+              current_category = d3Map.d3category.property("value")
+            , alpha_sort = d3Map.d3sort.property('checked')
+            , numrecords = d3Map.d3number.node().value
+            , cityData
+            ;
 
-            console.log(top);
+              //sort
+            if (alpha_sort === false){
+                cityData = cities.sort(function(a, b) { return b[current_category] - a[current_category]; }).slice(0, numrecords);
+            }else{
+                cityData = cities.sort(function(a, b) { return d3.ascending(a["CityName"], b["CityName"]); }).slice(0, numrecords);
+            }
 
-//            y.domain(top.map(function(d) { return d.State; }));
-//
-//            var bar = svg.selectAll(".bar")
-//              .data(top, function(d) { return d.State; });
-//
-//            var barEnter = bar.enter().insert("g", ".axis")
-//              .attr("class", "bar")
-//              .attr("transform", function(d) { return "translate(0," + (y(d.State) + height) + ")"; })
-//              .style("fill-opacity", 0);
-//
-//            barEnter.append("rect")
-//              .attr("width", age && function(d) { return x(d[age]); })
-//              .attr("height", y.rangeBand());
-//
-//            barEnter.append("text")
-//              .attr("class", "label")
-//              .attr("x", -3)
-//              .attr("y", y.rangeBand() / 2)
-//              .attr("dy", ".35em")
-//              .attr("text-anchor", "end")
-//              .text(function(d) { return d.State; });
-//
-//            barEnter.append("text")
-//              .attr("class", "value")
-//              .attr("x", age && function(d) { return x(d[age]) - 3; })
-//              .attr("y", y.rangeBand() / 2)
-//              .attr("dy", ".35em")
-//              .attr("text-anchor", "end");
-//
-//            x.domain([0, top[0][age = age1]]);
-//
-//            var barUpdate = d3.transition(bar)
-//              .attr("transform", function(d) { return "translate(0," + (d.y0 = y(d.State)) + ")"; })
-//              .style("fill-opacity", 1);
-//
-//            barUpdate.select("rect")
-//              .attr("width", function(d) { return x(d[age]); });
-//
-//            barUpdate.select(".value")
-//              .attr("x", function(d) { return x(d[age]) - 3; })
-//              .text(function(d) { return format(d[age]); });
-//
-//            var barExit = d3.transition(bar.exit())
-//              .attr("transform", function(d) { return "translate(0," + (d.y0 + height) + ")"; })
-//              .style("fill-opacity", 0)
-//              .remove();
-//
-//            barExit.select("rect")
-//              .attr("width", function(d) { return x(d[age]); });
-//
-//            barExit.select(".value")
-//              .attr("x", function(d) { return x(d[age]) - 3; })
-//              .text(function(d) { return format(d[age]); });
-//
-//            d3.transition(svg).select(".x.axis")
-//              .call(xAxis);
+            //update the category
+            var category = current_category;
+
+            // position on y-axis will map onto a categorial axis
+            y.domain(cityData.map(function(d) { return d["CityUniqueID_"]; }));
+
+            var bar = svg.selectAll(".gcif-hbar.chart.bar")
+                     .data(cityData, function(d) { return d["CityUnqiueID_"]; });
+
+
+            //define enter selections
+            var barEnter = bar.enter().insert("g", ".axis") //create and insert new elements before existing elements
+                          .attr("class", "gcif-hbar chart bar")
+                          .attr("transform", function(d) { return "translate(0," + (y(d["CityUniqueID_"]) + height) + ")"; })
+                          .style("fill-opacity", 0);
+
+            // NB: "return a && b"  is return a if a is falsy, return b if a is truthy
+            barEnter.append("rect")
+                  .attr("width", category && function(d) { return x(d[category]); })
+                  .attr("height", y.rangeBand());
+
+            // put the city name along the y axis
+            barEnter.append("text")
+                  .attr("class", "gcif-hbar chart label")
+                  .attr("x", -3)
+                  .attr("y", y.rangeBand() / 2)
+                  .attr("dy", "0.35em")
+                  .attr("text-anchor", "end")
+                  .text(function(d) { return  d["CityName"]; });
+
+            // put a label at the top
+            barEnter.append("text")
+                  .attr("class", "gcif-hbar chart value")
+                  .attr("x", category && function(d) { return x(d[category]) - 3; }) //push to the left
+                  .attr("y", y.rangeBand() / 2)
+                  .attr("dy", ".35em")
+                  .attr("text-anchor", "end");
+
+            // setting category here as the value of the selected current_scategory
+            x.domain([0, nCore ]);
+
+            var barUpdate = d3.transition(bar)
+              .attr("transform", function(d) { return "translate(0," + (d.y0 = y( d["CityUniqueID_"])) + ")"; })
+              .style("fill-opacity", 1);
+
+            barUpdate.select("rect")
+              .attr("width", function(d) { return x(d[category]); })
+              .attr("height", y.rangeBand());;
+
+            //update the label on the bar (but don't do it if its zero)
+            barUpdate.select(".gcif-hbar.chart.value")
+              .attr("x", function(d) { return x(d[category]) - 3; })
+              .attr("y", y.rangeBand() / 2)
+              .text(function(d) { return d[category] > 0 ? (d[category]) : null; });
+
+            barUpdate.select(".gcif-hbar.chart.label")
+                  .attr("y", y.rangeBand() / 2);
+
+            var barExit = d3.transition(bar.exit())
+              .attr("transform", function(d) { return "translate(0," + (d.y0 + height) + ")"; })
+              .style("fill-opacity", 0)
+              .remove();
+
+            barExit.select("rect")
+              .attr("width", function(d) { return x(d[category]); });
+
+            barExit.select("gcif-hbar.chart.value")
+              .attr("x", function(d) { return x(d[category]) - 3; })
+              .text(function(d) { return d[category]; });
+
+            d3.transition(svg).select(".gcif-hbar.chart.x.axis")
+              .call(xAxis);
         }
 
     };

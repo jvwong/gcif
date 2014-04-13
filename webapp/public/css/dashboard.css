@@ -85,7 +85,8 @@ body {
 .placeholder {
     margin-bottom: 20px;
 }
-.placeholder img {
+img.gcif-source {
     display: inline-block;
-    max-height: 10em;
+    border-radius: 50%;
+    max-height: 8em;
 }

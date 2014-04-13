@@ -21,34 +21,32 @@ gcif.dash = (function () {
         main_html : String() +
 
             '<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">' +
-                '<h3 class="page-header">Category Section</h3>' +
+                '<h3 class="page-header">Data Source</h3>' +
 
                 '<div class="row placeholders">' +
-                    '<div class="col-xs-6 col-sm-3 placeholder">' +
+                    '<div class="col-xs-3 col-sm-3">' +
                         '<a href="">' +
-                            '<img src="assets/blue-pastel.png" class="img-responsive img-circle" alt="Placeholder thumbnail" />' +
+                            '<img src="assets/blue-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
                             '<h4>Member</h4>' +
                             '<span class="text-muted">255 Total</span>' +
                         '</a>' +
                     '</div>' +
-                    '<div class="col-xs-6 col-sm-3 placeholder">' +
-                        '<img src="assets/brown-pastel.png" class="img-responsive img-circle" alt="Placeholder thumbnail" />' +
+                    '<div class="col-xs-3 col-sm-3">' +
+                        '<img src="assets/brown-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
                         '<h4>US</h4>' +
                         '<span class="text-muted"></span>' +
                     '</div>' +
-                    '<div class="col-xs-6 col-sm-3 placeholder">' +
-                        '<img src="assets/mint-pastel.png" class="img-responsive img-circle" alt="Placeholder thumbnail" />' +
+                    '<div class="col-xs-3 col-sm-3">' +
+                        '<img src="assets/mint-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
                         '<h4>China</h4>' +
                         '<span class="text-muted"></span>' +
                     '</div>' +
-                    '<div class="col-xs-6 col-sm-3 placeholder">' +
-                        '<img src="assets/violet-pastel.png" class="img-responsive img-circle" alt="Placeholder thumbnail" />' +
+                    '<div class="col-xs-3 col-sm-3">' +
+                        '<img src="assets/violet-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
                         '<h4>Ontario</h4>' +
                         '<span class="text-muted"></span>' +
                     '</div>' +
                  '</div>' +
-
-                '<h3 class="sub-header">Visualization Section</h3>' +
 
                 '<div class="gcif-shell-dash-hbar"></div>' +
                 '<div class="gcif-shell-dash-table"></div>'

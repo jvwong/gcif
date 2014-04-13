@@ -15,7 +15,8 @@ gcif.model = (function () {
     'use strict';
     var
     stateMap  = {
-        city_db      : TAFFY()
+//        city_db      : TAFFY()
+        city_db      : undefined
     }
     , city
     , initModule

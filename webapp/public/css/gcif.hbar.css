@@ -1,3 +1,10 @@
+
+.gcif-hbar.chart.axis path, .gcif-hbar.chart.axis line {
+    fill: none;
+    shape-rendering: crispedges;
+    stroke: black;
+}
+
 .gcif-hbar.chart svg {
   font: 10px sans-serif;
 }
@@ -29,5 +36,13 @@
 
 .gcif-hbar.chart.y.axis path {
   stroke: black;
+}
+
+.gcif-hbar.chart.label{
+    font-size: 0.85em;
+}
+
+.gcif-hbar.chart.value{
+    font-size: 1em;
 }
 
