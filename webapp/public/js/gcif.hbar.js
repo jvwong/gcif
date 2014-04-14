@@ -190,12 +190,13 @@ gcif.hbar = (function () {
         });
 
         /* read in the full member data  */
-        d3.json(stateMap.schemaUrl, function(data) {
+        d3.json(stateMap.countUrl, function(data) {
             memberData = data;
         });
 
         /* read in the category --> indicator mapping */
-        d3.json(stateMap.countUrl, function(data) {
+        d3.json(stateMap.schemaUrl, function(data) {
+            console.log(data);
             categoryIndicators = data;
         });
 
