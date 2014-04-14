@@ -298,7 +298,9 @@ def main():
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
-    # # ###******** prepare gcif collections
+    ### ******************************** DATABASE OPERATIONS *****************************************************
+    #
+    # ****************** prepare gcif collections
     # schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
     # datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
     # dlist = getDocs(schemacsv, datacsv)
@@ -309,13 +311,15 @@ def main():
     # gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
+
+
+    ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     ## ************** Data: Generate a json of cities and it's core indicators
     # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
     # corejson = getCoreJson(gcif_handle)
     #
     # with open(foutcore, 'wb') as ffoutcore:
     #     ffoutcore.write(json.dumps(corejson))
-
 
     ## **************  Schema: Generate a json list of categories and corresponding indicators
     # foutcat = '/home/jvwong/Projects/GCIF/python/category_indicators.json'
@@ -324,7 +328,6 @@ def main():
     #
     # with open(foutcat, 'wb') as ffoutcat:
     #     ffoutcat.write(json.dumps(catlist))
-
 
     # ## ************** Counts: Generate a csv of cities and their per-category counts
     # foutcat = '/home/jvwong/Projects/GCIF/data/category_counts.csv'
