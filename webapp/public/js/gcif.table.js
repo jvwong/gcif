@@ -1,5 +1,5 @@
 /*
- * chart.table.js
+ * gcif.table.js
  * User Interface module
  */
 
@@ -20,7 +20,7 @@ gcif.table = (function () {
 
         main_html : String() +
 
-            '<h4 class="sub-header">Sample Table</h4>' +
+            '<h4 class="sub-header">Indicator Data</h4>' +
                 '<div class="table-responsive">' +
                     '<table class="table table-striped">' +
                         '<thead>' +
@@ -90,7 +90,7 @@ gcif.table = (function () {
     // Purpose   :
     //   Sets the stateMap key for $dataurl
     // Arguments :
-    //   * absolute path to a valid csv file
+    //   * absolute path to a valid file
     // Action    :
     //   Populates $dataUrl value
     // Returns   : none
