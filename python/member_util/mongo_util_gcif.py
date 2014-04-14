@@ -329,14 +329,14 @@ def main():
     ### ******************************** DATABASE OPERATIONS *****************************************************
     #
     # ****************** prepare gcif collections
-    # schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
+    schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
     # datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
     # dlist = getDocs(schemacsv, datacsv)
-    # slist = getSchemaDoc(schemacsv)
+    slist = getSchemaDoc(schemacsv)
     # #insert
     # gcif_handle.members_recent_gcif_simple.insert(dlist, safe=True)
     # # gcif_handle.members_recent_gcif.insert(dlist, safe=True)
-    # gcif_handle.schema_gcif.insert(slist, safe=True)
+    gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************

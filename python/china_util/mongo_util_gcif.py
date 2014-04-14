@@ -210,7 +210,7 @@ def getCoreJson(dbhandle):
 
     # Get the document collections for the schema and data
     schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.members_recent_gcif_simple.find()
+    cities = dbhandle.china_gcif.find()
 
     # Write out the core indicator list
     corenames = [core.get("name").encode('UTF-8') for core in schema]
@@ -257,7 +257,7 @@ def getCategoryCounts(dbhandle):
                 , "water and sanitation", "all"])
 
     # get the city data
-    cities = dbhandle.members_recent_gcif_simple.find()
+    cities = dbhandle.china_gcif.find()
 
     # loop over each city
     for city in cities:
@@ -306,15 +306,15 @@ def main():
     ### ******************************** DATABASE OPERATIONS *****************************************************
     #
     # ****************** prepare gcif collection for china ('china_gcif')
-    datacsv = "/home/jvwong/Documents/GCIF/data/china/raw/china_gcif.csv"
-    dlist = getDocs(datacsv)
+    # datacsv = "/home/jvwong/Documents/GCIF/data/china/raw/china_gcif.csv"
+    # dlist = getDocs(datacsv)
     # #insert
-    gcif_handle.china_gcif.insert(dlist, safe=True)
+    # gcif_handle.china_gcif.insert(dlist, safe=True)
 
 
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     ### *** Data: Generate a json of cities and it's core indicators
-    # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
+    # foutcore = 'china_core_byID.json'
     # corejson = getCoreJson(gcif_handle)
     #
     # with open(foutcore, 'wb') as ffoutcore:
@@ -330,12 +330,12 @@ def main():
     #     ffoutcat.write(json.dumps(catjson))
 
     ### *** Counts: Generate a csv of cities and their per-category counts
-    # foutcat = 'category_counts.csv'
-    # catcounts = getCategoryCounts(gcif_handle)
-    #
-    # with open(foutcat, 'wb') as ffoutcatcount:
-    #     writer = csv.writer(ffoutcatcount)
-    #     writer.writerows(catcounts)
+    foutcat = 'china_category_counts.csv'
+    catcounts = getCategoryCounts(gcif_handle)
+
+    with open(foutcat, 'wb') as ffoutcatcount:
+        writer = csv.writer(ffoutcatcount)
+        writer.writerows(catcounts)
 
 
 if __name__ == "__main__":

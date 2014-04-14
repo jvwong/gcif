@@ -153,7 +153,8 @@ gcif.dash = (function () {
         stateMap.$container = $container;
         $container.html(configMap.main_html);
         setJqueryMap();
-        setDataUrl('./category_counts.csv');
+//        setDataUrl('./member_recent_category_counts.csv');
+        setDataUrl('./china_category_counts.csv');
 
     };
     // End PUBLIC method /initModule/

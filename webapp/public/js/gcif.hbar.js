@@ -188,7 +188,7 @@ gcif.hbar = (function () {
         });
 
         /* read in the full member data  */
-        d3.json('./member_core_byID.json', function(data) {
+        d3.json('./china_core_byID.json', function(data) {
             memberData = data;
         });
         /* read in the category --> indicator mapping */
