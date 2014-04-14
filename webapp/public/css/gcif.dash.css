@@ -1,3 +1,7 @@
-.img-responsive.pastel{
-    max-height: 150px;
+.gcif-dash-source-img{
+    display: inline-block;
+    border-radius: 50%;
+    max-width: 10em;
+    cursor: pointer;
 }
+
