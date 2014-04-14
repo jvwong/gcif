@@ -7,6 +7,10 @@ body {
     padding-top: 50px;
 }
 
+a:link, a:hover {
+    text-decoration:none;
+}
+
 /*
 * Global add-ons
 */
@@ -85,8 +89,4 @@ body {
 .placeholder {
     margin-bottom: 20px;
 }
-img.gcif-source {
-    display: inline-block;
-    border-radius: 50%;
-    max-height: 8em;
-}
+

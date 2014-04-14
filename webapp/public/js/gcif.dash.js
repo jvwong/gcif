@@ -24,25 +24,26 @@ gcif.dash = (function () {
                 '<h3 class="page-header">Data Source</h3>' +
 
                 '<div class="row placeholders">' +
-                    '<div class="col-xs-3 col-sm-3">' +
-                        '<a href="#">' +
-                            '<img src="assets/blue-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
-                            '<h4>Member</h4>' +
-                            '<span class="text-muted">255 Total</span>' +
-                        '</a>' +
+                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
+                        '<img src="assets/images/blue-pastel.png" class="img-responsive gcif-dash-source-img" alt="member_recent" />' +
+                        '<h4>Member</h4>' +
+                        '<span class="text-muted">255 Reporting</span>' +
                     '</div>' +
-                    '<div class="col-xs-3 col-sm-3">' +
-                        '<img src="assets/brown-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
-                        '<h4>US</h4>' +
-                        '<span class="text-muted"></span>' +
-                    '</div>' +
-                    '<div class="col-xs-3 col-sm-3">' +
-                        '<img src="assets/mint-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
+
+                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
+                        '<img src="assets/images/brown-pastel.png" class="img-responsive gcif-dash-source-img" alt="china" />' +
                         '<h4>China</h4>' +
+                        '<span class="text-muted">285 Reporting</span>' +
+                    '</div>' +
+
+                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
+                        '<img src="assets/images/mint-pastel.png" class="img-responsive gcif-dash-source-img" alt="non_member" />' +
+                        '<h4>Non-Member</h4>' +
                         '<span class="text-muted"></span>' +
                     '</div>' +
-                    '<div class="col-xs-3 col-sm-3">' +
-                        '<img src="assets/violet-pastel.png" class="img-responsive gcif-source" alt="Placeholder thumbnail" />' +
+
+                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
+                        '<img src="assets/images/violet-pastel.png" class="img-responsive gcif-dash-source-img" alt="ontario" />' +
                         '<h4>Ontario</h4>' +
                         '<span class="text-muted"></span>' +
                     '</div>' +
@@ -57,8 +58,9 @@ gcif.dash = (function () {
     }
     , jqueryMap = {}
     , setJqueryMap
-    , setDataUrl
+    , setDataSource
     , renderGraphs
+    , onClickSource
     , initModule;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
@@ -71,9 +73,10 @@ gcif.dash = (function () {
           $container = stateMap.$container
 
         jqueryMap = {
-               $container : $container
-             , $hbar      : $container.find('.gcif-shell-dash-hbar')
-             , $table     : $container.find('.gcif-shell-dash-table')
+               $container     : $container
+             , $dataSourceImg : $container.find('.gcif-dash-source-img')
+             , $hbar          : $container.find('.gcif-shell-dash-hbar')
+             , $table         : $container.find('.gcif-shell-dash-table')
         };
     };
     //--------------------- END DOM METHODS ----------------------
@@ -81,12 +84,9 @@ gcif.dash = (function () {
 
 
     // private method /renderGraphs/
-    renderGraphs = function(dataurl){
+    renderGraphs = function( source ){
 
-        gcif.table.setDataUrl(dataurl);
-        gcif.table.initModule( jqueryMap.$table );
-
-        gcif.hbar.setDataUrl(dataurl);
+        gcif.hbar.setDataUrls( source );
         gcif.hbar.initModule( jqueryMap.$hbar );
 
     };
@@ -95,6 +95,16 @@ gcif.dash = (function () {
 
     //------------------- BEGIN EVENT HANDLERS -------------------
 
+    onClickSource = function(e){
+
+        // get the source clicked from the "alt" attribute
+        configMap.data_source =  e.currentTarget["alt"];
+
+        // push that source as a prefix to the data urls generated within the graph modules
+        renderGraphs(configMap.data_source);
+
+    };
+
     //-------------------- END EVENT HANDLERS --------------------
 
 
@@ -102,35 +112,34 @@ gcif.dash = (function () {
 
 
     //------------------- BEGIN PUBLIC METHODS -------------------
-    // Begin Public method /setDataUrl/
-    // Example   : chart.graphpad.setDataSource( 'simpledata.json' );
+    // Begin Public method /setDataSource/
+    // Example   : gcif.dash.setDataSource( 'simpledata.json' );
     // Purpose   :
-    //   Accepts a valid url pointing to a data source
+    //   Accepts a string indicating the data source to prefix a data file name with
     // Arguments :
-    //   * url (example: '/usr/data/simpledata.json' )
-    //     A string that should represent a url
+    //   * source (example: 'china' )
     // Action    :
-    //   Sets the configMap setDataUrl attribute
+    //   Sets the configMap setDataSource attribute
     // Returns   : none
     // Throws    : error if this is not a valid url for d3
-    setDataUrl = function ( url ) {
-
-        if (url){
-
-            //store in stateMap
-            configMap.data_url = url;
-
-            //pass to graph functions
-            try{
-                renderGraphs(configMap.data_url);
-            }
-            catch(error){
-                console.log(error);
-            }
-
-        }
-
-    };
+//    setDataSource = function ( source ) {
+//
+//        if (source){
+//
+//            //store in stateMap
+//            configMap.data_source = source;
+//
+//            //pass to graph functions
+//            try{
+//                renderGraphs(source);
+//            }
+//            catch(error){
+//                console.log(error);
+//            }
+//
+//        }
+//
+//    };
     // End PUBLIC method /initModule/
 
 
@@ -153,7 +162,9 @@ gcif.dash = (function () {
         stateMap.$container = $container;
         $container.html(configMap.main_html);
         setJqueryMap();
-        setDataUrl('./category_counts.csv');
+
+        //register listeners
+        jqueryMap.$dataSourceImg.click(onClickSource);
 
     };
     // End PUBLIC method /initModule/

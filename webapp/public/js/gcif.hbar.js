@@ -75,13 +75,15 @@ gcif.hbar = (function () {
     }
     , stateMap = {
           $container : undefined
-        , dataUrl   : undefined
+        , dataUrl    : undefined
+        , countUrl   : undefined
+        , schemaUrl  : undefined
     }
     , jqueryMap = {}
     , d3Map= {}
     , setJqueryMap
     , setd3Map
-    , setDataUrl
+    , setDataUrls
     , render
     , initModule;
 
@@ -114,8 +116,8 @@ gcif.hbar = (function () {
     render = function(dataurl){
 
         var
-          margin = {top: 50, right: 40, bottom: 10, left: 145}
-        , width = 700
+          margin = {top: 50, right: 40, bottom: 10, left: 200}
+        , width = 800
         , height = 2500 - margin.top - margin.bottom
 
         , cities
@@ -188,11 +190,13 @@ gcif.hbar = (function () {
         });
 
         /* read in the full member data  */
-        d3.json('./member_core_byID.json', function(data) {
+        d3.json(stateMap.countUrl, function(data) {
             memberData = data;
         });
+
         /* read in the category --> indicator mapping */
-        d3.json('./category_indicators.json', function(data) {
+        d3.json(stateMap.schemaUrl, function(data) {
+            console.log(data);
             categoryIndicators = data;
         });
 
@@ -367,8 +371,10 @@ gcif.hbar = (function () {
     //   Populates $dataUrl value
     // Returns   : none
     // Throws    : none
-    setDataUrl = function(url){
-        stateMap.dataUrl = url;
+    setDataUrls = function(source){
+        stateMap.dataUrl   = String() + "assets/data/" + source + "_category_counts.csv";
+        stateMap.countUrl  = String() + "assets/data/" + source + "_core_byID.json";
+        stateMap.schemaUrl = String() + "assets/data/category_indicators.json";
     };
     // End PUBLIC method /setDataurl/
 
@@ -396,8 +402,8 @@ gcif.hbar = (function () {
     };
     // End PUBLIC method /initModule/
 
-    return {   initModule  : initModule
-             , setDataUrl  : setDataUrl
+    return {   initModule   : initModule
+             , setDataUrls  : setDataUrls
             };
     //------------------- END PUBLIC METHODS ---------------------
 })();
