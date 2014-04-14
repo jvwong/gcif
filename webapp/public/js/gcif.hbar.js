@@ -114,8 +114,8 @@ gcif.hbar = (function () {
     render = function(dataurl){
 
         var
-          margin = {top: 50, right: 40, bottom: 10, left: 145}
-        , width = 700
+          margin = {top: 50, right: 40, bottom: 10, left: 200}
+        , width = 800
         , height = 2500 - margin.top - margin.bottom
 
         , cities

@@ -311,8 +311,6 @@ def main():
     # gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
-
-
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     ## ************** Data: Generate a json of cities and it's core indicators
     # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
