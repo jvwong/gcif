@@ -51,30 +51,7 @@ def getdbhandle(hostname="localhost", db_name="test"):
 #   datacsv - a csv with the city data and headers matching "names" in schema
 # @output:
 #   docs - a list of documents ready for pymongo insert
-def getDocs(schemacsv, datacsv):
-
-    #This is a dict with keys that are precisely indicator names/headers in data
-    schemadict = {}
-
-    # open the schema csv and format this for retrieval below
-    with open(schemacsv, 'rb') as schemafile:
-        #Instantiate a csv reader
-        schemareader = csv.reader(schemafile, delimiter=',')
-        #Read in first row of headers
-        schemaheaders = schemareader.next()
-
-        #Get index of the headers (name, indicator_id, type, category)
-        iname = schemaheaders.index('name')
-        iindicator_id = schemaheaders.index('indicator_id')
-        itype = schemaheaders.index('type')
-        icategory = schemaheaders.index('category')
-        idata_type = schemaheaders.index('data_type')
-
-        for inds, schemarow in enumerate(schemareader):
-            schemadict[schemarow[iname]] = {"indicator_id": schemarow[iindicator_id]
-                                            , "type": schemarow[itype]
-                                            , "category": schemarow[icategory]
-                                            , "data_type": schemarow[idata_type]}
+def getDocs(datacsv):
 
     #*# open the data csv
     with open(datacsv, 'rb') as datafile:
@@ -328,15 +305,11 @@ def main():
 
     ### ******************************** DATABASE OPERATIONS *****************************************************
     #
-    # ****************** prepare gcif collections
-    # schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
-    # datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
-    # dlist = getDocs(schemacsv, datacsv)
-    # slist = getSchemaDoc(schemacsv)
+    # ****************** prepare gcif collection for china ('china_gcif')
+    datacsv = "/home/jvwong/Documents/GCIF/data/china/raw/china_gcif.csv"
+    dlist = getDocs(datacsv)
     # #insert
-    # gcif_handle.members_recent_gcif_simple.insert(dlist, safe=True)
-    # # gcif_handle.members_recent_gcif.insert(dlist, safe=True)
-    # gcif_handle.schema_gcif.insert(slist, safe=True)
+    gcif_handle.china_gcif.insert(dlist, safe=True)
 
 
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
@@ -357,12 +330,12 @@ def main():
     #     ffoutcat.write(json.dumps(catjson))
 
     ### *** Counts: Generate a csv of cities and their per-category counts
-    foutcat = 'category_counts.csv'
-    catcounts = getCategoryCounts(gcif_handle)
-
-    with open(foutcat, 'wb') as ffoutcatcount:
-        writer = csv.writer(ffoutcatcount)
-        writer.writerows(catcounts)
+    # foutcat = 'category_counts.csv'
+    # catcounts = getCategoryCounts(gcif_handle)
+    #
+    # with open(foutcat, 'wb') as ffoutcatcount:
+    #     writer = csv.writer(ffoutcatcount)
+    #     writer.writerows(catcounts)
 
 
 if __name__ == "__main__":

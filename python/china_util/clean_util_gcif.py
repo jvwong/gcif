@@ -108,7 +108,7 @@ def formatHeaders(file):
 
 
 # function: cleanCells
-# @description: A function that clears out extraineous charactrs (e.g. units, commas, and N/A) from fields
+# @description: A function that clears out extra characters (e.g. units, commas, and N/A) from fields
 # @pre-condition: valid csv file path
 # @input:
 #   fname - csv file path
