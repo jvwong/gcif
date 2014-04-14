@@ -106,7 +106,7 @@ def getDocs(schemacsv, datacsv):
                 headname = re.sub('\.', ',', dataheaders[indc])
 
                 # *************** simple output
-                #doc[headname] = datarow[indc]
+                doc[headname] = datarow[indc]
 
             doclist.append(copy.deepcopy(doc))
 
@@ -298,19 +298,14 @@ def main():
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
-    # result = gcif_handle.members_recent_gcif_simple.find().limit(1)
-    # for r in result:
-    #     print r.get("Employment percentage change based on the last 5 years_66") != ""
-    #     print r.get("Country's GDP (US$)_67") != ""
-
-    # ###******** prepare gcif collections
+    # # ###******** prepare gcif collections
     # schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
     # datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
     # dlist = getDocs(schemacsv, datacsv)
     # slist = getSchemaDoc(schemacsv)
-    ##insert
+    # #insert
     # gcif_handle.members_recent_gcif_simple.insert(dlist, safe=True)
-    # gcif_handle.members_recent_gcif.insert(dlist, safe=True)
+    # # gcif_handle.members_recent_gcif.insert(dlist, safe=True)
     # gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
