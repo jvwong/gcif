@@ -23,7 +23,6 @@ gcif.hbar = (function () {
             '<h3 class="sub-header">Core Indicators</h3>' +
 
             '<div class="row">' +
-
                 '<div class="col-sm-12 col-md-4 col-lg-6">' +
                     '<span class="gcif-hbar menu">' +
                         '<select></select>' +
@@ -47,6 +46,17 @@ gcif.hbar = (function () {
                     '</span>' +
                 '</div>' +
             '<div>' +
+
+            '<div class="row">' +
+
+                '<div class="btn-group gcif-hbar sort">' +
+                    '<button type="button" class="btn btn-default">Name</button>' +
+                    '<button type="button" class="btn btn-default active">Number</button>' +
+                '</div>' +
+
+            '<div>' +
+
+
 
 
             '<div class="row">' +
@@ -107,6 +117,7 @@ gcif.hbar = (function () {
             , d3table     : d3.select(".gcif-hbar.table")
             , d3category  : d3.select(".gcif-hbar.menu select")
             , d3sort      : d3.select(".gcif-hbar.sort input")
+//            , d3sort      : d3.select(".gcif-hbar.sort button")
             , d3number    : d3.select(".gcif-hbar.number select")
         };
     };
@@ -196,7 +207,6 @@ gcif.hbar = (function () {
 
         /* read in the category --> indicator mapping */
         d3.json(stateMap.schemaUrl, function(data) {
-            console.log(data);
             categoryIndicators = data;
         });
 
