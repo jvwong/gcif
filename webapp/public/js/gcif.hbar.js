@@ -240,7 +240,7 @@ gcif.hbar = (function () {
 
             for (var i=0; i<keys.length; i++){
                     html += '<tr>' +
-                                '<td>' + keys[i] + '</td>' +
+                                '<td>' + keys[i].split("_")[0] + '</td>' +
                                 '<td>' + cityData[keys[i]] + '</td>' +
                             '</tr>';
             }
@@ -329,7 +329,7 @@ gcif.hbar = (function () {
 
             barUpdate.select("rect")
               .attr("width", function(d) { return x(d[category]); })
-              .attr("height", y.rangeBand());;
+              .attr("height", y.rangeBand());
 
             //update the label on the bar (but don't do it if its zero)
             barUpdate.select(".gcif-hbar.chart.value")
@@ -338,7 +338,11 @@ gcif.hbar = (function () {
               .text(function(d) { return d[category] > 0 ? (d[category]) : null; });
 
             barUpdate.select(".gcif-hbar.chart.label")
-                  .attr("y", y.rangeBand() / 2);
+                  .attr("x", -3)
+                  .attr("y", y.rangeBand() / 2)
+                  .attr("dy", "0.35em")
+                  .attr("text-anchor", "end")
+                  .text(function(d) { return  d["CityName"]; });
 
             var barExit = d3.transition(bar.exit())
               .attr("transform", function(d) { return "translate(0," + (d.y0 + height) + ")"; })
