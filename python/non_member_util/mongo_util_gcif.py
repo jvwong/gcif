@@ -317,6 +317,42 @@ def getCategoryCounts(dbhandle):
     return catcounts
 
 
+# function: alignHeaders
+# @description: compares the headers in a csv file against the "schema_gcif" collection (core)
+# @pre-condition: valid schema_gcif collection and csv with [name, result, data year, and comments] fields
+# @input:
+#   db_handle - the database handle
+#   fcsv - csv file path
+# @output:
+#   none
+def alignHeaders(db_handle, fcsv):
+
+    coreindicators = db_handle.schema_gcif.find({"type": "core"})
+
+    # open the file
+    with open(fcsv, 'rb') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',')
+
+        #Read in first row of headers
+        header = csvreader.next()
+
+        for ind, core in enumerate(coreindicators):
+            name = (core.get("name")).encode('UTF-8')
+
+            # if ind < 8:
+            #     print "name: %s" % name
+
+            for indr, row in enumerate(csvreader):
+                # if indr < 8:
+                #     print "row[0]: %s" % row[0]
+
+                if re.match(row[0].strip(), name.strip()):
+                    print "match: %s --- %s" % (row[0].strip(), name.strip())
+
+            csvfile.seek(0)
+
+
+
 
 
 def main():
@@ -340,6 +376,12 @@ def main():
 
 
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
+    ### *********** Align headers ********************************
+    #*** open the gcif database
+    fcsv = '/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv'
+    alignHeaders(gcif_handle, fcsv)
+
+
     ### *** Data: Generate a json of cities and it's core indicators
     # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
     # corejson = getCoreJson(gcif_handle)
@@ -357,12 +399,12 @@ def main():
     #     ffoutcat.write(json.dumps(catjson))
 
     ### *** Counts: Generate a csv of cities and their per-category counts
-    foutcat = 'category_counts.csv'
-    catcounts = getCategoryCounts(gcif_handle)
-
-    with open(foutcat, 'wb') as ffoutcatcount:
-        writer = csv.writer(ffoutcatcount)
-        writer.writerows(catcounts)
+    # foutcat = 'category_counts.csv'
+    # catcounts = getCategoryCounts(gcif_handle)
+    #
+    # with open(foutcat, 'wb') as ffoutcatcount:
+    #     writer = csv.writer(ffoutcatcount)
+    #     writer.writerows(catcounts)
 
 
 if __name__ == "__main__":

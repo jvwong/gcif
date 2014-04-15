@@ -118,41 +118,6 @@ def cleanCellsBudapest(fname):
     return csvClean
 
 
-# function: checkHeaders
-# @description: A function that checks the header names for an exact match
-# @pre-condition: valid csv file paths
-# @input:
-#   fname - test file path
-#   fnameRed - reference file path
-# @output:
-#   mismatch - a list of column headers indices that do not match
-def checkHeaders(fname, fnameRef):
-
-    mismatch = []
-
-    # open the file
-    with open(fname, 'rb') as csvfile:
-
-        with open(fnameRef, 'rb') as csvfileRef:
-
-            csvreaderFile = csv.reader(csvfile, delimiter=',')
-            csvreaderFileRef = csv.reader(csvfileRef, delimiter=',')
-
-            #Read in first row of headers
-            headerFile = csvreaderFile.next()
-            headerFileRef = csvreaderFileRef.next()
-
-            for idx, h in enumerate(headerFile):
-                if not headerFileRef[idx] == h.strip():
-                    print h
-                    print headerFileRef[idx]
-                    print "\n"
-                    mismatch.append(idx)
-
-    return mismatch
-
-
-
 # function: cleanCellsCzech
 # @description: A function that clears out
 #   1) extra characters (e.g. units, commas, and N/A) from csv files
@@ -280,9 +245,17 @@ def cleanCellsSudbury(fname):
 
 
 def main():
+    ### *********** Align headers ********************************
+    #*** open the gcif database
+    gcifname = "gcif"
+    gcifhost = "localhost"
+    gcif_handle = getdbhandle(gcifhost, gcifname)
+
+    fcsv = '/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv'
+    alignHeaders(gcif_handle, fcsv)
+
 
     ### *********** Cleaning of csv data ********************************
-
     ### Budapest
     # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/Budapest_performance.csv'
     # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/Budapest_profile.csv'
@@ -292,9 +265,9 @@ def main():
     ### Czech (ostrava, prague, brno)
     # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/brno.csv'
     # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/ostrava.csv'
-    fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/prague.csv'
-    fout = fin.split('/')[-1]
-    clean = cleanCellsCzech(fin)
+    # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/prague.csv'
+    # fout = fin.split('/')[-1]
+    # clean = cleanCellsCzech(fin)
 
     ### sudbury, london, saultstemarie, windsor, vilnius
     # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/Greater_Sudbury_performance.csv'
@@ -303,10 +276,11 @@ def main():
     # fout = fin.split('/')[-1]
     # clean = cleanCellsSudbury(fin)
 
-    # print clean
-    with open(fout, 'wb') as fout:
-        writer = csv.writer(fout)
-        writer.writerows(clean)
+    # with open(fout, 'wb') as fout:
+    #     writer = csv.writer(fout)
+    #     writer.writerows(clean)
+
+
 
 if __name__ == "__main__":
     main()
