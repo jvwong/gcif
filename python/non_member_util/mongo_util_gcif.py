@@ -259,7 +259,7 @@ def getCategoryCounts(dbhandle):
 #   valid json of core indicators that can be pumped into a collection
 def alignHeaders(db_handle, fcsv):
 
-    core = []
+    corejson = {}
 
     coreindicators = db_handle.schema_gcif.find({"type": "core"})
 
@@ -293,17 +293,27 @@ def alignHeaders(db_handle, fcsv):
             elif name == "City unemployment rate":
                 name = "Annual average unemployment rate"
 
-            print "name: %s" % name
+            # print "name: %s" % name
 
             for indr, row in enumerate(csvreader):
 
                 if row[0].strip() == name.strip():
-                    print "match: %s --- %s" % (row[0].strip(), name.strip())
+                    # print "match: %s --- %s" % (row[0].strip(), name.strip())
+                    # add the database name with the sample "result" value
+                    corejson[name] = row[1].strip()
                     continue
 
-            print "\n"
+            # print "\n"
 
             csvfile.seek(0)
+
+        ###add the city name
+        for indr, row in enumerate(csvreader):
+            if row[0].strip() == "CityName":
+                corejson["CityName"] = row[1].strip()
+
+    return [corejson]
+
 
 
 
@@ -328,10 +338,21 @@ def main():
 
 
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
-    ### *********** Align headers ********************************
+    ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
     #*** open the gcif database
-    fcsv = '/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv'
-    alignHeaders(gcif_handle, fcsv)
+    # files = ['/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv',
+    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/windsor_gcif.csv',
+    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/greater_sudbury_gcif.csv',
+    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/saultstemarie_gcif.csv',
+    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/vilnius_gcif.csv',
+    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/prague_gcif.csv',
+    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/brno_gcif.csv',
+    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/ostrava_gcif.csv']
+    #
+    # for file in files:
+    #     jsonout = alignHeaders(gcif_handle, file)
+    #     gcif_handle.nonmembers_gcif_simple.insert(jsonout, safe=True)
+
 
 
     ### *** Data: Generate a json of cities and it's core indicators
