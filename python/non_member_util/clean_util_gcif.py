@@ -2,56 +2,6 @@ import csv
 import re
 
 
-# function: perCityFilter
-# @description: Takes the cleaned complied indicator data and extracts the actual indicators into a new csv
-# This will exclude the "data year", "n/a", "comment" to get a first pass at the per-City information density
-# @pre-condition: a valid csv file with headers of indicators
-# @input:
-#   file - a valid csv with headers
-# @output:
-#   output - the same csv file with columns removed
-def perCityFilter(file):
-
-    output = []
-
-    # open the file
-    with open(file, 'rb') as csvfile:
-
-        #declare a data out array
-        output = []
-
-        #Instantiate a csv reader
-        csvreader = csv.reader(csvfile, delimiter=',')
-
-        #Read in first row of headers
-        headers = csvreader.next()
-
-        #rewind up to the header
-        csvfile.seek(0)
-
-
-        # loop through each header
-        for idxr, cityRow in enumerate(csvreader):
-
-            #reset the row counts and data
-            count = 0
-            rowout = []
-
-            for idxc, indicator in enumerate(cityRow):
-
-                if re.match('(?:cityname)|(?:collection_year)|(?:cityuniqueid_)', headers[idxc].lower()):
-                    rowout.append(indicator)
-
-                # If the column header indicates it is a comment, data year, etc then ignore it
-                elif not re.match('(?:comment)|(?:n/a)|(?:datayear_)|(?:data year_)|(?:country_)|(?:region_)|\
-                                 (?:climate type_)|(?:type of government)', headers[idxc].lower()):
-                    rowout.append(indicator)
-
-            output.append(rowout)
-    return output
-
-
-
 # function: formatHeaders
 # @description: A function that will take the headers from a csv file and output
 # d3-friendly dict assignment statements (e.g. use in a forEach() javascript mapping function)
@@ -107,17 +57,25 @@ def formatHeaders(file):
 
 
 
-# function: cleanCells
-# @description: A function that clears out extraineous charactrs (e.g. units, commas, and N/A) from fields
+# function: cleanCellsBudapest
+# @description: A function that clears out
+#   1) extra characters (e.g. units, commas, and N/A) from csv files
+#   2) non - indicator characeters from name fields (numerator, denominator)
 # @pre-condition: valid csv file path
 # @input:
 #   fname - csv file path
 # @output:
 #   mismatch - a cleaned csv file
-def cleanCells(fname):
+def cleanCellsBudapest(fname):
 
     #Store the imported csv data as a list to output
-    csvOut = []
+    csvClean = []
+
+
+    categories = ["Education", "Fire and Emergency Response", "Health", "Recreation", "Safety", "Solid Waste",
+                  "Transportation", "Wastewater", "Water", "Energy", "Finance", "Governance", "Urban Planning",
+                  "Civic Engagement", "Culture", "Economy", "Environment", "Shelter", "Social Equity",
+                  "Technology and Innovation", "People", "Housing", "Economy", "Government", "Geography and Climate"]
 
     # open the file
     with open(fname, 'rb') as csvfile:
@@ -126,24 +84,38 @@ def cleanCells(fname):
         csvreader = csv.reader(csvfile, delimiter=',')
 
         #Read in first row of headers
+        csvreader.next() #Budapest has a City name row
         header = csvreader.next()
-        csvOut.append(header)
+        csvClean.append(header[0:4])
 
         #loop through rows
         for idxr, row in enumerate(csvreader):
 
-            #loop through cells
+            # skip category rows
+            if row[0] in categories and row[1] == "" and row[2] == "" and row[3] == "":
+                continue
+
+            #loop through cells 0 - 2
             for idxc, cell in enumerate(row):
 
-                # Ignore any comment sections, URLS
-                if not re.match('comment', cell.lower()) and not re.match('^http://', cell.lower()):
-                    strip1 = re.sub('[\$,%]', "", cell) #strip units
-                    strip2 = re.sub('N/A', "", strip1.upper()) #remove N/A fields
-                    row[idxc] = strip2
+                stripped = cell
 
-            csvOut.append(row)
+                if idxc == 0:
+                    stripped = re.sub('[\:_]', "", stripped)
+                    stripped = re.sub('numerator - ', "", stripped)
+                    stripped = re.sub('denominator - ', "", stripped)
 
-    return csvOut
+                elif idxc < 3:
+                    stripped = re.sub('[\$,%]', "", stripped)
+                    stripped = re.sub('N/A', "", stripped)
+                    stripped = re.sub('#DIV/0!', "", stripped)
+
+                # print stripped
+                row[idxc] = stripped.strip()
+
+            csvClean.append(row[0:4])
+
+    return csvClean
 
 
 # function: checkHeaders
@@ -180,33 +152,161 @@ def checkHeaders(fname, fnameRef):
     return mismatch
 
 
+
+# function: cleanCellsCzech
+# @description: A function that clears out
+#   1) extra characters (e.g. units, commas, and N/A) from csv files
+#   2) non - indicator characeters from name fields (numerator, denominator)
+# @pre-condition: valid csv file path
+# @input:
+#   fname - csv file path
+# @output:
+#   mismatch - a cleaned csv file
+def cleanCellsCzech(fname):
+
+    #Store the imported csv data as a list to output
+    csvClean = []
+
+
+    categories = ["People", "Housing", "Economy", "Government", "Geography and Climate", "Education",
+                  "Fire and Emergency Response", "Health", "Recreation", "Safety", "Solid Waste", "Transportation",
+                  "Wastewater", "Water", "Energy", "Finance", "Governance", "Urban Planning", "Civic Engagement",
+                  "Culture", "Environment", "Shelter", "Social Equity", "Technology and Innovation"]
+
+    # open the file
+    with open(fname, 'rb') as csvfile:
+
+        #Instantiate a csv reader
+        csvreader = csv.reader(csvfile, delimiter=',')
+
+        #Read in first row of headers
+        cityname = csvreader.next()
+        header = csvreader.next()
+
+        csvClean.append(header[0:4])
+        csvClean.append(cityname)
+
+        #loop through rows
+        for idxr, row in enumerate(csvreader):
+
+            # skip category rows
+            if row[0].strip() in categories:
+                continue
+
+            #loop through cells 0 - 2
+            for idxc, cell in enumerate(row):
+
+                stripped = cell
+
+                if idxc == 0:
+                    stripped = re.sub('[\:_]', "", stripped)
+                    stripped = re.sub('numerator - ', "", stripped)
+                    stripped = re.sub('denominator - ', "", stripped)
+
+                elif idxc < 3:
+                    stripped = re.sub('[\$,%]', "", stripped)
+                    stripped = re.sub('N/A', "", stripped)
+                    stripped = re.sub('#DIV/0!', "", stripped)
+
+                # print stripped
+                row[idxc] = stripped.strip()
+
+            csvClean.append(row[0:4])
+
+    return csvClean
+
+
+# function: cleanCellsSudbury
+# @description: A function that clears out
+#   1) extra characters (e.g. units, commas, and N/A) from csv files
+#   2) non - indicator characeters from name fields (numerator, denominator)
+# @pre-condition: valid csv file path
+# @input:
+#   fname - csv file path
+# @output:
+#   mismatch - a cleaned csv file
+def cleanCellsSudbury(fname):
+
+    #Store the imported csv data as a list to output
+    csvClean = []
+
+
+    categories = ["People", "Housing", "Economy", "Government", "Geography and Climate", "Education",
+                  "Fire and Emergency Response", "Health", "Recreation", "Safety", "Solid Waste", "Transportation",
+                  "Wastewater", "Water", "Energy", "Finance", "Governance", "Urban Planning", "Civic Engagement",
+                  "Culture", "Environment", "Shelter", "Social Equity", "Technology and Innovation"]
+
+    # open the file
+    with open(fname, 'rb') as csvfile:
+
+        #Instantiate a csv reader
+        csvreader = csv.reader(csvfile, delimiter=',')
+
+        #Read in first row of headers
+        cityname = csvreader.next()
+        header = csvreader.next()
+
+        csvClean.append(header[0:4])
+        csvClean.append(cityname)
+
+        #loop through rows
+        for idxr, row in enumerate(csvreader):
+
+            # skip category rows
+            if row[0].strip() in categories:
+                continue
+
+            #loop through cells 0 - 2
+            for idxc, cell in enumerate(row):
+
+                stripped = cell
+
+                if idxc == 0:
+                    stripped = re.sub('[\:_]', "", stripped)
+                    stripped = re.sub('numerator - ', "", stripped)
+                    stripped = re.sub('denominator - ', "", stripped)
+
+                elif idxc < 3:
+                    stripped = re.sub('[\$,%]', "", stripped)
+                    stripped = re.sub('N/A', "", stripped)
+                    stripped = re.sub('#DIV/0!', "", stripped)
+
+                # print stripped
+                row[idxc] = stripped.strip()
+
+            csvClean.append(row[0:4])
+
+    return csvClean
+
+
 def main():
 
-    ### *********** Per city indicators (remove comment, n/a, data year)
-    # fin = '/home/jvwong/Projects/GCIF/data/clean_compile.csv'
-    # fout = "noText_" + fin.split('/')[-1]
-    # csvout = perCityFilter(fin)
-    #
-    # with open(fout, 'wb') as fout:
-    #     writer = csv.writer(fout)
-    #     writer.writerows(csvout)
+    ### *********** Cleaning of csv data ********************************
 
+    ### Budapest
+    # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/Budapest_performance.csv'
+    # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/Budapest_profile.csv'
+    # fout = fin.split('/')[-1]
+    # clean = cleanCellsBudapest(fin)
 
-    ### *********** Automated d3 data type processing
-    # jsText = formatHeaders('/home/jvwong/Projects/GCIF/data/clean_compile.csv')
-    #
-    # with open('/home/jvwong/Projects/GCIF/webapp/bdd/gcif_dash/src/parseData.js', 'wb') as fout:
-    #     fout.write(jsText)
-
-    ### *********** Cleaning of csv data removing units, commas, "n/a" fields
-    fin = '/home/jvwong/Documents/GCIF/data/recent_gcif.csv'
+    ### Czech (ostrava, prague, brno)
+    # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/brno.csv'
+    # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/ostrava.csv'
+    fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/prague.csv'
     fout = fin.split('/')[-1]
+    clean = cleanCellsCzech(fin)
 
-    csvOut = cleanCells(fin)
+    ### sudbury, london, saultstemarie, windsor, vilnius
+    # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/Greater_Sudbury_performance.csv'
+    # fin = '/home/jvwong/Documents/GCIF/data/non_member/raw/csv/Greater_Sudbury_profile.csv'
+    #
+    # fout = fin.split('/')[-1]
+    # clean = cleanCellsSudbury(fin)
 
+    # print clean
     with open(fout, 'wb') as fout:
         writer = csv.writer(fout)
-        writer.writerows(csvOut)
+        writer.writerows(clean)
 
 if __name__ == "__main__":
     main()
