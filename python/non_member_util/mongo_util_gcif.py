@@ -212,7 +212,7 @@ def getCategoryCounts(dbhandle):
                 , "water and sanitation", "all"])
 
     # get the city data
-    cities = dbhandle.members_recent_gcif_simple.find()
+    cities = dbhandle.nonmembers_gcif_simple.find()
 
     # loop over each city
     for city in cities:
@@ -312,7 +312,7 @@ def alignHeaders(db_handle, fcsv):
             if row[0].strip() == "CityName":
                 corejson["CityName"] = row[1].strip()
 
-    return [corejson]
+    return corejson
 
 
 
@@ -333,7 +333,7 @@ def main():
     # slist = getSchemaDoc(schemacsv)
     # #insert
     # gcif_handle.members_recent_gcif_simple.insert(dlist, safe=True)
-    # # gcif_handle.members_recent_gcif.insert(dlist, safe=True)
+    # gcif_handle.members_recent_gcif.insert(dlist, safe=True)
     # gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
@@ -352,6 +352,25 @@ def main():
     # for file in files:
     #     jsonout = alignHeaders(gcif_handle, file)
     #     gcif_handle.nonmembers_gcif_simple.insert(jsonout, safe=True)
+    #
+    #### add some bogus "CityUniqueID_"
+    citynames = ["LONDON", "SAULT STE MARIE", "GREATER SUDBURY", "WINDSOR", "VILNIUS", "BRNO", "OSTRAVA", "PRAGUE"]
+    ids       = ["nm001", "nm002", "nm003", "nm004", "nm005", "nm006", "nm007", "nm008"]
+
+    # for ind, city in enumerate(citynames):
+    #     gcif_handle.nonmembers_gcif_simple.update({"CityName": city},{"$set": {"CityUniqueID_": ids[ind]}})
+
+    found = 0
+    for city in citynames:
+        result = gcif_handle.nonmembers_gcif_simple.find_one({"CityName": city})
+        print result.get("CityName")
+        found += 1
+
+    print found
+
+
+
+
 
 
 
