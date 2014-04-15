@@ -44,37 +44,13 @@ def getdbhandle(hostname="localhost", db_name="test"):
 
 
 # function: getDocs
-# @description: makes a list of embedded documents for the gcif data
+# @description: makes a list of documents for gcif data
 # @pre-condition: valid csv files
 # @input:
-#   schemacsv - a csv with "name", "indicator_id", "type", "category", "data_type" (Javascript)
 #   datacsv - a csv with the city data and headers matching "names" in schema
 # @output:
 #   docs - a list of documents ready for pymongo insert
-def getDocs(schemacsv, datacsv):
-
-    #This is a dict with keys that are precisely indicator names/headers in data
-    schemadict = {}
-
-    # open the schema csv and format this for retrieval below
-    with open(schemacsv, 'rb') as schemafile:
-        #Instantiate a csv reader
-        schemareader = csv.reader(schemafile, delimiter=',')
-        #Read in first row of headers
-        schemaheaders = schemareader.next()
-
-        #Get index of the headers (name, indicator_id, type, category)
-        iname = schemaheaders.index('name')
-        iindicator_id = schemaheaders.index('indicator_id')
-        itype = schemaheaders.index('type')
-        icategory = schemaheaders.index('category')
-        idata_type = schemaheaders.index('data_type')
-
-        for inds, schemarow in enumerate(schemareader):
-            schemadict[schemarow[iname]] = {"indicator_id": schemarow[iindicator_id]
-                                            , "type": schemarow[itype]
-                                            , "category": schemarow[icategory]
-                                            , "data_type": schemarow[idata_type]}
+def getDocs(datacsv):
 
     #*# open the data csv
     with open(datacsv, 'rb') as datafile:
@@ -94,13 +70,6 @@ def getDocs(schemacsv, datacsv):
             #loop over each entry
             for indc, cell in enumerate(datarow):
 
-                # *************** embedded output
-                # get the indicator name, get out the schema values, and push in the data
-                # indicator_name = dataheaders[indc]
-                # indicator_dict = schemadict[indicator_name]
-                # indicator_dict["value"] = datarow[indc]
-                # doc[headname] = indicator_dict
-
                 # add a new entry for each header name
                 # Get the header name. Gotta replace any dots (.) with comma
                 headname = re.sub('\.', ',', dataheaders[indc])
@@ -112,44 +81,6 @@ def getDocs(schemacsv, datacsv):
 
     return doclist
 
-
-# function: getSchema
-# @description: makes a list of the indicators schema
-# @pre-condition: valid csv file
-# @input:
-#   schemacsv - a csv with "name", "indicator_id", "type", "category", and "Number" (Javascript)
-# @output:
-#   docs - a list of documents ready for pymongo insert
-def getSchemaDoc(schemacsv):
-
-    doclist = []
-
-    # open the schema csv and format this for retrieval below
-    with open(schemacsv, 'rb') as schemafile:
-        #Instantiate a csv reader
-        schemareader = csv.reader(schemafile, delimiter=',')
-        #Read in first row of headers
-        schemaheaders = schemareader.next()
-
-        #Get index of the headers (name, indicator_id, type, category)
-        iname = schemaheaders.index('name')
-        iindicator_id = schemaheaders.index('indicator_id')
-        itype = schemaheaders.index('type')
-        icategory = schemaheaders.index('category')
-        idata_type = schemaheaders.index('data_type')
-
-
-        for ind, schemarow in enumerate(schemareader):
-
-            schemadoc = {"name": schemarow[iname]
-                       , "indicator_id": schemarow[iindicator_id]
-                       , "type": schemarow[itype]
-                       , "category": schemarow[icategory]
-                       , "data_type": schemarow[idata_type]}
-
-            doclist.append(copy.deepcopy(schemadoc))
-
-    return doclist
 
 
 # function: getCategoryIndicators
@@ -178,6 +109,7 @@ def getCategoryIndicators(db_handle):
         cats_indicators[category] = indslist
 
     return cats_indicators
+
 
 
 
@@ -324,8 +256,10 @@ def getCategoryCounts(dbhandle):
 #   db_handle - the database handle
 #   fcsv - csv file path
 # @output:
-#   none
+#   valid json of core indicators that can be pumped into a collection
 def alignHeaders(db_handle, fcsv):
+
+    core = []
 
     coreindicators = db_handle.schema_gcif.find({"type": "core"})
 
@@ -337,21 +271,39 @@ def alignHeaders(db_handle, fcsv):
         header = csvreader.next()
 
         for ind, core in enumerate(coreindicators):
-            name = (core.get("name")).encode('UTF-8')
+            name = ((core.get("name")).encode('UTF-8')).split("_")[0]
 
-            # if ind < 8:
-            #     print "name: %s" % name
+            ##Some stupid shit ass replacements
+            if name == "Percentage of female population enrolled in schools":
+                name = "Percentage of female school-aged population enrolled in schools"
+
+            #The wrong units were stated
+            elif name == "Total electrical use per capita (kWh/year)":
+                name = "Total electrical use per capita (kilowatt/hr)"
+
+            #plural
+            elif name == "Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)":
+                name = "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)"
+
+            #"the"
+            elif name == "Percentage of the city's solid waste that is recycled":
+                name = "Percentage of city's solid waste that is recycled"
+
+            #
+            elif name == "City unemployment rate":
+                name = "Annual average unemployment rate"
+
+            print "name: %s" % name
 
             for indr, row in enumerate(csvreader):
-                # if indr < 8:
-                #     print "row[0]: %s" % row[0]
 
-                if re.match(row[0].strip(), name.strip()):
+                if row[0].strip() == name.strip():
                     print "match: %s --- %s" % (row[0].strip(), name.strip())
+                    continue
+
+            print "\n"
 
             csvfile.seek(0)
-
-
 
 
 

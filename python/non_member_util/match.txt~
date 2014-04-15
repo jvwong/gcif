@@ -1,35 +1,153 @@
+name: Commercial/industrial assessment as a percentage of total assessment_61
+nomatch: Commerical/industrial assessment as a percentage of total assessment
+
+
+name: Percentage of city population living in poverty_124
 match: Percentage of city population living in poverty --- Percentage of city population living in poverty_124
+
+
+name: City unemployment rate_212
+
+
+name: Student/teacher ratio_28
 match: Student/teacher ratio --- Student/teacher ratio_28
+
+
+name: Percentage of students completing primary education_139
 match: Percentage of students completing primary education --- Percentage of students completing primary education_139
+
+
+name: Percentage of students completing secondary education_140
 match: Percentage of students completing secondary education --- Percentage of students completing secondary education_140
+
+
+name: Percentage of female population enrolled in schools_141
+
+
+name: Percentage of city population with authorized electrical service_103
 match: Percentage of city population with authorized electrical service --- Percentage of city population with authorized electrical service_103
+
+
+name: Total electrical use per capita (kWh/year)_104
+
+
+name: Greenhouse gas emissions measured in tonnes per capita_121
 match: Greenhouse gas emissions measured in tonnes per capita --- Greenhouse gas emissions measured in tonnes per capita_121
+
+
+name: PM10 Concentration_214
 match: PM10 Concentration --- PM10 Concentration_214
+
+
+name: Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)_106
+
+
+name: Number of firefighters per 100,000 population_32
 match: Number of firefighters per 100,000 population --- Number of firefighters per 100,000 population_32
+
+
+name: Number of fire related deaths per 100,000 population_36
 match: Number of fire related deaths per 100,000 population --- Number of fire related deaths per 100,000 population_36
+
+
+name: Voter participation in last municipal election (as a percent of eligible voters)_114
+
+
+name: Under age five mortality per 1,000 live births_38
 match: Under age five mortality per 1,000 live births --- Under age five mortality per 1,000 live births_38
 match: Under age five mortality --- Under age five mortality per 1,000 live births_38
+
+
+name: Number of in-patient hospital beds per 100,000 population_40
 match: Number of in-patient hospital beds per 100,000 population --- Number of in-patient hospital beds per 100,000 population_40
 match: Number of in-patient hospital beds --- Number of in-patient hospital beds per 100,000 population_40
+
+
+name: Number of physicians per 100,000 population_41
 match: Number of physicians per 100,000 population --- Number of physicians per 100,000 population_41
 match: Number of physicians --- Number of physicians per 100,000 population_41
+
+
+name: Average life expectancy_198
 match: Average life expectancy --- Average life expectancy_198
+
+
+name: Number of homicides per 100,000 population_44
 match: Number of homicides per 100,000 population --- Number of homicides per 100,000 population_44
 match: Number of homicides --- Number of homicides per 100,000 population_44
+
+
+name: Number of police officers per 100,000 population_45
 match: Number of police officers per 100,000 population --- Number of police officers per 100,000 population_45
+
+
+name: Percentage of city population living in slums_122
 match: Percentage of city population living in slums --- Percentage of city population living in slums_122
+
+
+name: Percentage of city population with regular solid waste collection_47
 match: Percentage of city population with regular solid waste collection --- Percentage of city population with regular solid waste collection_47
+
+
+name: Percentage of the city's solid waste that is recycled_146
+
+
+name: Number of internet connections per 100,000 population_125
 match: Number of internet connections per 100,000 population --- Number of internet connections per 100,000 population_125
 match: Number of internet connections --- Number of internet connections per 100,000 population_125
+
+
+name: Number of cell phone connections per 100,000 population_177
 match: Number of cell phone connections per 100,000 population --- Number of cell phone connections per 100,000 population_177
+
+
+name: Annual number of public transit trips per capita_52
 match: Annual number of public transit trips per capita --- Annual number of public transit trips per capita_52
+
+
+name: Km of high capacity public transit system per 100,000 population_200
 match: Km of high capacity public transit system per 100,000 population --- Km of high capacity public transit system per 100,000 population_200
+
+
+name: Km of light passenger transit system per 100,000 population_201
 match: Km of light passenger transit system per 100,000 population --- Km of light passenger transit system per 100,000 population_201
+
+
+name: Number of personal automobiles per capita_202
 match: Number of personal automobiles per capita --- Number of personal automobiles per capita_202
+
+
+name: Green area (hectares) per 100,000 population_113
+
+
+name: Percentage of city population served by wastewater collection_56
 match: Percentage of city population served by wastewater collection --- Percentage of city population served by wastewater collection_56
+
+
+name: Percentage of the city's wastewater that has received no treatment_154
 match: Percentage of the city's wastewater that has received no treatment --- Percentage of the city's wastewater that has received no treatment_154
+
+
+name: Percentage of the city's wastewater receiving primary treatment_155
 match: Percentage of the city's wastewater receiving primary treatment --- Percentage of the city's wastewater receiving primary treatment_155
+
+
+name: Percentage of the city's wastewater receiving secondary treatment_156
 match: Percentage of the city's wastewater receiving secondary treatment --- Percentage of the city's wastewater receiving secondary treatment_156
+
+
+name: Percentage of the city's wastewater receiving tertiary treatment_157
 match: Percentage of the city's wastewater receiving tertiary treatment --- Percentage of the city's wastewater receiving tertiary treatment_157
+
+
+name: Percentage of city population with potable water supply service_59
 match: Percentage of city population with potable water supply service --- Percentage of city population with potable water supply service_59
+
+
+name: Total domestic water consumption per capita (litres/day)_61
+
+
+name: Percentage of city population with sustainable access to an improved water source_204
 match: Percentage of city population with sustainable access to an improved water source --- Percentage of city population with sustainable access to an improved water source_204
+
+
