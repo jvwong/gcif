@@ -23,7 +23,7 @@ gcif.dash = (function () {
             '<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">' +
                 '<h3 class="page-header">Data Source</h3>' +
 
-                '<div class="row placeholders">' +
+                '<div class="row gcif-data-sources">' +
                     '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
                         '<img src="assets/images/blue-pastel.png" class="img-responsive gcif-dash-source-img" alt="member_recent" />' +
                         '<h4>Member</h4>' +

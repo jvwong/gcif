@@ -80,17 +80,13 @@ a:link, a:hover {
 */
 
 .gcif-dash-source {
+    min-width: 10em;
     margin-bottom: 30px;
     text-align: center;
 }
 .gcif-dash-source h4 {
-    /*position: absolute;*/
-    /*left: 25%;*/
-    /*bottom: 50%;*/
     text-align: center;
     margin-bottom: 0;
 }
-.placeholder {
-    margin-bottom: 20px;
-}
+
 
