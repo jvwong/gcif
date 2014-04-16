@@ -173,9 +173,6 @@ gcif.hbar = (function () {
         /* read in the data */
         d3.csv(dataurl, function(data) {
 
-            console.log("dataURL: %s", stateMap.dataUrl);
-            console.log(data);
-
             //global variable
             cities = data;
 
