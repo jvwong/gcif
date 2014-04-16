@@ -24,26 +24,38 @@ gcif.hbar = (function () {
 
             '<div class="row">' +
                 '<form class="form" role="form">' +
+
                     '<div class="form-group gcif-hbar menu">' +
-                        '<select class="form-control"></select>' +
+                        '<label for="category-dropdown" class="col-sm-2 control-label">Category</label>' +
+                        '<div class="col-sm-10">' +
+                            '<select id="category-dropdown" class="form-control"></select>' +
+                        '</div>' +
                     '<div>' +
+
                     '<div class="form-group gcif-hbar number">' +
-                        '<select class="form-control">' +
-                            '<option value="25">25</option>' +
-                            '<option value="50">50</option>' +
-                            '<option value="100">100</option>' +
-                            '<option value="200">200</option>' +
-                            '<option value="1000">All</option>' +
-                        '</select>' +
+                        '<label for="number-dropdown" class="col-sm-2 control-label">Show</label>' +
+                        '<div class="col-sm-10">' +
+                            '<select id="number-dropdown" class="form-control">' +
+                                '<option value="25"><25</option>' +
+                                '<option value="50"><50</option>' +
+                                '<option value="100"><100</option>' +
+                                '<option value="200"><200</option>' +
+                                '<option value="1000">All</option>' +
+                            '</select>' +
+                        '</div>' +
                     '<div>' +
-                    '<div class="btn-group btn-group-md gcif-hbar sort">' +
-                        '<button type="button" class="btn btn-default" id="alphabetical">' +
-                            '<span class="glyphicon glyphicon-sort-by-alphabet"></span> Alphabetical' +
-                        '</button>' +
-                        '<button type="button" class="btn btn-default active" id="number">' +
-                            '<span class="glyphicon glyphicon-sort-by-order-alt"></span> Number' +
-                        '</button>' +
+
+                    '<div class="form-group">' +
+                        '<div class="btn-group gcif-hbar sort col-sm-offset-2 col-sm-10">' +
+                            '<button type="button" class="btn btn-default" id="alphabetical">' +
+                                '<span class="glyphicon glyphicon-sort-by-alphabet"></span> Alphabetical' +
+                            '</button>' +
+                            '<button type="button" class="btn btn-default active" id="number">' +
+                                '<span class="glyphicon glyphicon-sort-by-order-alt"></span> Number' +
+                            '</button>' +
+                        '</div>' +
                     '</div>' +
+
                 '</form>' +
             '<div>' +
 
@@ -107,7 +119,7 @@ gcif.hbar = (function () {
 
         jqueryMap = {
               $container  : $container
-            , $sortbtns   : $container.find(".btn-group.gcif-hbar.sort > .btn")
+            , $sortbtns   : $container.find(".btn-group.gcif-hbar.sort .btn")
             , $numbtns    : $container.find(".btn-group.gcif-hbar.number ul.dropdown-menu li a")
         };
     };

@@ -359,11 +359,11 @@ def main():
 
 
     ### *** Data: Generate a json of cities and it's core indicators
-    foutcore = '/home/jvwong/Projects/gcif/webapp/public/assets/data/nonmember_core_byID.json'
-    corejson = getCoreJson(gcif_handle)
-
-    with open(foutcore, 'wb') as ffoutcore:
-        ffoutcore.write(json.dumps(corejson))
+    # foutcore = '/home/jvwong/Projects/gcif/webapp/public/assets/data/nonmember_core_byID.json'
+    # corejson = getCoreJson(gcif_handle)
+    #
+    # with open(foutcore, 'wb') as ffoutcore:
+    #     ffoutcore.write(json.dumps(corejson))
 
     ### *** Schema: Generate a json of core categories (keys) and their respective
     # indicators (value list)

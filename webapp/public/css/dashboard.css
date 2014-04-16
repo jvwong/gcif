@@ -76,14 +76,18 @@ a:link, a:hover {
 }
 
 /*
-* Placeholder dashboard ideas
+* Data source row
 */
 
-.placeholders {
+.gcif-dash-source {
     margin-bottom: 30px;
     text-align: center;
 }
-.placeholders h4 {
+.gcif-dash-source h4 {
+    /*position: absolute;*/
+    /*left: 25%;*/
+    /*bottom: 50%;*/
+    text-align: center;
     margin-bottom: 0;
 }
 .placeholder {
