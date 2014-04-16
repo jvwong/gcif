@@ -166,8 +166,10 @@ gcif.hbar = (function () {
                 verticalScaling = 0.5;
             }else if (num <= 50){
                 verticalScaling = 0.8;
+            }else if (num <= 100){
+                verticalScaling = 1.2;
             }else if (num <= 200){
-                verticalScaling = 1.5;
+                verticalScaling = 2.5;
             }else{
                 verticalScaling = 3.5;
             }
