@@ -138,9 +138,10 @@ gcif.hbar = (function () {
     // BEGIN private method /render/
     render = function(dataurl){
        var
-          margin = {top: 50, right: 40, bottom: 10, left: 200}
-        , width = 800
-        , height = 2500 - margin.top - margin.bottom
+
+           margin = {top: 50, right: 80, bottom: 10, left: 200}
+        ,  width
+        ,  height
 
         , cities
         , categories
@@ -150,37 +151,75 @@ gcif.hbar = (function () {
         , defaultCategory = "all"
         , nCore = 40
 
-        , x = d3.scale.linear().range([0, width])
-        , y = d3.scale.ordinal().rangeBands([0, height], .1, .1)
+        ,x ,y ,xAxis, svg;
 
-        , xAxis = d3.svg.axis()
+
+        function setsvgdim(){
+
+            var
+              num = +d3Map.d3number.node().value
+            , verticalScaling
+            ;
+
+
+            if (num <= 25){
+                verticalScaling = 0.5;
+            }else if (num <= 50){
+                verticalScaling = 0.8;
+            }else if (num <= 200){
+                verticalScaling = 1.5;
+            }else{
+                verticalScaling = 3.5;
+            }
+
+
+
+            width = $( window ).width() * 0.8 - margin.left - margin.right;
+            height = $( window ).height() * verticalScaling - margin.top - margin.bottom;
+
+            console.log(verticalScaling);
+            console.log(height);
+        }
+
+
+        function rendersvg(){
+
+            //clear out any residual svg elements
+            d3.select("svg").remove();
+
+            x = d3.scale.linear().range([0, width]);
+            y = d3.scale.ordinal().rangeBands([0, height], .1, .1);
+
+            xAxis = d3.svg.axis()
                         .scale(x)
                         .orient("top")
-                        .tickSize(-height - margin.bottom)
+                        .tickSize(-height - margin.bottom);
 
-        /* append main svg */
-        , svg = d3Map.d3bar.append("svg")
+            /* append main svg */
+            svg = d3Map.d3bar.append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                   .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-        ;
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        /* append axes */
-        svg.append("g")
-            .attr("class", "gcif-hbar chart x axis");
 
-        svg.append("g")
-            .attr("class", "gcif-hbar chart y axis")
-          .append("line")
-            .attr("class", "domain")
-            .attr("y2", height);
+            /* append axes */
+            svg.append("g")
+                .attr("class", "gcif-hbar chart x axis");
+
+            svg.append("g")
+                .attr("class", "gcif-hbar chart y axis")
+              .append("line")
+                .attr("class", "domain")
+                .attr("y2", height);
+        }
+
 
         /* register event listeners*/
         d3Map.d3category.on("change", change);
-        d3Map.d3number.on("change", change);
+        d3Map.d3number.on("change", onChangeNumber );
         jqueryMap.$sortbtns.click( onClickSort );
-
+        d3.select(window).on('resize', resize);
 
         /* read in the data */
         d3.csv(dataurl, function(data) {
@@ -208,6 +247,8 @@ gcif.hbar = (function () {
             d3Map.d3category.property("value", defaultCategory);
             d3Map.d3number.property("value", 100);
 
+            setsvgdim();
+            rendersvg();
             redraw();
         });
 
@@ -263,11 +304,22 @@ gcif.hbar = (function () {
             jqueryMap.$sortbtns.removeClass("active");
             $(this).addClass("active");
             stateMap.sortOrder = $(this).attr("id");
-
-            console.log($(this).attr("id"));
-
             change();
         }
+
+        function onChangeNumber(){
+            setsvgdim();
+            rendersvg();
+            change();
+        }
+
+        /* Update graph using new width and height (code below) */
+        function resize() {
+            setsvgdim();
+            rendersvg();
+            change();
+        }
+
 
         function change() {
             d3.transition()
@@ -285,7 +337,6 @@ gcif.hbar = (function () {
             ;
 
             //sort
-//            console.log(stateMap.sortOrder);
             if (stateMap.sortOrder === "number"){
                 cityData = cities.sort(function(a, b) { return b[current_category] - a[current_category]; }).slice(0, numrecords);
             }else{
@@ -435,9 +486,6 @@ gcif.hbar = (function () {
         setJqueryMap();
         setd3Map();
         render(stateMap.dataUrl);
-
-
-
     };
     // End PUBLIC method /initModule/
 
