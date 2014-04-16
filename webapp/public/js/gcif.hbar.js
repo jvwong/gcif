@@ -23,63 +23,61 @@ gcif.hbar = (function () {
             '<h3 class="sub-header">Core Indicators</h3>' +
 
             '<div class="row">' +
-                '<div class="col-sm-12 col-md-4 col-lg-6">' +
-                    '<span class="gcif-hbar menu">' +
-                        '<select></select>' +
-                    '</span>' +
-                '</div>' +
-                '<div class="col-sm-12 col-md-4 col-lg-3">' +
-                    '<span class="gcif-hbar number">' +
-                        'Show: ' +
-                        '<select>' +
+                '<form class="form" role="form">' +
+                    '<div class="form-group gcif-hbar menu">' +
+                        '<select class="form-control"></select>' +
+                    '<div>' +
+                    '<div class="form-group gcif-hbar number">' +
+                        '<select class="form-control">' +
                             '<option value="25">25</option>' +
                             '<option value="50">50</option>' +
                             '<option value="100">100</option>' +
                             '<option value="200">200</option>' +
                             '<option value="1000">All</option>' +
                         '</select>' +
-                    '</span>' +
-                '</div>' +
-                '<div class="col-sm-12 col-md-4 col-lg-3">' +
-                    '<span class="gcif-hbar sort">' +
-                        'Sort By Name: <input type="checkbox">' +
-                    '</span>' +
-                '</div>' +
-            '<div>' +
-
-            '<div class="row">' +
-
-                '<div class="btn-group gcif-hbar sort">' +
-                    '<button type="button" class="btn btn-default">Name</button>' +
-                    '<button type="button" class="btn btn-default active">Number</button>' +
-                '</div>' +
-
+                    '<div>' +
+                    '<div class="btn-group btn-group-md gcif-hbar sort">' +
+                        '<button type="button" class="btn btn-default" id="alphabetical">' +
+                            '<span class="glyphicon glyphicon-sort-by-alphabet"></span> Alphabetical' +
+                        '</button>' +
+                        '<button type="button" class="btn btn-default active" id="number">' +
+                            '<span class="glyphicon glyphicon-sort-by-order-alt"></span> Number' +
+                        '</button>' +
+                    '</div>' +
+                '</form>' +
             '<div>' +
 
 
-
-
             '<div class="row">' +
-                '<div class="gcif-hbar chart scol-lg-6">' +
+
+                '<ul id="myTab" class="nav nav-tabs">' +
+                    '<li class="active"><a href="#graphical" data-toggle="tab">Graphical</a></li>' +
+                    '<li class=""><a href="#tabular" data-toggle="tab">Tablular</a></li>' +
+                '</ul>' +
+
+                '<div id="myTabContent" class="tab-content">' +
+                    '<div class="tab-pane fade active in" id="graphical">' +
+                        '<div class="gcif-hbar chart col-lg-12">' +
+                    '</div>' +
+                    '<div class="tab-pane fade" id="tabular">' +
+                        '<div class="gcif-hbar table col-lg-12 table-responsive">' +
+                            '<table class="table table-bordered table-hover table-condensed">' +
+                                '<thead>' +
+                                    '<tr>' +
+                                        '<th>Indicator (Core)</th>' +
+                                        '<th>Value</th>' +
+                                    '</tr>' +
+                                '</thead>' +
+                                '<tbody>' +
+                                    '<tr>' +
+                                    '</tr>' +
+                                '</tbody>' +
+                            '</table>' +
+                        '</div>' +
+                    '</div>' +
                 '</div>' +
 
-                '<div class="gcif-hbar table col-lg-6 table-responsive">' +
-                    '<table class="table table-bordered table-hover table-condensed">' +
-                        '<thead>' +
-                            '<tr>' +
-                                '<th>Indicator (Core)</th>' +
-                                '<th>Value</th>' +
-                            '</tr>' +
-                        '</thead>' +
-                        '<tbody>' +
-                            '<tr>' +
-                            '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                '</div>' +
-
-            '<div>'
-
+            '</div>'
 
 
     }
@@ -88,6 +86,7 @@ gcif.hbar = (function () {
         , dataUrl    : undefined
         , countUrl   : undefined
         , schemaUrl  : undefined
+        , sortOrder  : "number"
     }
     , jqueryMap = {}
     , d3Map= {}
@@ -104,10 +103,12 @@ gcif.hbar = (function () {
 
     setJqueryMap = function(){
         var
-          $container = stateMap.$container
+          $container = stateMap.$container;
 
         jqueryMap = {
-              $container : $container
+              $container  : $container
+            , $sortbtns   : $container.find(".btn-group.gcif-hbar.sort > .btn")
+            , $numbtns    : $container.find(".btn-group.gcif-hbar.number ul.dropdown-menu li a")
         };
     };
 
@@ -117,7 +118,6 @@ gcif.hbar = (function () {
             , d3table     : d3.select(".gcif-hbar.table")
             , d3category  : d3.select(".gcif-hbar.menu select")
             , d3sort      : d3.select(".gcif-hbar.sort input")
-//            , d3sort      : d3.select(".gcif-hbar.sort button")
             , d3number    : d3.select(".gcif-hbar.number select")
         };
     };
@@ -125,8 +125,7 @@ gcif.hbar = (function () {
 
     // BEGIN private method /render/
     render = function(dataurl){
-
-        var
+       var
           margin = {top: 50, right: 40, bottom: 10, left: 200}
         , width = 800
         , height = 2500 - margin.top - margin.bottom
@@ -167,8 +166,8 @@ gcif.hbar = (function () {
 
         /* register event listeners*/
         d3Map.d3category.on("change", change);
-        d3Map.d3sort.on("change", change);
         d3Map.d3number.on("change", change);
+        jqueryMap.$sortbtns.click( onClickSort );
 
 
         /* read in the data */
@@ -248,6 +247,15 @@ gcif.hbar = (function () {
             return html;
         }
 
+        function onClickSort(){
+            jqueryMap.$sortbtns.removeClass("active");
+            $(this).addClass("active");
+            stateMap.sortOrder = $(this).attr("id");
+
+            console.log($(this).attr("id"));
+
+            change();
+        }
 
         function change() {
             d3.transition()
@@ -260,13 +268,13 @@ gcif.hbar = (function () {
             //get the category
             var
               current_category = d3Map.d3category.property("value")
-            , alpha_sort = d3Map.d3sort.property('checked')
             , numrecords = d3Map.d3number.node().value
             , cityData
             ;
 
-              //sort
-            if (alpha_sort === false){
+            //sort
+//            console.log(stateMap.sortOrder);
+            if (stateMap.sortOrder === "number"){
                 cityData = cities.sort(function(a, b) { return b[current_category] - a[current_category]; }).slice(0, numrecords);
             }else{
                 cityData = cities.sort(function(a, b) { return d3.ascending(a["CityName"], b["CityName"]); }).slice(0, numrecords);
@@ -296,7 +304,7 @@ gcif.hbar = (function () {
             // put the city name along the y axis
             barEnter.append("text")
                   .attr("class", "gcif-hbar chart label")
-                  .attr("x", -3)
+                  .attr("x", -12)
                   .attr("y", y.rangeBand() / 2)
                   .attr("dy", "0.35em")
                   .attr("text-anchor", "end")
@@ -368,7 +376,10 @@ gcif.hbar = (function () {
 
     //------------------- BEGIN EVENT HANDLERS -------------------
 
+
+
     //-------------------- END EVENT HANDLERS --------------------
+
 
 
     //---------------------- BEGIN CALLBACKS ---------------------
@@ -412,6 +423,8 @@ gcif.hbar = (function () {
         setJqueryMap();
         setd3Map();
         render(stateMap.dataUrl);
+
+
 
     };
     // End PUBLIC method /initModule/
