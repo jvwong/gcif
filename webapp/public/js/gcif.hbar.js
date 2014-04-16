@@ -57,7 +57,7 @@ gcif.hbar = (function () {
 
                 '<div id="myTabContent" class="tab-content">' +
                     '<div class="tab-pane fade active in" id="graphical">' +
-                        '<div class="gcif-hbar chart col-lg-12">' +
+                        '<div class="gcif-hbar chart col-lg-12"></div>' +
                     '</div>' +
                     '<div class="tab-pane fade" id="tabular">' +
                         '<div class="gcif-hbar table col-lg-12 table-responsive">' +
