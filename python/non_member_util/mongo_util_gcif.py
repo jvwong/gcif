@@ -111,46 +111,6 @@ def getCategoryIndicators(db_handle):
     return cats_indicators
 
 
-
-
-# function: getCoreList
-# @description: makes a csv chart of the cities and core indicator values
-# @pre-condition: valid mongo collections
-# @input:
-#   dbhandle - the pymongo data base handle
-# @output:
-#   coreOut - a csv list of cities and core indicator values
-def getCoreList(dbhandle):
-
-    # A list to store the csv
-    coreOut = []
-
-    # Get the document collections for the schema and data
-    schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.members_recent_gcif_simple.find()
-
-    # Write out the header row
-    corenames = []
-    corenames = [core.get("name").encode('UTF-8') for core in schema]
-    corenames.insert(0, 'CityUniqueID_')
-    corenames.insert(0, 'CityName')
-    coreOut.append(corenames)
-
-    ###loop over each city (255) and extract that indicator
-    for city in cities:
-
-        citydata = []
-
-        ### loop over the core indicator names (39)
-        for corename in corenames:
-            citydata.append((city[corename]).encode('UTF-8'))
-
-        coreOut.append(citydata)
-
-    return coreOut
-
-
-
 # function: getCoreJson
 # @description: outputs json of the cities (key = CityUniqueID_) and data for core indicators
 # @pre-condition: valid mongo collections
@@ -165,7 +125,7 @@ def getCoreJson(dbhandle):
 
     # Get the document collections for the schema and data
     schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.members_recent_gcif_simple.find()
+    cities = dbhandle.nonmembers_gcif_simple.find()
 
     # Write out the core indicator list
     corenames = [core.get("name").encode('UTF-8') for core in schema]
@@ -175,11 +135,38 @@ def getCoreJson(dbhandle):
     ###loop over each city (255)
     for city in cities:
 
+        # print city
+
         #store the embedded json of data here
         citydata = {}
 
         ### loop over the core indicator names (39)
         for corename in corenames:
+            # print "corename: %s ----------- split name: %s" % (corename, corename.split("_")[0])
+
+            if corename != "CityUniqueID_":
+                corename = corename.split("_")[0]
+
+            ##Some stupid shit ass replacements
+            if corename == "Percentage of female population enrolled in schools":
+                corename = "Percentage of female school-aged population enrolled in schools"
+
+            #The wrong units were stated
+            elif corename == "Total electrical use per capita (kWh/year)":
+                corename = "Total electrical use per capita (kilowatt/hr)"
+
+            #plural
+            elif corename == "Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)":
+                corename = "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)"
+
+            #"the"
+            elif corename == "Percentage of the city's solid waste that is recycled":
+                corename = "Percentage of city's solid waste that is recycled"
+
+            #
+            elif corename == "City unemployment rate":
+                corename = "Annual average unemployment rate"
+
             citydata[corename] = (city[corename]).encode('UTF-8')
 
         cityjson[city["CityUniqueID_"]] = copy.deepcopy(citydata)
@@ -219,6 +206,7 @@ def getCategoryCounts(dbhandle):
 
         #Add some row indicators for the City
         citycatcounts = [city.get('CityName').encode('UTF-8'), city.get('CityUniqueID_').encode('UTF-8')]
+        # print city
 
         total = 0
 
@@ -232,9 +220,10 @@ def getCategoryCounts(dbhandle):
             # loop over each of the indicator documents in the list
             for indicatordoc in indicators:
 
-                indicator = indicatordoc.get("name")
+                indicator = (indicatordoc.get("name")).split("_")[0]
+
                 #Generate a sum of counts for each indicator of the category
-                if indicator and city.get(indicator) != "":
+                if indicator and (city.get(indicator) != ""):
                     ccount += 1
 
             #store the count for this category
@@ -337,9 +326,9 @@ def main():
     # gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
-    ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
-    ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
-    #*** open the gcif database
+    # ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
+    # ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
+    # ### *** open the gcif database
     # files = ['/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv',
     #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/windsor_gcif.csv',
     #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/greater_sudbury_gcif.csv',
@@ -352,34 +341,29 @@ def main():
     # for file in files:
     #     jsonout = alignHeaders(gcif_handle, file)
     #     gcif_handle.nonmembers_gcif_simple.insert(jsonout, safe=True)
+    # #
+    # #### add some bogus "CityUniqueID_"
+    # citynames = ["LONDON", "SAULT STE MARIE", "GREATER SUDBURY", "WINDSOR", "VILNIUS", "BRNO", "OSTRAVA", "PRAGUE"]
+    # ids       = ["nm001", "nm002", "nm003", "nm004", "nm005", "nm006", "nm007", "nm008"]
     #
-    #### add some bogus "CityUniqueID_"
-    citynames = ["LONDON", "SAULT STE MARIE", "GREATER SUDBURY", "WINDSOR", "VILNIUS", "BRNO", "OSTRAVA", "PRAGUE"]
-    ids       = ["nm001", "nm002", "nm003", "nm004", "nm005", "nm006", "nm007", "nm008"]
-
-    # for ind, city in enumerate(citynames):
-    #     gcif_handle.nonmembers_gcif_simple.update({"CityName": city},{"$set": {"CityUniqueID_": ids[ind]}})
-
-    found = 0
-    for city in citynames:
-        result = gcif_handle.nonmembers_gcif_simple.find_one({"CityName": city})
-        print result.get("CityName")
-        found += 1
-
-    print found
-
-
-
-
-
+    # # for ind, city in enumerate(citynames):
+    # #     gcif_handle.nonmembers_gcif_simple.update({"CityName": city},{"$set": {"CityUniqueID_": ids[ind]}})
+    #
+    # found = 0
+    # for city in citynames:
+    #     result = gcif_handle.nonmembers_gcif_simple.find_one({"CityName": city})
+    #     print result
+    #     found += 1
+    #
+    # print found
 
 
     ### *** Data: Generate a json of cities and it's core indicators
-    # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
-    # corejson = getCoreJson(gcif_handle)
-    #
-    # with open(foutcore, 'wb') as ffoutcore:
-    #     ffoutcore.write(json.dumps(corejson))
+    foutcore = '/home/jvwong/Projects/gcif/webapp/public/assets/data/nonmember_core_byID.json'
+    corejson = getCoreJson(gcif_handle)
+
+    with open(foutcore, 'wb') as ffoutcore:
+        ffoutcore.write(json.dumps(corejson))
 
     ### *** Schema: Generate a json of core categories (keys) and their respective
     # indicators (value list)
@@ -391,12 +375,15 @@ def main():
     #     ffoutcat.write(json.dumps(catjson))
 
     ### *** Counts: Generate a csv of cities and their per-category counts
-    # foutcat = 'category_counts.csv'
+    # foutcat = 'nonmember_category_counts.csv'
     # catcounts = getCategoryCounts(gcif_handle)
+    # print catcounts
+    #
     #
     # with open(foutcat, 'wb') as ffoutcatcount:
     #     writer = csv.writer(ffoutcatcount)
     #     writer.writerows(catcounts)
+
 
 
 if __name__ == "__main__":

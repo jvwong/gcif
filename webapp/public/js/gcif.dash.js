@@ -37,14 +37,14 @@ gcif.dash = (function () {
                     '</div>' +
 
                     '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
-                        '<img src="assets/images/mint-pastel.png" class="img-responsive gcif-dash-source-img" alt="non_member" />' +
+                        '<img src="assets/images/mint-pastel.png" class="img-responsive gcif-dash-source-img" alt="nonmember" />' +
                         '<h4>Non-Member</h4>' +
-                        '<span class="text-muted"></span>' +
+                        '<span class="text-muted">8 Reported</span>' +
                     '</div>' +
 
                     '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
                         '<img src="assets/images/violet-pastel.png" class="img-responsive gcif-dash-source-img" alt="ontario" />' +
-                        '<h4>Ontario</h4>' +
+                        '<h4>Other</h4>' +
                         '<span class="text-muted"></span>' +
                     '</div>' +
                  '</div>' +
@@ -58,7 +58,6 @@ gcif.dash = (function () {
     }
     , jqueryMap = {}
     , setJqueryMap
-    , setDataSource
     , renderGraphs
     , onClickSource
     , initModule;
@@ -140,7 +139,7 @@ gcif.dash = (function () {
 //        }
 //
 //    };
-    // End PUBLIC method /initModule/
+    // End PUBLIC method /setDataSource/
 
 
 
