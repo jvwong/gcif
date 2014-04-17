@@ -1,7 +1,9 @@
 from mongoengine import *
 
 
+## ****************** Data
 # @Class: Data
+# Inherits EmbeddedDocument
 # Description: A Data object represents raw information used as the basis of indicator metrics
 class Data(EmbeddedDocument):
     name = StringField(max_length=120, required=True)
@@ -12,17 +14,22 @@ class Data(EmbeddedDocument):
     meta = {'allow_inheritance': True}
 
 
-class Value(Data):
+# @Class: Characteristic
+# Inherits Data
+# Description: A Characteristic is specific for a profile indicator
+class Characteristic(Data):
     year = DateTimeField()
 
 
+# @Class: Result
+# Inherits Data
+# Description: A Result is specific for a performance indicator
 class Result(Data):
     numerator = FloatField()
     demoninator = FloatField()
 
 
-
-
+## ****************** Comment
 # @Class: Comment
 # Description: A Comment provides further detail, description, methodology
 # or definition for an (performance) indicator
@@ -30,9 +37,9 @@ class Comment(EmbeddedDocument):
     content = StringField(max_length=5000)
 
 
-# @Class: Indicators
+## ****************** Indicators
+# @Class: Indicator
 # Description: An Indicator encapsulates knowledge regarding an aspect of a City
-# Profile and Performance inherit from the base class
 class Indicator(EmbeddedDocument):
     type = StringField(max_length=120, required=True)
     category = StringField(max_length=120, required=True)
@@ -40,8 +47,11 @@ class Indicator(EmbeddedDocument):
     meta = {'allow_inheritance': True}
 
 
+# @Class: ProfileIndicator
+# Inherits Indicator
+# Description: A Profile indicator inherits from Indicator and specifies an atomic characteristic of a city
 class ProfileIndicator(Indicator):
-    characteristic = EmbeddedDocumentField(Value)
+    characteristic = EmbeddedDocumentField(Characteristic)
 
 
 THEMES = ('Economy'
