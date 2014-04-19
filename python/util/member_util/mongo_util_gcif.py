@@ -215,44 +215,6 @@ def getThemeIndicators(db_handle):
 
 
 
-# function: getCoreList
-# @description: makes a csv chart of the cities and core indicator values
-# @pre-condition: valid mongo collections
-# @input:
-#   dbhandle - the pymongo data base handle
-# @output:
-#   coreOut - a csv list of cities and core indicator values
-def getCoreList(dbhandle):
-
-    # A list to store the csv
-    coreOut = []
-
-    # Get the document collections for the schema and data
-    schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.members_recent_gcif_simple.find()
-
-    # Write out the header row
-    corenames = []
-    corenames = [core.get("name").encode('UTF-8') for core in schema]
-    corenames.insert(0, 'CityUniqueID_')
-    corenames.insert(0, 'CityName')
-    coreOut.append(corenames)
-
-    ###loop over each city (255) and extract that indicator
-    for city in cities:
-
-        citydata = []
-
-        ### loop over the core indicator names (39)
-        for corename in corenames:
-            citydata.append((city[corename]).encode('UTF-8'))
-
-        coreOut.append(citydata)
-
-    return coreOut
-
-
-
 # function: getCoreJson
 # @description: outputs json of the cities (key = CityUniqueID_) and data for core indicators
 # @pre-condition: valid mongo collections
@@ -401,12 +363,12 @@ def main():
     #     ffoutcore.write(json.dumps(corejson))
 
     ### *** Counts: Generate a csv of cities and their per-theme counts
-    fouttheme = 'member_theme_counts.csv'
-    themecounts = getThemeCounts(gcif_handle)
-
-    with open(fouttheme, 'wb') as ffoutcatcount:
-        writer = csv.writer(ffoutcatcount)
-        writer.writerows(themecounts)
+    # fouttheme = 'member_theme_counts.csv'
+    # themecounts = getThemeCounts(gcif_handle)
+    #
+    # with open(fouttheme, 'wb') as ffoutcatcount:
+    #     writer = csv.writer(ffoutcatcount)
+    #     writer.writerows(themecounts)
 
 
 if __name__ == "__main__":
