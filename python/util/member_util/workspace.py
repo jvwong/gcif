@@ -42,19 +42,19 @@ def getdbhandle(hostname="localhost", db_name="test"):
 
 
 
-# function: getThemeCounts
+# function: countThemes
 # @description: generate csv of the number of core indicators per theme
 # @pre-condition: valid monogo collection for schema
 # @input:
 #   db_handle - a mongo db handle to collection "schema_gcif"
 # @output:
 #   csvout - a csv of the counts for each theme
-def getThemeCounts(db_handle):
+def countThemes(db_handle):
 
     csvout = []
 
     # A list of indicator categories
-    themes = sorted(db_handle.schema_gcif.find({"type": "core"}).distinct("theme"))
+    themes = sorted(db_handle.performance_indicators_gcif.find({"core": 1}).distinct("theme"))
 
     #append a header row
     csvout.append(themes)
@@ -63,9 +63,9 @@ def getThemeCounts(db_handle):
     #count up the indicators for each theme in order of appearance
     for theme in themes:
         # get out the core documents for each theme
-        counts.append(db_handle.schema_gcif.find({"type": "core", "theme": theme}).count())
-
-    # print counts
+        counts.append(db_handle.performance_indicators_gcif.find({"core": 1, "theme": theme}).count())
+    #
+    # # print counts
     csvout.append(counts)
 
     return csvout
@@ -81,8 +81,7 @@ def main():
     ### ******************************** DATABASE OPERATIONS *****************************************************
     #
     # ****************** prepare gcif collections
-    tcounts = getThemeCounts(gcif_handle)
-    # print tcounts
+    tcounts = countThemes(gcif_handle)
 
     with open('core_theme_counts.csv', 'wb') as ffoutcatcount:
         writer = csv.writer(ffoutcatcount)
