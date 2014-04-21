@@ -38,11 +38,18 @@ class Comment(EmbeddedDocument):
 
 
 ## ****************** Indicators
+TYPES = ('PROFILE',
+         'PERFORMANCE')
+
+CATEGORIES = ('CITY SERVICES',
+              'QUALITY OF LIFE')
+
 # @Class: Indicator
 # Description: An Indicator encapsulates knowledge regarding an aspect of a City
 class Indicator(EmbeddedDocument):
-    type = StringField(max_length=120, required=True)
-    category = StringField(max_length=120, required=True)
+    id = IntField(min_value=0, unique=True, required=True)
+    type = StringField(max_length=120, required=True, choices=TYPES)
+    category = StringField(max_length=120, required=True, choices=CATEGORIES)
 
     meta = {'allow_inheritance': True}
 
@@ -54,37 +61,35 @@ class ProfileIndicator(Indicator):
     characteristic = EmbeddedDocumentField(Characteristic)
 
 
-THEMES = ('Economy'
-          , 'Education'
-          , 'Energy'
-          , 'Environment'
-          , 'Finance'
-          , 'Fire and Emergency Response'
-          , 'Governance'
-          , 'Health'
-          , 'Recreation'
-          , 'Safety'
-          , 'Shelter'
-          , 'Sold Waste'
-          , 'Technology and Innovation'
-          , 'Transportation'
-          , 'Urban Planning'
-          , 'Wastewater'
-          , 'Water and Sanitation')
-
+THEMES = ('economy',
+          'education',
+          'energy',
+          'environment',
+          'finance',
+          'fire and emergency response',
+          'governance',
+          'health',
+          'safety',
+          'shelter',
+          'sold Waste',
+          'technology and innovation',
+          'transportation',
+          'urban Planning',
+          'wastewater',
+          'water and sanitation')
 
 class PerformanceIndicator(Indicator):
-    # result = EmbeddedDocumentField(Result)
+    result = EmbeddedDocumentField(Result)
     theme = StringField(required=True, choices=THEMES)
     comment = EmbeddedDocumentField(Comment)
     service_provide = StringField(max_length=120)
-
+    core = BooleanField(required=True, default=True)
 
 
 # @Class: City
 # Description: A City encapsulates a place and it's related indicators
 class City(Document):
     name = StringField(max_length=120, required=True)
-    CityUniqueID = IntField(min_value=0)
-    Indicators = ListField(EmbeddedDocumentField(Indicator), default=list)
+    id = IntField(min_value=0, unique=True, required=True)
+    indicators = ListField(EmbeddedDocumentField(Indicator), default=list)
 
