@@ -20,7 +20,7 @@ var
 , app     = express()
 , server  = http.createServer( app )
 
-, port_default = 9000;
+, port_default = 9090;
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
 

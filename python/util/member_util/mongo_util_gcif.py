@@ -323,17 +323,17 @@ def main():
     ###  ********** indicator collections
     # profile_indicators_csv = root + "profile_indicators_ISO.csv"
     # profile_docs = getIndicators(profile_indicators_csv)
-    # gcif_handle.profile_indicators_gcif.insert(profile_docs, safe=True)
-
+    # gcif_handle.profile_indicators.insert(profile_docs, safe=True)
+    #
     # performance_indicators_csv = root + "performance_indicators_ISO.csv"
     # performance_docs = getIndicators(performance_indicators_csv)
-    # gcif_handle.performance_indicators_gcif.insert(performance_docs, safe=True)
-
-    ###  ********** member city data (gcif)
+    # gcif_handle.performance_indicators.insert(performance_docs, safe=True)
+    #
+    ##  ********** member city data (gcif)
     # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
     # member_data_csv = root + "recent_gcif.csv"
     # member_docs = getCityDocs(member_data_csv)
-    # gcif_handle.member_gcif.insert(member_docs, safe=True)
+    # gcif_handle.member_cities.insert(member_docs, safe=True)
     ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 

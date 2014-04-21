@@ -1,5 +1,5 @@
 /*
- * app.js - Express server with routing
+* app.js - Express server with routing
 */
 
 /*jslint         node    : true, continue : true,
@@ -20,12 +20,12 @@ var
 , app     = express()
 , server  = http.createServer( app )
 
-, port_default = 9000;
-// ------------- END MODULE SCOPE VARIABLES ---------------
+, port_default = 9090
+;
+//// ------------- END MODULE SCOPE VARIABLES ---------------
 
 
-
-// ------------- BEGIN SERVER CONFIGURATION ---------------
+//// ------------- BEGIN SERVER CONFIGURATION ---------------
 app.configure( function () {
 
   // set PORT from process.argv
@@ -36,14 +36,6 @@ app.configure( function () {
           port_default = arg[1];
       }
   });
-
-  app.enable('trust proxy');
-
-  app.use( express.cookieParser() );
-  app.use( express.bodyParser() );
-  app.use( express.methodOverride() );
-
-  app.use( express.session({ secret: 'ilovescotch' }) );
 
   app.use( express.static( __dirname + '/public' ) );
   app.use( app.router );
@@ -62,16 +54,15 @@ app.configure( 'production', function () {
   app.use( express.errorHandler() );
 });
 
-//routes.authenticate( passport, LocalStrategy );
-routes.configRoutes( app, server );
+routes.configRoutes( app );
+//// -------------- END SERVER CONFIGURATION ----------------
 
-// -------------- END SERVER CONFIGURATION ----------------
-
-// ----------------- BEGIN START SERVER -------------------
+//// ----------------- BEGIN START SERVER -------------------
 server.listen( port_default );
 console.log(
   'Express server listening on port %d in %s mode',
    server.address().port, app.settings.env
 );
-// ------------------ END START SERVER --------------------
+//// ------------------ END START SERVER --------------------
 
+app.listen(3000);

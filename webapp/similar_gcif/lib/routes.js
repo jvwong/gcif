@@ -13,80 +13,47 @@
 // ------------ BEGIN MODULE SCOPE VARIABLES --------------
 'use strict';
 var
-//    authenticate, isValidUser
+//    mongodb     = require( 'mongodb' )
+//
+//    , mongoServer = new mongodb.Server(
+//        'localhost'
+//        , mongodb.Connection.DEFAULT_PORT
+//    )
+//
+//    , dbHandle    = new mongodb.Db(
+//    'gcif', mongoServer, { safe : true }
+//    )
+
     configRoutes
-  , crud        = require( './crud' )
-  , makeMongoId = crud.makeMongoId;
+    , crud        = require( './crud' )
+    ;
+
+//    dbHandle.open( function () {
+//      console.log( '** Connected to MongoDB **' );
+//    });
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
 
-// ------------- BEGIN PASSPORT CONFIGURATION ---------------
-
-//authenticate = function( passport, LocalStrategy ){
-//
-//  passport.use(new LocalStrategy(
-//
-//    function(username, password, done) {
-//      crud.read(
-//        'user'
-//        , { name: username }
-//        , {}
-//        , function( err, userlist ) {
-//
-//          var user = userlist[0];
-//          if (err) { return done(err); }
-//          if (!user) {
-//            return done(null, false, { message: 'Incorrect username.' });
-//          }
-////          if (!user.validPassword(password)) {
-////            return done(null, false, { message: 'Incorrect password.' });
-////          }
-////          console.log("Error: %s", err);
-////          console.log("User returned: %s", user[0].name);
-//          return done( null, user );
-//        }
-//      );
-//    }
-//
-//  ));
-//}
-//
-//isValidUser = function (request, response, next){
-//
-//  if( !request.isAuthenticated() ){
-//    console.log("authenticated: no");
-//    response.redirect( '/login' );
-//  }else{
-//    console.log("authenticated: yes");
-//    next();
-//  }
-//
-//}
-//
-
-// ------------- END PASSPORT CONFIGURATION ---------------
-
-
 // ---------------- BEGIN PUBLIC METHODS ------------------
-configRoutes = function ( app, server ) {
+configRoutes = function ( app ) {
 
-  app.get( '/', function ( request, response ) {
-      response.redirect( '/index.html' );
-  });
+    app.get( '/', function ( request, response ) {
+      response.render( 'index.html' );
+    });
 
-//  app.all( '/:obj_type/*?', function ( request, response, next ) {
-//    response.contentType( 'json' );
-//    next();
-//  });
-//
-//  app.get( '/:obj_type/list', function ( request, response ) {
-//    crud.read(
-//      request.params.obj_type,
-//      {}, {},
-//      function ( inner_error, map_list ) { response.send( map_list ); }
-//    );
-//  });
-//
+    app.all( '/:obj_type/*?', function ( request, response, next ) {
+        response.contentType( 'json' );
+        next();
+    });
+
+    app.get( '/:obj_type/list', function ( request, response ) {
+        crud.read(
+            request.params.obj_type,
+            {}, {},
+            function ( error, map_list ) { response.send( map_list ); }
+        );
+    });
+
 //  app.post( '/:obj_type/create', function ( request, response ) {
 //    crud.construct(
 //      request.params.obj_type,

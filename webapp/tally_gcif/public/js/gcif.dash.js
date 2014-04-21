@@ -49,7 +49,11 @@ gcif.dash = (function () {
                     '</div>' +
                  '</div>' +
 
-                '<div class="gcif-shell-dash-hbar"></div>'
+                 '<div class="gcif-shell-dash-hbar"></div>' +
+            '</div>'
+
+
+
 
 
     }
