@@ -186,34 +186,6 @@ def getIndicators(indicator_csv):
     return doclist
 
 
-# function: getThemeIndicators
-# @description: makes a json of the core performance themes and their respective indicators
-# @pre-condition: valid db_handle and collection of indicator schema
-# @input:
-#   db_handle - a handle to a mongo db database
-# @output:
-#   cats_indicators - a json of the form {"category_i": [ind_i1, ..., ind_in],..., "category_m": [ind_m1, ..., ind_mn]}
-def getThemeIndicators(db_handle):
-
-    themes_indicators = {}
-
-    themes = ["economy", "education", "energy", "environment", "finance", "fire and emergency response",
-              "governance", "health", "safety", "solid waste", "telecommunication and innovation", "transportation",
-              "shelter", "urban planning", "wastewater", "water and sanitation"]
-
-    for theme in themes:
-        indslist = []
-
-        indicators = db_handle.schema_gcif.find({"type": "core", "theme": theme})
-
-        for indicator in indicators:
-            indslist.append((indicator.get("name")).encode('UTF-8'))
-
-        themes_indicators[theme] = indslist
-
-    return themes_indicators
-
-
 
 # function: getCoreJson
 # @description: outputs json of the cities (key = CityUniqueID_) and data for core indicators
@@ -324,37 +296,6 @@ def main():
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
-    # city = "TORONTO"
-    # print city
-    # result = gcif_handle.member_gcif.find_one({"CityName": city})
-    # print result.get("Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)")
-    # print result.get("Percentage of city population with sustainable access to an improved water source")
-    # print result.get("Percentage of population with access to improved sanitation") is not None
-    # print result.get("Total domestic water consumption per capita (litres/day)")
-
-
-
-    ### ******************************** DATABASE OPERATIONS *****************************************************
-    #
-    # ****************** prepare gcif collections
-    # root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
-
-    ###  ********** indicator collections
-    # profile_indicators_csv = root + "profile_indicators_ISO.csv"
-    # profile_docs = getIndicators(profile_indicators_csv)
-    # gcif_handle.profile_indicators_gcif.insert(profile_docs, safe=True)
-
-    # performance_indicators_csv = root + "performance_indicators_ISO.csv"
-    # performance_docs = getIndicators(performance_indicators_csv)
-    # gcif_handle.performance_indicators_gcif.insert(performance_docs, safe=True)
-
-    ###  ********** member city data (gcif)
-    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
-    # member_data_csv = root + "recent_gcif.csv"
-    # member_docs = getCityDocs(member_data_csv)
-    # gcif_handle.member_gcif.insert(member_docs, safe=True)
-
-
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     ### *** Data: Generate a json of cities and it's core indicators
     # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
@@ -369,6 +310,31 @@ def main():
     # with open(fouttheme, 'wb') as ffoutcatcount:
     #     writer = csv.writer(ffoutcatcount)
     #     writer.writerows(themecounts)
+    ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
+
+
+
+
+    ### ******************************** gcif DATABASE OPERATIONS *****************************************************
+    #
+    # ****************** prepare gcif collections
+    # root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
+    #
+    ###  ********** indicator collections
+    # profile_indicators_csv = root + "profile_indicators_ISO.csv"
+    # profile_docs = getIndicators(profile_indicators_csv)
+    # gcif_handle.profile_indicators_gcif.insert(profile_docs, safe=True)
+
+    # performance_indicators_csv = root + "performance_indicators_ISO.csv"
+    # performance_docs = getIndicators(performance_indicators_csv)
+    # gcif_handle.performance_indicators_gcif.insert(performance_docs, safe=True)
+
+    ###  ********** member city data (gcif)
+    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
+    # member_data_csv = root + "recent_gcif.csv"
+    # member_docs = getCityDocs(member_data_csv)
+    # gcif_handle.member_gcif.insert(member_docs, safe=True)
+    ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 
 if __name__ == "__main__":

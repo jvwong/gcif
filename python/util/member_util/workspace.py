@@ -71,6 +71,29 @@ def countThemes(db_handle):
     return csvout
 
 
+
+
+# function: getTopIndicators
+# @description: retrieve indicators for themes most often reported (most abundant) in member cities
+# @pre-condition: valid data base collection of indicators
+# @input:
+#   db_handle - a valid mongo db handle with collection for performance indicators (performance_indicators_gcif)
+# @output:
+#   indicatorlist - list of json documents for each indicator of interest
+def getTopIndicators(db_handle):
+
+    # A list of indicators from the most abundant themes
+    abundanttheme = ["education", "finance", "health", "safety", "urban planning"]
+
+    # The collection of indicators
+    indicators = db_handle.performance_indicators_gcif.find({"core": 1})
+
+    indlist = [{"indicator": indicator.get("indicator"), "theme": indicator.get("theme")} for indicator in indicators
+               if indicator.get("theme") in abundanttheme]
+
+    return indlist
+
+
 def main():
 
     #*** open the gcif database
@@ -78,14 +101,19 @@ def main():
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
-    ### ******************************** DATABASE OPERATIONS *****************************************************
+    ### ******************************** COLLECTION OPERATIONS *****************************************************
     #
     # ****************** prepare gcif collections
-    tcounts = countThemes(gcif_handle)
+    # tcounts = countThemes(gcif_handle)
+    #
+    # with open('core_theme_counts.csv', 'wb') as ffoutcatcount:
+    #     writer = csv.writer(ffoutcatcount)
+    #     writer.writerows(tcounts)
 
-    with open('core_theme_counts.csv', 'wb') as ffoutcatcount:
-        writer = csv.writer(ffoutcatcount)
-        writer.writerows(tcounts)
+    ### **************** Top Indicators, Themes, and Reporting Cities
+    # abundant = getTopIndicators(gcif_handle)
+    # with open('abundant_themes.json', 'wb') as fout:
+    #     fout.write(json.dumps(abundant))
 
 
 if __name__ == "__main__":

@@ -46,8 +46,9 @@ CATEGORIES = ('CITY SERVICES',
 
 # @Class: Indicator
 # Description: An Indicator encapsulates knowledge regarding an aspect of a City
-class Indicator(EmbeddedDocument):
+class Indicator(Document):
     id = IntField(min_value=0, unique=True, required=True)
+    city = ReferenceField(City, required=True, unique_with='type')
     type = StringField(max_length=120, required=True, choices=TYPES)
     category = StringField(max_length=120, required=True, choices=CATEGORIES)
 
@@ -91,5 +92,3 @@ class PerformanceIndicator(Indicator):
 class City(Document):
     name = StringField(max_length=120, required=True)
     id = IntField(min_value=0, unique=True, required=True)
-    indicators = ListField(EmbeddedDocumentField(Indicator), default=list)
-
