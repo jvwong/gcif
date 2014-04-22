@@ -54,7 +54,10 @@ gcif.compare = (function () {
             '</div>'
     }
     , stateMap = {
-          $container : undefined
+          $container                  : undefined
+          , member_cities_db          : TAFFY()
+          , performance_indicators_db : TAFFY()
+          , car_data : TAFFY()
     }
 
     , jqueryMap = {}
@@ -92,7 +95,7 @@ gcif.compare = (function () {
        var
          margin = {top: 60, right: 10, bottom: 60, left: 10}
        , minwidth = 400, minheight = 300
-       , width, height // set by setsvgdim()
+       , width, height
        , svg
        , x = d3.scale.ordinal()
        , y = {}
@@ -128,8 +131,13 @@ gcif.compare = (function () {
                   , height: height + margin.top + margin.bottom
                 })
                 .append("g")
-                .attr({ transform: "translate(" + margin.left + "," + margin.top + ")" })
+                .attr({ class: "body"
+                    , transform: "translate(" + margin.left + "," + margin.top + ")" })
             ;
+
+            // debug - d3 selection for "g.body"
+            console.log(svg);
+
         }
 
         function position(d) {
@@ -169,18 +177,50 @@ gcif.compare = (function () {
             d3.transition()
             .duration(750)
             .each(redraw);
-            }
+        }
+
+        /* load data from MongoDB */
+        function loadMongodb() {
+
+            // push member city data from mongodb collection "member_cities" in TAFFY DB
+            d3.json("/member_cities/list", function(member_cities_data) {
+                stateMap.member_cities_db.insert(member_cities_data);
+
+                // push performance indicator data from mongodb collection "performance_indicators" in TAFFY DB
+                d3.json("/performance_indicators/list", function(performance_indicators_data) {
+                    stateMap.performance_indicators_db.insert(performance_indicators_data);
+
+                    d3.csv("cars.csv", function(cars) {
+                        stateMap.car_data.insert(cars);
+                        redraw();
+                    });
+                });
+            });
+
+        }
+
 
         function redraw() {
 
-            d3.csv("cars.csv", function(cars) {
+
+            var cars = stateMap.car_data().get();
+
+                console.log(cars[0]);
 
                 // Extract the list of dimensions and create a scale for each.
-                x.domain(dimensions = d3.keys(cars[0]).filter(function(d) {
-                    return d != "name" && (y[d] = d3.scale.linear()
-                    .domain(d3.extent(cars, function(p) { return +p[d]; }))
-                    .range([height, 0]));
+                x.domain(dimensions = d3.keys(cars[0]).filter(function(key) {
+
+                    return key != ("name") &&
+                           key != ("___id") &&
+                           key != ("___s") &&
+                           (y[key] = d3.scale.linear()
+                                     .domain(d3.extent(cars, function(p) { return +p[key]; }))
+                                     .range([height, 0])
+                           );
                 }));
+
+                console.log(dimensions);
+
 
                 // Add grey background lines for context.
                 background = svg.append("g")
@@ -249,7 +289,7 @@ gcif.compare = (function () {
                     .selectAll("rect")
                     .attr("x", -8)
                     .attr("width", 16);
-            });
+
 
         }
 
@@ -259,9 +299,7 @@ gcif.compare = (function () {
         /* instructions for drawing */
         setsvgdim();
         rendersvg();
-        redraw();
-
-
+        loadMongodb();
 
     };
     // END private method /render/
