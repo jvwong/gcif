@@ -13,6 +13,7 @@ svg{
     fill: none;
     stroke: steelblue;
     stroke-opacity: .7;
+    stroke-width: 3;
 }
 
 .gcif-compare.chart .brush .extent {
@@ -30,4 +31,17 @@ svg{
 .gcif-compare.chart .axis text {
     text-shadow: 0 1px 0 #fff;
     cursor: move;
+    font-size: 0.9em;
+}
+
+/* labels */
+.gcif-compare.chart .axis > text {
+    text-shadow: 0 1px 0 #fff;
+    cursor: move;
+    font-size: 0.8em;
+}
+
+.tooltip{
+    font-size: 1.1em;
+    color: lightseagreen;
 }

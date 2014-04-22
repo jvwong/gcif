@@ -55,9 +55,23 @@ gcif.compare = (function () {
     }
     , stateMap = {
           $container                  : undefined
+          , indicators                : undefined
+          , cities                    : undefined
           , member_cities_db          : TAFFY()
           , performance_indicators_db : TAFFY()
-          , car_data : TAFFY()
+          , abundant_themes_db        : TAFFY()
+          , car_data                  : TAFFY()
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",]
+          , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
     , jqueryMap = {}
@@ -93,8 +107,8 @@ gcif.compare = (function () {
     render = function(){
 
        var
-         margin = {top: 60, right: 10, bottom: 60, left: 10}
-       , minwidth = 400, minheight = 300
+         margin = {top: 25, right: 5, bottom: 150, left: 5}
+       , minwidth = 1000, minheight = 300
        , width, height
        , svg
        , x = d3.scale.ordinal()
@@ -105,6 +119,7 @@ gcif.compare = (function () {
        , background
        , foreground
        , dimensions
+       , tooltip
        ;
 
         /* sets the svg dimensions based upon the current browser window */
@@ -134,10 +149,6 @@ gcif.compare = (function () {
                 .attr({ class: "body"
                     , transform: "translate(" + margin.left + "," + margin.top + ")" })
             ;
-
-            // debug - d3 selection for "g.body"
-            console.log(svg);
-
         }
 
         function position(d) {
@@ -179,6 +190,33 @@ gcif.compare = (function () {
             .each(redraw);
         }
 
+        function wrap(text, width) {
+            text.each(function() {
+                var text = d3.select(this)
+                , words = text.text().split(/\s+/).reverse()
+                , word
+                , line = []
+                , lineNumber = 0
+                , lineHeight = 1.1 // ems
+                , y = text.attr("y")
+                , dy = parseFloat(text.attr("dy"))
+                , tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
+                ;
+
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    }
+                }
+
+            });
+        }
+
         /* load data from MongoDB */
         function loadMongodb() {
 
@@ -186,115 +224,172 @@ gcif.compare = (function () {
             d3.json("/member_cities/list", function(member_cities_data) {
                 stateMap.member_cities_db.insert(member_cities_data);
 
+                //console.log(stateMap.member_cities_db({"Percentage of female school-aged population enrolled in schools": {">": 100}}).get());
+                //cache the cities in the stateMap
+                stateMap.cities = stateMap.member_cities_db(function(){
+                    //only include the top 50 cities by indicator count
+                    return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
+                }).get();
+
                 // push performance indicator data from mongodb collection "performance_indicators" in TAFFY DB
                 d3.json("/performance_indicators/list", function(performance_indicators_data) {
                     stateMap.performance_indicators_db.insert(performance_indicators_data);
 
-                    d3.csv("cars.csv", function(cars) {
-                        stateMap.car_data.insert(cars);
+                    //cache the performance indicators in the stateMap
+                    stateMap.indicators = stateMap.performance_indicators_db(function(){
+                        //only include indicators in top 5 themes
+                        return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
+                    }).get();
+
+                    d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+                        stateMap.abundant_themes_db.insert(abundant_themes);
                         redraw();
                     });
+
                 });
             });
 
         }
 
 
+
+
         function redraw() {
 
+            //load the cached data -- this can be interactive so leave be
+            var ilist = stateMap.indicators.map(function(idoc){
+                    return idoc["indicator"]
+            })
 
-            var cars = stateMap.car_data().get();
+            , cities = stateMap.cities
+            ;
 
-                console.log(cars[0]);
+            // Extract the list of dimensions and create a scale for each.
+            x.domain(dimensions = d3.keys(cities[0]).filter(function(header) {
 
-                // Extract the list of dimensions and create a scale for each.
-                x.domain(dimensions = d3.keys(cars[0]).filter(function(key) {
+                return header !== ("_id") &&
 
-                    return key != ("name") &&
-                           key != ("___id") &&
-                           key != ("___s") &&
-                           (y[key] = d3.scale.linear()
-                                     .domain(d3.extent(cars, function(p) { return +p[key]; }))
-                                     .range([height, 0])
-                           );
-                }));
+                       // filter the headers here based on ilist defined above
+                       (ilist.indexOf(header) >=0)  &&
 
-                console.log(dimensions);
+                       // initialize the y scale (y)
+                       // y is a global dictionary {} of y-scales for each column (header)
+                       (y[header] = d3.scale.linear()
+                                 .domain(d3.extent(cities, function(document) {
+                                                                            return +document[header];
+                                                                       })
+                                 )
+                                 .range([height, 0])
+                       );
+            }));
 
 
-                // Add grey background lines for context.
-                background = svg.append("g")
-                    .attr("class", "background")
-                    .selectAll("path")
-                    .data(cars)
-                    .enter().append("path")
-                    .attr("d", path);
+            // Add grey background lines for context.
+            background = svg.append("g")
+                .attr("class", "background")
+                .selectAll("path")
+                .data(cities)
+                .enter().append("path")
+                .attr("d", path);
 
-                // Add blue foreground lines for focus.
-                foreground = svg.append("g")
-                    .attr("class", "foreground")
-                    .selectAll("path")
-                    .data(cars)
-                    .enter().append("path")
-                    .attr("d", path);
+            // Add blue foreground lines for focus.
+            foreground = svg.append("g")
+                .attr("class", "foreground")
+                .selectAll("path")
+                .data(cities)
+                .enter().append("path")
+                .attr("d", path);
 
-                // Add a group element for each dimension.
-                var g = svg.selectAll(".dimension")
-                    .data(dimensions)
-                    .enter().append("g")
-                    .attr("class", "dimension")
-                    .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
-                    .call(
-                        d3.behavior.drag()
-                        .on("dragstart", function(d) {
-                            dragging[d] = this.__origin__ = x(d);
-                            background.attr("visibility", "hidden");
-                        })
-                        .on("drag", function(d) {
-                            dragging[d] = Math.min(width, Math.max(0, this.__origin__ += d3.event.dx));
-                            foreground.attr("d", path);
-                            dimensions.sort(function(a, b) { return position(a) - position(b); });
-                            x.domain(dimensions);
-                            g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
-                        })
-                        .on("dragend", function(d) {
-                            delete this.__origin__;
-                            delete dragging[d];
-                            transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
-                            transition(foreground)
-                            .attr("d", path);
-                            background
-                            .attr("d", path)
-                            .transition()
-                            .delay(500)
-                            .duration(0)
-                            .attr("visibility", null);
-                        })
-                    )
-                    ;
+            // Add a group element for each dimension.
+            var g = svg.selectAll(".dimension")
+                .data(dimensions)
+               .enter()
+                .append("g")
+                .attr("class", "dimension")
+                .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+                .call(
+                    d3.behavior.drag()
+                    .on("dragstart", function(d) {
+                        dragging[d] = this.__origin__ = x(d);
+                        background.attr("visibility", "hidden");
+                    })
+                    .on("drag", function(d) {
+                        dragging[d] = Math.min(width, Math.max(0, this.__origin__ += d3.event.dx));
+                        foreground.attr("d", path);
+                        dimensions.sort(function(a, b) { return position(a) - position(b); });
+                        x.domain(dimensions);
+                        g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+                    })
+                    .on("dragend", function(d) {
+                        delete this.__origin__;
+                        delete dragging[d];
+                        transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
 
-                // Add an axis and title.
-                g.append("g")
-                    .attr("class", "axis")
-                    .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
-                    .append("svg:text")
-                    .attr("text-anchor", "middle")
-                    .attr("y", -9)
-                    .text(String);
+                        transition(foreground).attr("d", path);
 
-                // Add and store a brush for each axis.
-                g.append("g")
-                    .attr("class", "brush")
-                    .each(function(d) { d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)); })
-                    .selectAll("rect")
-                    .attr("x", -8)
-                    .attr("width", 16);
+                        background.attr("d", path)
+                                .transition()
+                                .delay(500)
+                                .duration(0)
+                                .attr("visibility", null);
+                    })
+                )
+                ;
 
+            // Add an axis and title.
+            g.append("g")
+                .attr("class", "axis")
+                .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+                .append("text")
+                .attr("text-anchor", "middle")
+                .attr("y", height)
+                .attr("dy", "2em")
+                .text(String)
+            ;
+
+            //try to wrap the labels
+            d3.selectAll("g.axis > text").call(wrap, 0.80 * (x.range()[1] - x.range()[0]));
+
+            // Add and store a brush for each axis.
+            g.append("g")
+                .attr("class", "brush")
+                .each(function(d) { d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)); })
+                .selectAll("rect")
+                .attr("x", -8)
+                .attr("width", 16);
+
+            // register listener for mouseover
+            d3.selectAll(".foreground > path")
+                .on("mouseover", function(d){
+
+                })
+                .on("click", function(d){
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(d["CityName"])
+                        .style("left", (d3.event.pageX + 20) + "px")
+                        .style("top", (d3.event.pageY - 20) + "px");
+                    foreground.attr("visibility", "hidden");
+                    d3.select(this).attr("visibility", "");
+                })
+                .on("mouseout", function(d){
+                    foreground.attr("visibility", "");
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                })
+
+                ;
 
         }
 
         /* register event listeners */
         d3.select(window).on('resize', resize);
+
+        tooltip = d3.select("body").append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
 
         /* instructions for drawing */
         setsvgdim();
