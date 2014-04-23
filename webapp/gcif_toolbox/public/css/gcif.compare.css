@@ -1,0 +1,47 @@
+svg{
+    /*background-color: lightgoldenrodyellow;*/
+}
+
+.gcif-compare.chart .background path {
+    fill: none;
+    stroke: #ccc;
+    stroke-opacity: .4;
+    shape-rendering: crispEdges;
+}
+
+.gcif-compare.chart .foreground path {
+    fill: none;
+    stroke: steelblue;
+    stroke-opacity: .7;
+    stroke-width: 3;
+}
+
+.gcif-compare.chart .brush .extent {
+    fill-opacity: .3;
+    stroke: #fff;
+    shape-rendering: crispEdges;
+}
+
+.gcif-compare.chart .axis line, .gcif-compare.chart .axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.gcif-compare.chart .axis text {
+    text-shadow: 0 1px 0 #fff;
+    cursor: move;
+    font-size: 0.9em;
+}
+
+/* labels */
+.gcif-compare.chart .axis > text {
+    text-shadow: 0 1px 0 #fff;
+    cursor: move;
+    font-size: 0.8em;
+}
+
+.tooltip{
+    font-size: 1.1em;
+    color: lightseagreen;
+}

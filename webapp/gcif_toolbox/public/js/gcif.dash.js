@@ -20,7 +20,33 @@ gcif.dash = (function () {
 
         main_html : String() +
 
-            '<div class="gcif-shell-dash-similar"></div>'
+            '<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">' +
+                '<h3 class="page-header">GCIF Toolbox</h3>' +
+
+                '<div class="row gcif-shell-dash-toolbox">' +
+                    '<div class="col-xs-6 col-sm-3 gcif-shell-dash-toolbox-select-compare">' +
+                        '<h4>Comparison</h4>' +
+                        '<span class="text-muted">Top 50 Reporting</span>' +
+                    '</div>' +
+                    '<div class="col-xs-6 col-sm-3 gcif-shell-dash-toolbox-select-similar">' +
+                        '<h4>Similarity</h4>' +
+                        '<span class="text-muted">Top 50 Reporting</span>' +
+                    '</div>' +
+                    '<div class="col-xs-6 col-sm-3 gcif-shell-dash-toolbox-select-placeholder1">' +
+                        '<h4>Placeholder1</h4>' +
+                        '<span class="text-muted">Placeholder1 Blurb</span>' +
+                    '</div>' +
+                    '<div class="col-xs-6 col-sm-3 gcif-shell-dash-toolbox-select-placeholder2">' +
+                        '<h4>Placeholder2</h4>' +
+                        '<span class="text-muted">Placeholder2 Blurb</span>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="gcif-shell-dash-toolbox-compare"></div>' +
+                '<div class="gcif-shell-dash-toolbox-similar"></div>' +
+            '</div>'
+
+
 
     }
     , stateMap = {
@@ -28,9 +54,9 @@ gcif.dash = (function () {
     }
     , jqueryMap = {}
     , setJqueryMap
-    , renderGraphs
-    , onClickSource
-    , initModule;
+    , display
+    , initModule
+    ;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
 
@@ -43,18 +69,21 @@ gcif.dash = (function () {
 
         jqueryMap = {
                $container     : $container
-             , similar        : $container.find('.gcif-shell-dash-similar')
+             , $compare        : $container.find('.gcif-shell-dash-toolbox-compare')
+             , $similar        : $container.find('.gcif-shell-dash-toolbox-similar')
         };
     };
     //--------------------- END DOM METHODS ----------------------
 
 
 
-    // private method /renderGraphs/
-    renderGraphs = function( source ){
+    // private method /display/
+    display = function(){
+
+        gcif.compare.initModule( jqueryMap.$compare );
 
     };
-    //end /renderGraphs/
+    //end /display/
 
 
     //------------------- BEGIN EVENT HANDLERS -------------------
@@ -85,6 +114,7 @@ gcif.dash = (function () {
         stateMap.$container = $container;
         $container.html(configMap.main_html);
         setJqueryMap();
+        display();
 
     };
     // End PUBLIC method /initModule/
