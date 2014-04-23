@@ -31,6 +31,23 @@ gcif.compare = (function () {
 
                 '<div id="myTabContent" class="tab-content">' +
                     '<div class="tab-pane fade active in" id="graphical">' +
+                        '<div class="row">' +
+                            '<form class="form" role="form">' +
+                                '<div class="form-group gcif-compare menu">' +
+                                    '<label for="category-dropdown" class="col-sm-2 control-label">Theme</label>' +
+                                    '<div class="col-sm-10">' +
+                                        '<select id="theme-dropdown" class="form-control"></select>' +
+                                    '</div>' +
+                                '<div>' +
+                                '<div class="form-group">' +
+                                    '<div class="btn-group gcif-compare reset-highlight col-sm-offset-2 col-sm-10">' +
+                                        '<button type="button" class="btn btn-default" id="reset-highlight">' +
+                                            '<span class="glyphicon glyphicon-pencil"></span> Clear Highlight' +
+                                        '</button>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</form>' +
+                        '<div>' +
                         '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
                     '<div class="tab-pane fade" id="tabular">' +
@@ -55,22 +72,25 @@ gcif.compare = (function () {
     }
     , stateMap = {
           $container                  : undefined
-          , indicators                : undefined
           , cities                    : undefined
+
+          , isClicked                 : false
+          , theme                     : "education"
+          , means                     : {}
+
           , member_cities_db          : TAFFY()
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
           , car_data                  : TAFFY()
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
-//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
-//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
-//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
-//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
-//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
-//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
           , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",]
+                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -85,7 +105,6 @@ gcif.compare = (function () {
 
 
     //--------------------- BEGIN DOM METHODS --------------------
-
     setJqueryMap = function(){
         var
           $container = stateMap.$container;
@@ -96,9 +115,12 @@ gcif.compare = (function () {
         };
     };
 
+
     setd3Map = function(){
         d3Map = {
-            d3compare : d3.select(".gcif-compare.chart")
+              d3compare           : d3.select(".gcif-compare.chart")
+            , d3reset_highlight   : d3.select(".gcif-compare.reset-highlight button#reset-highlight")
+            , d3theme_dropdown    : d3.select(".gcif-compare.menu select#theme-dropdown")
         };
     };
 
@@ -108,7 +130,7 @@ gcif.compare = (function () {
 
        var
          margin = {top: 25, right: 5, bottom: 150, left: 5}
-       , minwidth = 1000, minheight = 300
+       , minwidth = 500, minheight = 300
        , width, height
        , svg
        , x = d3.scale.ordinal()
@@ -119,7 +141,9 @@ gcif.compare = (function () {
        , background
        , foreground
        , dimensions
-       , tooltip
+       , tooltip = d3.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0)
        ;
 
         /* sets the svg dimensions based upon the current browser window */
@@ -133,6 +157,7 @@ gcif.compare = (function () {
             height = d3.max([$( window ).height() * verticalScaling - margin.top - margin.bottom, minheight]);
             x.rangePoints([0, width], 1);
         }
+
 
         /* renders the containing svg element */
         function rendersvg(){
@@ -151,19 +176,25 @@ gcif.compare = (function () {
             ;
         }
 
+
         function position(d) {
             var v = dragging[d];
             return v == null ? x(d) : v;
         }
+
 
         function transition(g) {
             return g.transition().duration(500);
         }
 
         // Returns the path for a given data point.
+            // we could try to mean center here
         function path(d) {
-            return line(dimensions.map(function(p) { return [position(p), y[p](d[p])]; }));
+            return line(dimensions.map(function(p) {
+                    return [position(p), y[p](d[p])]; })
+            );
         }
+
 
         // Handles a brush event, toggling the display of foreground lines.
         function brush() {
@@ -176,6 +207,7 @@ gcif.compare = (function () {
             });
         }
 
+
         /* Update graph using new width and height (code below) */
         function resize() {
             setsvgdim();
@@ -183,12 +215,60 @@ gcif.compare = (function () {
             change();
         }
 
+
         /* listener for any change to graphics */
         function change() {
             d3.transition()
             .duration(750)
             .each(redraw);
         }
+
+
+        function setIndicatorMeans(theme){
+            //can get mean values here and refer to them in path()
+//            var ilist = (stateMap.abundant_themes_db({theme: theme}).get()).map( function(doc){ return doc["indicator"]});
+//            var values = stateMap.cities.map(
+//                function(citydoc){
+//                    return ilist.map(function(indicator){
+//                        return citydoc[indicator];
+//                    })
+//                }
+//            );
+//            console.log( ilist );
+//            console.log( values );
+
+            //loop over each array of city indicator values and sum them
+
+//            var totals = values.forEach(function(cityValueSet, index){
+//                console.log(cityValueSet);
+//                if(cityValueSet[1]){
+//                    console.log(cityValueSet[1]);
+//                }
+//            });
+//
+            // set the mean for each indicator in ilist
+//            ilist.forEach(function(indicator, index, array){
+                //loop over each array of city indicator values
+//                values.forEach()
+//            });
+        }
+
+        //clear button for highlighted paths
+        d3Map.d3reset_highlight.on("click", function(){
+            d3Map.d3compare.selectAll(".foreground path").each(
+                function(){ d3.select(this).attr("class","unhighlight") }
+            );
+        });
+
+        //listen to changes in theme dropdown
+        d3Map.d3theme_dropdown.on("change", function(){
+            var t = d3Map.d3theme_dropdown.node().value;
+            stateMap.theme  = t;
+            setIndicatorMeans(t);
+            //need to clear the svg and redraw
+            rendersvg(); redraw();
+        });
+
 
         function wrap(text, width) {
             text.each(function() {
@@ -217,6 +297,7 @@ gcif.compare = (function () {
             });
         }
 
+
         /* load data from MongoDB */
         function loadMongodb() {
 
@@ -224,7 +305,6 @@ gcif.compare = (function () {
             d3.json("/member_cities/list", function(member_cities_data) {
                 stateMap.member_cities_db.insert(member_cities_data);
 
-                //console.log(stateMap.member_cities_db({"Percentage of female school-aged population enrolled in schools": {">": 100}}).get());
                 //cache the cities in the stateMap
                 stateMap.cities = stateMap.member_cities_db(function(){
                     //only include the top 50 cities by indicator count
@@ -235,13 +315,19 @@ gcif.compare = (function () {
                 d3.json("/performance_indicators/list", function(performance_indicators_data) {
                     stateMap.performance_indicators_db.insert(performance_indicators_data);
 
-                    //cache the performance indicators in the stateMap
-                    stateMap.indicators = stateMap.performance_indicators_db(function(){
-                        //only include indicators in top 5 themes
-                        return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
-                    }).get();
+                    //Load (top) indicators into dropdown menu
+                    d3Map.d3theme_dropdown.selectAll("option")
+                        .data(stateMap.performance_indicators_db(function(){
+                                //only include indicators in top 5 themes
+                                return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
+                            }).distinct("theme"))
+                       .enter()
+                        .append("option")
+                        .text(function(theme) { return theme; });
+                    d3Map.d3theme_dropdown.append("option").text("all");
 
                     d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+                        //this is pre-filtered for the indicators of interest
                         stateMap.abundant_themes_db.insert(abundant_themes);
                         redraw();
                     });
@@ -252,17 +338,15 @@ gcif.compare = (function () {
         }
 
 
-
-
         function redraw() {
-
-            //load the cached data -- this can be interactive so leave be
-            var ilist = stateMap.indicators.map(function(idoc){
-                    return idoc["indicator"]
-            })
-
+            var
+              // Check the dropdown and load only those indicators mapped to a list
+              ilist = stateMap.theme === "all" ? stateMap.abundant_themes_db().map(function(idoc){ return idoc["indicator"]; }) :
+                  stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 }).map(function(idoc){ return idoc["indicator"]; })
             , cities = stateMap.cities
             ;
+
+
 
             // Extract the list of dimensions and create a scale for each.
             x.domain(dimensions = d3.keys(cities[0]).filter(function(header) {
@@ -274,6 +358,7 @@ gcif.compare = (function () {
 
                        // initialize the y scale (y)
                        // y is a global dictionary {} of y-scales for each column (header)
+                            //can check if we are mean centering
                        (y[header] = d3.scale.linear()
                                  .domain(d3.extent(cities, function(document) {
                                                                             return +document[header];
@@ -282,7 +367,6 @@ gcif.compare = (function () {
                                  .range([height, 0])
                        );
             }));
-
 
             // Add grey background lines for context.
             background = svg.append("g")
@@ -297,7 +381,9 @@ gcif.compare = (function () {
                 .attr("class", "foreground")
                 .selectAll("path")
                 .data(cities)
-                .enter().append("path")
+                .enter()
+                .append("path")
+                .attr("class", "unhighlight")
                 .attr("d", path);
 
             // Add a group element for each dimension.
@@ -336,6 +422,24 @@ gcif.compare = (function () {
                 )
                 ;
 
+
+            // Add a group for each set of points
+            var markers = svg.selectAll(".dimension")
+                             .append("g").attr("class","points");
+            markers.selectAll(".point")
+                   .data(cities)
+                  .enter()
+                   .append("circle")
+                   .attr({ cy     :  function(city){
+                                         var p = d3.select(this.parentNode).datum();
+                                         return y[p](city[p]);
+                                     }
+                          , cx    : 0
+                          , r     : 3
+                          , class : "unhighlight point"
+                    })
+            ;
+
             // Add an axis and title.
             g.append("g")
                 .attr("class", "axis")
@@ -350,46 +454,66 @@ gcif.compare = (function () {
             //try to wrap the labels
             d3.selectAll("g.axis > text").call(wrap, 0.80 * (x.range()[1] - x.range()[0]));
 
-            // Add and store a brush for each axis.
-            g.append("g")
-                .attr("class", "brush")
-                .each(function(d) { d3.select(this).call(y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)); })
-                .selectAll("rect")
-                .attr("x", -8)
-                .attr("width", 16);
+            // Add and store a brush for each axis if there is > 1 indicator
+            if(ilist.length > 1){
+                g.append("g")
+                    .attr("class", "brush")
+                    .each(function(d) {
+                        d3.select(this).call(
+                            y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)
+                        );
+                    })
+                    .selectAll("rect")
+                    .attr("x", -8)
+                    .attr("width", 16);
+            }
 
-            // register listener for mouseover
+            // register listener for mouseover, mouseout, and click
             d3.selectAll(".foreground > path")
                 .on("mouseover", function(d){
-
-                })
-                .on("click", function(d){
                     tooltip.transition()
                         .duration(200)
                         .style("opacity", .9);
                     tooltip.html(d["CityName"])
                         .style("left", (d3.event.pageX + 20) + "px")
                         .style("top", (d3.event.pageY - 20) + "px");
-                    foreground.attr("visibility", "hidden");
-                    d3.select(this).attr("visibility", "");
                 })
                 .on("mouseout", function(d){
-                    foreground.attr("visibility", "");
+                    // get rid of the tooltip when mousing away
                     tooltip.transition()
                         .duration(500)
                         .style("opacity", 0);
                 })
-
+                .on("click", function(d){
+                    //toggle the color of clicked paths
+                    d3.select(this).attr("class", function(){
+                        return d3.select(this).attr("class") === "unhighlight" ? "highlight" : "unhighlight";
+                    });
+                })
                 ;
+
+            // register listener for mouseover, mouseout for points
+            d3.selectAll(".point")
+                .on("mouseover", function(d){
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(d["CityName"])
+                        .style("left", (d3.event.pageX + 20) + "px")
+                        .style("top", (d3.event.pageY - 20) + "px");
+                })
+                .on("mouseout", function(d){
+                    // get rid of the tooltip when mousing away
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                })
+            ;
 
         }
 
         /* register event listeners */
         d3.select(window).on('resize', resize);
-
-        tooltip = d3.select("body").append("div")
-                    .attr("class", "tooltip")
-                    .style("opacity", 0);
 
         /* instructions for drawing */
         setsvgdim();

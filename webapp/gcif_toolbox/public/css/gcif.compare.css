@@ -9,12 +9,35 @@ svg{
     shape-rendering: crispEdges;
 }
 
-.gcif-compare.chart .foreground path {
+.gcif-compare.chart .foreground path.unhighlight {
     fill: none;
     stroke: steelblue;
     stroke-opacity: .7;
     stroke-width: 3;
 }
+
+.gcif-compare.chart .foreground path.highlight {
+    fill: none;
+    stroke: orange;
+    stroke-opacity: .7;
+    stroke-width: 3;
+}
+
+
+.gcif-compare.chart circle.point.unhighlight {
+    fill: steelblue;
+    stroke: black;
+    fill-opacity: .7;
+    stroke-width: 0.2;
+}
+
+.gcif-compare.chart circle.point.highlight {
+    fill: orange;
+    stroke: black;
+    fill-opacity: .7;
+    stroke-width: 0.5;
+}
+
 
 .gcif-compare.chart .brush .extent {
     fill-opacity: .3;
@@ -31,17 +54,18 @@ svg{
 .gcif-compare.chart .axis text {
     text-shadow: 0 1px 0 #fff;
     cursor: move;
-    font-size: 0.9em;
+    font-size: 0.8em;
 }
 
 /* labels */
 .gcif-compare.chart .axis > text {
     text-shadow: 0 1px 0 #fff;
     cursor: move;
-    font-size: 0.8em;
+    font-size: 0.9em;
 }
 
 .tooltip{
-    font-size: 1.1em;
-    color: lightseagreen;
+    font-size: 1.0em;
+    font-weight: 800;
+    color: black;
 }
