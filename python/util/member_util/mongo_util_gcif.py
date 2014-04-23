@@ -315,12 +315,12 @@ def main():
 
 
 
-    ### ******************************** gcif DATABASE OPERATIONS *****************************************************
-    #
-    # ****************** prepare gcif collections
+    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
+    # #
+    # # ****************** prepare gcif collections
     # root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
-    #
-    ###  ********** indicator collections
+    # #
+    # ###  ********** indicator collections
     # profile_indicators_csv = root + "profile_indicators_ISO.csv"
     # profile_docs = getIndicators(profile_indicators_csv)
     # gcif_handle.profile_indicators.insert(profile_docs, safe=True)
@@ -329,12 +329,12 @@ def main():
     # performance_docs = getIndicators(performance_indicators_csv)
     # gcif_handle.performance_indicators.insert(performance_docs, safe=True)
     #
-    ##  ********** member city data (gcif)
+    # #  ********** member city data (gcif)
     # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
     # member_data_csv = root + "recent_gcif.csv"
     # member_docs = getCityDocs(member_data_csv)
     # gcif_handle.member_cities.insert(member_docs, safe=True)
-    ### ******************************** gcif DATABASE OPERATIONS *****************************************************
+    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 
 if __name__ == "__main__":
