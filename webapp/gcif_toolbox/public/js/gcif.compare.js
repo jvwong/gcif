@@ -40,9 +40,14 @@ gcif.compare = (function () {
                                     '</div>' +
                                 '<div>' +
                                 '<div class="form-group">' +
-                                    '<div class="btn-group gcif-compare reset-highlight col-sm-offset-2 col-sm-10">' +
+                                    '<div class="btn-group gcif-compare reset col-sm-offset-2 col-sm-10">' +
                                         '<button type="button" class="btn btn-default" id="reset-highlight">' +
-                                            '<span class="glyphicon glyphicon-pencil"></span> Clear Highlight' +
+                                            '<span class="glyphicon glyphicon-pencil"></span> Reset Highlight' +
+                                        '</button>' +
+//                                    '</div>' +
+//                                    '<div class="btn-group gcif-compare reset-brushes col-sm-offset-2 col-sm-10">' +
+                                        '<button type="button" class="btn btn-default" id="reset-brushes">' +
+                                            '<span class="glyphicon glyphicon-pencil"></span> Reset Brushes' +
                                         '</button>' +
                                     '</div>' +
                                 '</div>' +
@@ -119,7 +124,8 @@ gcif.compare = (function () {
     setd3Map = function(){
         d3Map = {
               d3compare           : d3.select(".gcif-compare.chart")
-            , d3reset_highlight   : d3.select(".gcif-compare.reset-highlight button#reset-highlight")
+            , d3reset_highlight   : d3.select(".gcif-compare.reset button#reset-highlight")
+            , d3reset_brushes     : d3.select(".gcif-compare.reset button#reset-brushes")
             , d3theme_dropdown    : d3.select(".gcif-compare.menu select#theme-dropdown")
         };
     };
@@ -188,7 +194,6 @@ gcif.compare = (function () {
         }
 
         // Returns the path for a given data point.
-            // we could try to mean center here
         function path(d) {
             return line(dimensions.map(function(p) {
                     return [position(p), y[p](d[p])]; })
@@ -253,12 +258,25 @@ gcif.compare = (function () {
 //            });
         }
 
-        //clear button for highlighted paths
+        //reset button for highlighted paths
         d3Map.d3reset_highlight.on("click", function(){
             d3Map.d3compare.selectAll(".foreground path").each(
                 function(){ d3.select(this).attr("class","unhighlight") }
             );
         });
+
+        //reset button for brushes
+        d3Map.d3reset_brushes.on("click", function(){
+            d3.selectAll(".brush").each(function(d,i) {
+                y[d].brush.clear();
+                //clear the brush itself
+                d3.select(this).call( y[d].brush );
+                //call the brush function on this brush to redraw data within extent
+                d3.select(this).call( brush );
+            });
+        });
+
+
 
         //listen to changes in theme dropdown
         d3Map.d3theme_dropdown.on("change", function(){
@@ -268,6 +286,8 @@ gcif.compare = (function () {
             //need to clear the svg and redraw
             rendersvg(); redraw();
         });
+
+
 
 
         function wrap(text, width) {
@@ -459,7 +479,7 @@ gcif.compare = (function () {
                 g.append("g")
                     .attr("class", "brush")
                     .each(function(d) {
-                        d3.select(this).call(
+                            d3.select(this).call(
                             y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)
                         );
                     })
