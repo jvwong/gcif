@@ -43,7 +43,6 @@ gcif.dash = (function () {
                 '</div>' +
 
                 '<div class="gcif-shell-dash-toolbox-compare"></div>' +
-                '<div class="gcif-shell-dash-toolbox-similar"></div>' +
             '</div>'
 
 

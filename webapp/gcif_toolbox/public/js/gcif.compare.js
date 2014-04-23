@@ -30,30 +30,29 @@ gcif.compare = (function () {
                 '</ul>' +
 
                 '<div id="myTabContent" class="tab-content">' +
+
                     '<div class="tab-pane fade active in" id="graphical">' +
-                        '<div class="row">' +
                             '<form class="form" role="form">' +
                                 '<div class="form-group gcif-compare menu">' +
                                     '<label for="category-dropdown" class="col-sm-2 control-label">Theme</label>' +
                                     '<div class="col-sm-10">' +
                                         '<select id="theme-dropdown" class="form-control"></select>' +
                                     '</div>' +
-                                '<div>' +
+                                '</div>' +
                                 '<div class="form-group">' +
                                     '<div class="btn-group gcif-compare reset col-sm-offset-2 col-sm-10">' +
                                         '<button type="button" class="btn btn-default" id="reset-highlight">' +
                                             '<span class="glyphicon glyphicon-pencil"></span> Reset Highlight' +
                                         '</button>' +
-//                                    '</div>' +
-//                                    '<div class="btn-group gcif-compare reset-brushes col-sm-offset-2 col-sm-10">' +
                                         '<button type="button" class="btn btn-default" id="reset-brushes">' +
                                             '<span class="glyphicon glyphicon-pencil"></span> Reset Brushes' +
                                         '</button>' +
                                     '</div>' +
                                 '</div>' +
                             '</form>' +
-                        '<div>' +
-                        '<div class="gcif-compare chart col-lg-12"></div>' +
+                            '<div class="gcif-compare chart col-lg-12">' +
+                            '</div>' +
+
                     '</div>' +
                     '<div class="tab-pane fade" id="tabular">' +
                         '<div class="gcif-compare table col-lg-12 table-responsive">' +
@@ -71,6 +70,7 @@ gcif.compare = (function () {
                             '</table>' +
                         '</div>' +
                     '</div>' +
+
                 '</div>' +
 
             '</div>'
@@ -87,15 +87,15 @@ gcif.compare = (function () {
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
           , car_data                  : TAFFY()
-          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
-                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
-                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
-                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
-                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
-                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
-                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -146,6 +146,7 @@ gcif.compare = (function () {
        , axis = d3.svg.axis().orient("left")
        , background
        , foreground
+       , point
        , dimensions
        , tooltip = d3.select("body").append("div")
                         .attr("class", "tooltip")
@@ -203,13 +204,24 @@ gcif.compare = (function () {
 
         // Handles a brush event, toggling the display of foreground lines.
         function brush() {
+
+            //actives is the set. possibly empty, of indicators/axes that are brushed
             var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
             extents = actives.map(function(p) { return y[p].brush.extent(); });
+
+            // set the line visibility
             foreground.style("display", function(d) {
                 return actives.every(function(p, i) {
                     return extents[i][0] <= d[p] && d[p] <= extents[i][1];
                 }) ? null : "none";
             });
+
+            // set the point visibility
+            // loop through each axis
+            point.forEach(function(pointset, index){
+                console.log(pointset);
+            });
+            console.log(foreground);
         }
 
 
@@ -226,36 +238,6 @@ gcif.compare = (function () {
             d3.transition()
             .duration(750)
             .each(redraw);
-        }
-
-
-        function setIndicatorMeans(theme){
-            //can get mean values here and refer to them in path()
-//            var ilist = (stateMap.abundant_themes_db({theme: theme}).get()).map( function(doc){ return doc["indicator"]});
-//            var values = stateMap.cities.map(
-//                function(citydoc){
-//                    return ilist.map(function(indicator){
-//                        return citydoc[indicator];
-//                    })
-//                }
-//            );
-//            console.log( ilist );
-//            console.log( values );
-
-            //loop over each array of city indicator values and sum them
-
-//            var totals = values.forEach(function(cityValueSet, index){
-//                console.log(cityValueSet);
-//                if(cityValueSet[1]){
-//                    console.log(cityValueSet[1]);
-//                }
-//            });
-//
-            // set the mean for each indicator in ilist
-//            ilist.forEach(function(indicator, index, array){
-                //loop over each array of city indicator values
-//                values.forEach()
-//            });
         }
 
         //reset button for highlighted paths
@@ -277,17 +259,13 @@ gcif.compare = (function () {
         });
 
 
-
         //listen to changes in theme dropdown
         d3Map.d3theme_dropdown.on("change", function(){
             var t = d3Map.d3theme_dropdown.node().value;
             stateMap.theme  = t;
-            setIndicatorMeans(t);
             //need to clear the svg and redraw
             rendersvg(); redraw();
         });
-
-
 
 
         function wrap(text, width) {
@@ -367,7 +345,6 @@ gcif.compare = (function () {
             ;
 
 
-
             // Extract the list of dimensions and create a scale for each.
             x.domain(dimensions = d3.keys(cities[0]).filter(function(header) {
 
@@ -444,9 +421,9 @@ gcif.compare = (function () {
 
 
             // Add a group for each set of points
-            var markers = svg.selectAll(".dimension")
+            var points = svg.selectAll(".dimension")
                              .append("g").attr("class","points");
-            markers.selectAll(".point")
+            point = points.selectAll(".point")
                    .data(cities)
                   .enter()
                    .append("circle")
@@ -545,13 +522,6 @@ gcif.compare = (function () {
 
     //--------------------- END DOM METHODS ----------------------
 
-
-    //------------------- BEGIN EVENT HANDLERS -------------------
-    //-------------------- END EVENT HANDLERS --------------------
-
-
-    //---------------------- BEGIN CALLBACKS ---------------------
-    //------------------- BEGIN PUBLIC METHODS -------------------
 
     // Begin Public method /initModule/
     // Example   : chart.dash.initModule( $('.container') );
