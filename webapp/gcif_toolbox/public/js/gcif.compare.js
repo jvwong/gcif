@@ -52,14 +52,21 @@ gcif.compare = (function () {
                         '</form>' +
                         '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
+
                     '<div class="tab-pane fade" id="tabular">' +
                         '<div class="gcif-compare table col-lg-12">' +
-                            '<table class="table table-hover table-striped">' +
-                                '<thead></thead>' +
-                                '<tbody></tbody>' +
-                            '</table>' +
                         '</div>' +
                     '</div>' +
+
+
+//                    '<div class="tab-pane fade" id="tabular">' +
+//                        '<div class="gcif-compare table col-lg-12">' +
+//                            '<table class="table table-hover table-striped">' +
+//                                '<thead></thead>' +
+//                                '<tbody></tbody>' +
+//                            '</table>' +
+//                        '</div>' +
+//                    '</div>' +
 
                 '</div>' +
 
@@ -151,9 +158,89 @@ gcif.compare = (function () {
 
         // Render the list
         function drawList() {
-            list.each( function(method){
-                d3.select(this).call(method);
-            });
+//            list.each( function(method){
+//                d3.select(this).call(method);
+//            });
+        }
+
+        function List( d3container ) {
+
+            var _list = {};
+
+            var   _data = []
+                , _container = d3container
+                , _table
+                , _thead
+                , _body
+                ;
+
+
+            _list.render = function () {
+                if (!_table) {
+                    _table = _container.append("table")
+                                       .attr("class", "table table-hover table-striped")
+                    ;
+                }
+                renderHead(_table);
+//                renderBody(_table);
+            };
+
+            function renderHead(table) {
+
+                _thead = table.append("thead").append("tr");
+                _thead.append("th")
+                     .attr("class", "city header")
+                     .text("City")
+                ;
+
+                _thead.selectAll(".field")
+                     .data(dimensions)
+                    .enter()
+                     .append("th")
+                     .attr("class", "indicator header")
+                     .text(function(d){
+                        return d;
+                    })
+                ;
+            }
+
+            function renderBody() {
+
+//                var   city
+//                    , cityEnter
+//
+//                    , tbody = d3.select(this).select("tbody").html("")
+//                    ;
+//
+
+//                //append a <tr class="city") for each city
+//                city = tbody.selectAll(".city")
+//                            .data(data, function(d) { return d["UniqueID"]; });
+//
+//                cityEnter = city.enter()
+//                    .append("tr")
+//                        .attr("class", "city")
+//                    ;
+//
+//                cityEnter.append("td")
+//                         .attr("class", "cityname indicator")
+//                         .text(function(d){ return d["CityName"]})
+//                ;
+//
+//                dimensions.forEach(function(dimension){
+//                    cityEnter.append("td")
+//                             .attr("class", "indicator")
+//                             .text(function(d){
+//                                    return d[dimension]
+//                            })
+//                    ;
+//                });
+//
+//                city.exit().remove();
+
+            }
+
+            return _list;
         }
 
         function cityList(div) {
@@ -602,6 +689,9 @@ gcif.compare = (function () {
             ;
 
             drawList();
+            list.render();
+
+            console.log(d3Map.d3table);
 
         }//END /redraw/
 
@@ -615,7 +705,8 @@ gcif.compare = (function () {
         loadMongodb();
 
         // Tabular
-        list = d3Map.d3table.data([cityList]);
+        list = List( d3Map.d3table );
+//        list = d3Map.d3table.data([cityList]);
 
 
     };
