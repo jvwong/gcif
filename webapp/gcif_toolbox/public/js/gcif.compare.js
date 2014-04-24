@@ -87,15 +87,15 @@ gcif.compare = (function () {
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
           , car_data                  : TAFFY()
-          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
-                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
-                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
-                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
-                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
-                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
-                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -205,23 +205,25 @@ gcif.compare = (function () {
         // Handles a brush event, toggling the display of foreground lines.
         function brush() {
 
-            //actives is the set. possibly empty, of indicators/axes that are brushed
-            var actives = dimensions.filter(function(p) { return !y[p].brush.empty(); }),
-            extents = actives.map(function(p) { return y[p].brush.extent(); });
+            //actives is the set. possibly empty, of indicators/axes that are currently being brushed
+            var actives = dimensions.filter(function(indicator) { return !y[indicator].brush.empty(); }),
+            extents = actives.map(function(indicator) { return y[indicator].brush.extent(); });
 
             // set the line visibility
-            foreground.style("display", function(d) {
-                return actives.every(function(p, i) {
-                    return extents[i][0] <= d[p] && d[p] <= extents[i][1];
+            foreground.style("display", function(data) {
+                return actives.every(function(indicator, index) {
+                    return extents[index][0] <= data[indicator] && data[indicator] <= extents[index][1];
                 }) ? null : "none";
             });
 
-            // set the point visibility
-            // loop through each axis
-            point.forEach(function(pointset, index){
-                console.log(pointset);
+            point.style("display", function(data){
+                //In this case, loops through each city along any axis and asks:
+                // Is the indicator for this city within the brush for those being brushed?
+                return actives.every(function(indicator, indindex) {
+                    return extents[indindex][0] <= data[indicator] && data[indicator] <= extents[indindex][1];
+                }) ? null : "none";
             });
-            console.log(foreground);
+
         }
 
 
@@ -482,6 +484,20 @@ gcif.compare = (function () {
                         .style("opacity", 0);
                 })
                 .on("click", function(d){
+
+                    var pathdata = d3.select(this).data()[0];
+
+                    //In this case, loops through each city along any axis and asks:
+                    // Is this city the same city (CityUniqueID_) being highlighted?
+                    point.attr("class", function(pointdata){
+
+                        if (pointdata["CityUniqueID"] === pathdata["CityUniqueID"]){
+                            return d3.select(this).attr("class") === "unhighlight point" ? "highlight point" : "unhighlight point";
+                        } else {
+                            return "unhighlight point";
+                        }
+                    });
+
                     //toggle the color of clicked paths
                     d3.select(this).attr("class", function(){
                         return d3.select(this).attr("class") === "unhighlight" ? "highlight" : "unhighlight";
