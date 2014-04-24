@@ -69,3 +69,30 @@ svg{
     font-weight: 800;
     color: black;
 }
+
+/*tabular */
+div.gcif-compare.table{
+    margin-top: 5em;
+}
+
+div.gcif-compare.table tbody:nth-child(even)
+{
+    background:rgba(76, 80, 169, 0.10);
+}
+
+div.gcif-compare.table tr:hover td{
+    background-color: rgba(76, 80, 169, 0.10);
+}
+
+.gcif-compare.table th.header{
+    text-align: center;
+}
+
+.gcif-compare.table td.indicator{
+    text-align: center;
+}
+
+.gcif-compare.table td.cityname.indicator{
+    text-align: left;
+}
+

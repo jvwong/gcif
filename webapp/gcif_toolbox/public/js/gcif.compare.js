@@ -32,41 +32,31 @@ gcif.compare = (function () {
                 '<div id="myTabContent" class="tab-content">' +
 
                     '<div class="tab-pane fade active in" id="graphical">' +
-                            '<form class="form" role="form">' +
-                                '<div class="form-group gcif-compare menu">' +
-                                    '<label for="category-dropdown" class="col-sm-2 control-label">Theme</label>' +
-                                    '<div class="col-sm-10">' +
-                                        '<select id="theme-dropdown" class="form-control"></select>' +
-                                    '</div>' +
+                        '<form class="form" role="form">' +
+                            '<div class="form-group gcif-compare menu">' +
+                                '<label for="category-dropdown" class="col-sm-2 control-label">Theme</label>' +
+                                '<div class="col-sm-10">' +
+                                    '<select id="theme-dropdown" class="form-control"></select>' +
                                 '</div>' +
-                                '<div class="form-group">' +
-                                    '<div class="btn-group gcif-compare reset col-sm-offset-2 col-sm-10">' +
-                                        '<button type="button" class="btn btn-default" id="reset-highlight">' +
-                                            '<span class="glyphicon glyphicon-pencil"></span> Reset Highlight' +
-                                        '</button>' +
-                                        '<button type="button" class="btn btn-default" id="reset-brushes">' +
-                                            '<span class="glyphicon glyphicon-pencil"></span> Reset Brushes' +
-                                        '</button>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</form>' +
-                            '<div class="gcif-compare chart col-lg-12">' +
                             '</div>' +
-
+                            '<div class="form-group">' +
+                                '<div class="btn-group gcif-compare reset col-sm-offset-2 col-sm-10">' +
+                                    '<button type="button" class="btn btn-default" id="reset-highlight">' +
+                                        '<span class="glyphicon glyphicon-pencil"></span> Reset Highlight' +
+                                    '</button>' +
+                                    '<button type="button" class="btn btn-default" id="reset-brushes">' +
+                                        '<span class="glyphicon glyphicon-pencil"></span> Reset Brushes' +
+                                    '</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</form>' +
+                        '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
                     '<div class="tab-pane fade" id="tabular">' +
-                        '<div class="gcif-compare table col-lg-12 table-responsive">' +
-                            '<table class="table table-bordered table-hover table-condensed">' +
-                                '<thead>' +
-                                    '<tr>' +
-                                        '<th>Indicator (Core)</th>' +
-                                        '<th>Value</th>' +
-                                    '</tr>' +
-                                '</thead>' +
-                                '<tbody>' +
-                                    '<tr>' +
-                                    '</tr>' +
-                                '</tbody>' +
+                        '<div class="gcif-compare table col-lg-12">' +
+                            '<table class="table table-hover table-striped">' +
+                                '<thead></thead>' +
+                                '<tbody></tbody>' +
                             '</table>' +
                         '</div>' +
                     '</div>' +
@@ -87,15 +77,15 @@ gcif.compare = (function () {
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
           , car_data                  : TAFFY()
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
-//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
-//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
-//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
-//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
-//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
-//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -127,6 +117,7 @@ gcif.compare = (function () {
             , d3reset_highlight   : d3.select(".gcif-compare.reset button#reset-highlight")
             , d3reset_brushes     : d3.select(".gcif-compare.reset button#reset-brushes")
             , d3theme_dropdown    : d3.select(".gcif-compare.menu select#theme-dropdown")
+            , d3table             : d3.select(".gcif-compare.table")
         };
     };
 
@@ -151,8 +142,80 @@ gcif.compare = (function () {
        , tooltip = d3.select("body").append("div")
                         .attr("class", "tooltip")
                         .style("opacity", 0)
+
+       , list
        ;
 
+
+        /************************************ TABULAR TAB ************************************************************/
+
+        // Render the list
+        function drawList() {
+            list.each( function(method){
+                d3.select(this).call(method);
+            });
+        }
+
+        function cityList(div) {
+
+            // TBD: data here should reflect selection (bold) and brushing (subsetting)
+            var data = stateMap.cities;
+
+            div.each(function() {
+
+                var   city
+                    , cityEnter
+
+                    , thead = d3.select(this).select("thead").html("").append("tr")
+
+                    , tbody = d3.select(this).select("tbody").html("")
+                    ;
+
+                thead.append("th")
+                     .attr("class", "city header")
+                     .text("City")
+                ;
+
+                thead.selectAll(".field")
+                     .data(dimensions)
+                    .enter()
+                     .append("th")
+                     .attr("class", "indicator header")
+                     .text(function(d){
+                        return d;
+                    })
+                ;
+
+                //append a <tr class="city") for each city
+                city = tbody.selectAll(".city")
+                            .data(data, function(d) { return d["UniqueID"]; });
+
+                cityEnter = city.enter()
+                    .append("tr")
+                        .attr("class", "city")
+                    ;
+
+                cityEnter.append("td")
+                         .attr("class", "cityname indicator")
+                         .text(function(d){ return d["CityName"]})
+                ;
+
+                dimensions.forEach(function(dimension){
+                    cityEnter.append("td")
+                             .attr("class", "indicator")
+                             .text(function(d){
+                                    return d[dimension]
+                            })
+                    ;
+                });
+
+                city.exit().remove();
+
+            });
+        }
+
+
+        /************************************ GRAPHICAL TAB***********************************************************/
         /* sets the svg dimensions based upon the current browser window */
         function setsvgdim(){
             var
@@ -209,11 +272,25 @@ gcif.compare = (function () {
             var actives = dimensions.filter(function(indicator) { return !y[indicator].brush.empty(); }),
             extents = actives.map(function(indicator) { return y[indicator].brush.extent(); });
 
-            // set the line visibility
+            // clear the cities list
+            stateMap.cities.length = 0;
+
+
+            //loop through each city's path and set the path visibility to null OR none
             foreground.style("display", function(data) {
-                return actives.every(function(indicator, index) {
+
+                //loop over each brushed indicator
+                var isValid = actives.every(function(indicator, index) {
+                    //loop  over each indicator axis extent (if any)
                     return extents[index][0] <= data[indicator] && data[indicator] <= extents[index][1];
-                }) ? null : "none";
+                });
+
+                if (isValid){
+                    stateMap.cities.push(data);
+                    return null;
+                }
+                return "none";
+
             });
 
             point.style("display", function(data){
@@ -258,6 +335,7 @@ gcif.compare = (function () {
                 //call the brush function on this brush to redraw data within extent
                 d3.select(this).call( brush );
             });
+            drawList();
         });
 
 
@@ -267,6 +345,7 @@ gcif.compare = (function () {
             stateMap.theme  = t;
             //need to clear the svg and redraw
             rendersvg(); redraw();
+//            drawList();
         });
 
 
@@ -359,10 +438,7 @@ gcif.compare = (function () {
                        // y is a global dictionary {} of y-scales for each column (header)
                             //can check if we are mean centering
                        (y[header] = d3.scale.linear()
-                                 .domain(d3.extent(cities, function(document) {
-                                                                            return +document[header];
-                                                                       })
-                                 )
+                                 .domain([0, d3.max(cities, function(document) { return +document[header];})])
                                  .range([height, 0])
                        );
             }));
@@ -459,7 +535,9 @@ gcif.compare = (function () {
                     .attr("class", "brush")
                     .each(function(d) {
                             d3.select(this).call(
-                            y[d].brush = d3.svg.brush().y(y[d]).on("brush", brush)
+                            y[d].brush = d3.svg.brush().y(y[d])
+                                                       .on("brush.chart", brush)
+                                                       .on("brush.table", drawList)
                         );
                     })
                     .selectAll("rect")
@@ -523,15 +601,22 @@ gcif.compare = (function () {
                 })
             ;
 
-        }
+            drawList();
+
+        }//END /redraw/
 
         /* register event listeners */
         d3.select(window).on('resize', resize);
 
         /* instructions for drawing */
+        // Graphical
         setsvgdim();
         rendersvg();
         loadMongodb();
+
+        // Tabular
+        list = d3Map.d3table.data([cityList]);
+
 
     };
     // END private method /render/
