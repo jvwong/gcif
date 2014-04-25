@@ -70,15 +70,15 @@ gcif.compare = (function () {
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
           , car_data                  : TAFFY()
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
-//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
-//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
-//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
-//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
-//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
-//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -125,11 +125,12 @@ gcif.compare = (function () {
         // Render the list
         function renderAll() {
 
-//            list.metadata( stateMap.indicators );
-//            list.data( stateMap.cities );
-//            list.render();
+            list.metadata( stateMap.indicators );
+            list.data( stateMap.cities );
             parallelChart.metadata( stateMap.indicators );
             parallelChart.data( stateMap.cities );
+
+            list.render();
             parallelChart.render();
         }
 
@@ -249,21 +250,12 @@ gcif.compare = (function () {
 
         //reset button for highlighted paths
         d3Map.d3reset_highlight.on("click", function(){
-            d3Map.d3compare.selectAll(".foreground path").each(
-                function(){ d3.select(this).attr("class","unhighlight") }
-            );
+                parallelChart.clearHighlight(d3Map.d3compare.selectAll(".foreground path.highlight"))
         });
 
         //reset button for brushes
-        d3Map.d3reset_brushes.on("click", function(){
-            d3.selectAll(".brush").each(function(d,i) {
-                y[d].brush.clear();
-                //clear the brush itself
-                d3.select(this).call( y[d].brush );
-                //call the brush function on this brush to redraw data within extent
-                d3.select(this).call( brush );
-            });
-            renderAll();
+        d3Map.d3reset_brushes.on("click", function(){//
+            parallelChart.clearBrush( d3.selectAll(".brush") )
         });
 
         //listen to changes in theme dropdown
@@ -441,6 +433,9 @@ gcif.compare = (function () {
 
                 });
 
+                //*********** hack alert -- how to expose this object to brush events? Publish?
+                list.render();
+
                 _point.style("display", function(data){
                     //In this case, loops through each city along any axis and asks:
                     // Is the indicator for this city within the brush for those being brushed?
@@ -552,6 +547,7 @@ gcif.compare = (function () {
                                 d3.select(this).call(
                                 _y[d].brush = d3.svg.brush().y(_y[d])
                                                            .on("brush.chart", brush)
+//                                                           .on("brush.table", list.render)
                             );
                         })
                         .selectAll("rect")
@@ -624,6 +620,19 @@ gcif.compare = (function () {
                 renderBody();
             };
 
+            _parallel.clearBrush = function(d3brushes){
+                d3brushes.each(function(indicator){
+                    _y[indicator].brush.clear();
+                    d3.select(this).call( _y[indicator].brush );
+                    d3.select(this).call( brush );
+                })
+            };
+
+            _parallel.clearHighlight = function(d3paths){
+                d3paths.each(function(d){
+                        d3.select(this).attr("class","unhighlight");
+                    })
+            };
 
             _parallel.data = function(_){
                 if (!arguments.length) return _data;
@@ -650,7 +659,7 @@ gcif.compare = (function () {
         parallelChart = Parallel( d3Map.d3compare );
 
         // Setup Tabular
-        //list = List( d3Map.d3table );
+        list = List( d3Map.d3table );
 
         // Graphical
         loadMongodb();
