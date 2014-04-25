@@ -38,13 +38,13 @@ gcif.compare = (function () {
                             '</div>' +
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare reset col-sm-offset-2 col-sm-10">' +
-                                    '<button type="button" class="btn btn-default" id="reset-highlight">' +
+                                    '<button type="button" class="btn btn-default" id="clear-highlights">' +
                                         '<span class="glyphicon glyphicon-pencil"></span> Clear Highlights' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default" id="reset-brushes">' +
+                                    '<button type="button" class="btn btn-default" id="clear-brushes">' +
                                         '<span class="glyphicon glyphicon-pencil"></span> Clear Brushes' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default" id="subset-brushes">' +
+                                    '<button type="button" class="btn btn-default" id="isolate-brushed">' +
                                         '<span class="glyphicon glyphicon-pencil"></span> Isolate Brushed' +
                                     '</button>' +
                                     '<button type="button" class="btn btn-default" id="refresh">' +
@@ -110,10 +110,10 @@ gcif.compare = (function () {
         d3Map = {
               d3compare           : d3.select(".gcif-compare.chart")
 
-            , d3reset_highlight   : d3.select(".gcif-compare.reset button#reset-highlight")
-            , d3reset_brushes     : d3.select(".gcif-compare.reset button#reset-brushes")
-            , d3subset_brushes    : d3.select(".gcif-compare.reset button#subset-brushes")
-            , d3refresh         : d3.select(".gcif-compare.reset button#refresh")
+            , d3clear_highlights  : d3.select(".gcif-compare.reset button#clear-highlights")
+            , d3clear_brushes     : d3.select(".gcif-compare.reset button#clear-brushes")
+            , d3isolate_brushed   : d3.select(".gcif-compare.reset button#isolate-brushed")
+            , d3refresh           : d3.select(".gcif-compare.reset button#refresh")
 
             , d3theme_dropdown    : d3.select(".gcif-compare.menu select#theme-dropdown")
             , d3table             : d3.select(".gcif-compare.table")
@@ -124,25 +124,12 @@ gcif.compare = (function () {
     // BEGIN private method /render/
     render = function(){
 
-       var
-        parallelChart , list
+        var
+        parallelChart
+        , list
         ;
 
-        // Render the list
-        function renderAll() {
-
-            list.metadata( stateMap.indicators );
-            list.data( stateMap.cities );
-            parallelChart.metadata( stateMap.indicators );
-            parallelChart.data( stateMap.cities );
-
-            list.render();
-            parallelChart.render();
-        }
-
-
-
-        /************************************ TABULAR TAB ************************************************************/
+        /************************************ TABLE OBJECT ************************************************************/
 
         function List( d3container ) {
 
@@ -245,106 +232,7 @@ gcif.compare = (function () {
         }
 
 
-        /************************************ GRAPHICAL TAB***********************************************************/
-
-        /* Update graph using new width and height (code below) */
-        function resize() {
-            d3.transition()
-            .duration(750)
-            .each(renderAll);
-        }
-
-        function resetState(){
-            stateMap.theme      = undefined;
-            stateMap.indicators = undefined;
-            stateMap.cities     = undefined;
-            stateMap.member_cities_db = TAFFY();
-            stateMap.performance_indicators_db = TAFFY();
-            stateMap.abundant_themes_db = TAFFY();
-        }
-
-        //reset button for highlighted paths
-        d3Map.d3reset_highlight.on("click", function(){
-                parallelChart.clearHighlight(d3Map.d3compare.selectAll(".foreground path.highlight"))
-        });
-
-        //reset button for brushes
-        d3Map.d3reset_brushes.on("click", function(){//
-            parallelChart.clearBrush( d3.selectAll(".brush") )
-        });
-
-        //subset button for brushes
-        d3Map.d3subset_brushes.on("click", function(){//
-            parallelChart.subsetBrush();
-            renderAll();
-        });
-
-        //listen to the clear all button
-        d3Map.d3refresh.on("click", function(){
-            resetState();
-            loadMongodb();
-        });
-
-        //listen to changes in theme dropdown
-        d3Map.d3theme_dropdown.on("change", function(){
-            stateMap.theme = d3Map.d3theme_dropdown.node().value;
-            stateMap.indicators = stateMap.theme === "all" ?
-                              stateMap.abundant_themes_db()
-                                      .map(function(idoc){ return idoc["indicator"]; }) :
-                              stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
-                                      .map(function(idoc){ return idoc["indicator"]; });
-            renderAll();
-        });
-
-
-
-        /* load data from MongoDB */
-        function loadMongodb() {
-
-            // push member city data from mongodb collection "member_cities" in TAFFY DB
-            d3.json("/member_cities/list", function(member_cities_data) {
-                stateMap.member_cities_db.insert(member_cities_data);
-                //cache the cities in the stateMap
-                stateMap.cities = stateMap.member_cities_db(function(){
-                    //only include the top 50 cities by indicator count
-                    return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
-                }).get();
-
-
-                // push performance indicator data from mongodb collection "performance_indicators" in TAFFY DB
-                d3.json("/performance_indicators/list", function(performance_indicators_data) {
-                    stateMap.performance_indicators_db.insert(performance_indicators_data);
-
-
-                    var dropdata = stateMap.performance_indicators_db(function(){
-                                //only include indicators in top 5 themes
-                                return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
-                            }).distinct("theme");
-                    dropdata.splice(0,0,"all")
-
-                    //Load (top) indicators into dropdown menu
-                    d3Map.d3theme_dropdown.selectAll("option")
-                        .data(dropdata)
-                       .enter()
-                        .append("option")
-                        .text(function(theme) { return theme; });
-
-                    d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
-                        //this is pre-filtered for the indicators of interest
-                        stateMap.abundant_themes_db.insert(abundant_themes);
-
-                        //initialize this set to the default -- all
-                        stateMap.theme = "all"
-                        stateMap.indicators =  stateMap.abundant_themes_db()
-                                                   .map(function(idoc){ return idoc["indicator"]; });
-                        renderAll();
-                    });
-
-                });
-            });
-
-        }
-
+        /************************************ PARALLEL OBJECT ***********************************************************/
 
         function Parallel( d3container ) {
 
@@ -446,7 +334,7 @@ gcif.compare = (function () {
                   })
                 , extents = actives.map(function(indicator) { return _y[indicator].brush.extent(); });
 
-                // clear the cities list
+                //*********** hack alert -- return list of cities for listeners (table)
                 stateMap.cities.length = 0;
 
                 //loop through each city's path and set the path visibility to null OR none
@@ -459,6 +347,7 @@ gcif.compare = (function () {
                     });
 
                     if (isValid){
+                        //*********** hack alert -- return list of cities for listeners (table)
                         stateMap.cities.push(data);
                         return null;
                     }
@@ -574,13 +463,15 @@ gcif.compare = (function () {
 
                 // Add and store a brush for each axis if there is > 1 indicator
                 if(_metadata.length > 1){
+
+                    console.log(brush);
+
                     g.append("g")
                         .attr("class", "brush")
                         .each(function(d) {
                                 d3.select(this).call(
                                 _y[d].brush = d3.svg.brush().y(_y[d])
-                                                           .on("brush.chart", brush)
-//                                                           .on("brush.table", list.render)
+                                                           .on("brush.chart", d3.select(this).brush)
                             );
                         })
                         .selectAll("rect")
@@ -687,8 +578,124 @@ gcif.compare = (function () {
         }//END /Parallel/
 
 
-        /* register event listeners */
+         /************************************ Helpers ************************************************************/
+        /* rendering */
+        function renderAll() {
+
+            list.metadata( stateMap.indicators );
+            list.data( stateMap.cities );
+            parallelChart.metadata( stateMap.indicators );
+            parallelChart.data( stateMap.cities );
+
+            list.render();
+            parallelChart.render();
+        }
+
+        /* Update graph using new width and height (code below) */
+        function resize() {
+            d3.transition()
+            .duration(750)
+            .each(renderAll);
+        }
+
+        function resetState(){
+            stateMap.theme      = undefined;
+            stateMap.indicators = undefined;
+            stateMap.cities     = undefined;
+            stateMap.member_cities_db = TAFFY();
+            stateMap.performance_indicators_db = TAFFY();
+            stateMap.abundant_themes_db = TAFFY();
+        }
+
+
+        /* event listners */
+        //reset button for highlighted paths
+        d3Map.d3clear_highlights.on("click", function(){
+            parallelChart.clearHighlight(d3Map.d3compare.selectAll(".foreground path.highlight"))
+        });
+
+        //reset button for brushes
+        d3Map.d3clear_brushes.on("click", function(){//
+            parallelChart.clearBrush( d3.selectAll(".brush") )
+        });
+
+        //subset button for brushes
+        d3Map.d3isolate_brushed.on("click", function(){//
+            parallelChart.subsetBrush();
+            renderAll();
+        });
+
+        //listen to the clear all button
+        d3Map.d3refresh.on("click", function(){
+            resetState();
+            loadMongodb();
+        });
+
+        //listen to changes in theme dropdown
+        d3Map.d3theme_dropdown.on("change", function(){
+            stateMap.theme = d3Map.d3theme_dropdown.node().value;
+            stateMap.indicators = stateMap.theme === "all" ?
+                              stateMap.abundant_themes_db()
+                                      .map(function(idoc){ return idoc["indicator"]; }) :
+                              stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
+                                      .map(function(idoc){ return idoc["indicator"]; });
+            renderAll();
+        });
+
+        // window resizing
         d3.select(window).on('resize', resize );
+
+
+        function dummy(){
+            console.log("brushed!");
+        }
+
+        /* load data from MongoDB */
+        function loadMongodb() {
+
+            // push member city data from mongodb collection "member_cities" in TAFFY DB
+            d3.json("/member_cities/list", function(member_cities_data) {
+                stateMap.member_cities_db.insert(member_cities_data);
+                //cache the cities in the stateMap
+                stateMap.cities = stateMap.member_cities_db(function(){
+                    //only include the top 50 cities by indicator count
+                    return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
+                }).get();
+
+
+                // push performance indicator data from mongodb collection "performance_indicators" in TAFFY DB
+                d3.json("/performance_indicators/list", function(performance_indicators_data) {
+                    stateMap.performance_indicators_db.insert(performance_indicators_data);
+
+
+                    var dropdata = stateMap.performance_indicators_db(function(){
+                                //only include indicators in top 5 themes
+                                return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
+                            }).distinct("theme");
+                    dropdata.splice(0,0,"all")
+
+                    //Load (top) indicators into dropdown menu
+                    d3Map.d3theme_dropdown.selectAll("option")
+                        .data(dropdata)
+                       .enter()
+                        .append("option")
+                        .text(function(theme) { return theme; });
+
+                    d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+                        //this is pre-filtered for the indicators of interest
+                        stateMap.abundant_themes_db.insert(abundant_themes);
+
+                        //initialize this set to the default -- all
+                        stateMap.theme = "all"
+                        stateMap.indicators =  stateMap.abundant_themes_db()
+                                                   .map(function(idoc){ return idoc["indicator"]; });
+                        renderAll();
+                    });
+
+                });
+            });
+
+        }
 
         /* instructions for drawing */
         //Setup Graphical
@@ -697,7 +704,7 @@ gcif.compare = (function () {
         // Setup Tabular
         list = List( d3Map.d3table );
 
-        // Graphical
+        // load data; fire graphs
         loadMongodb();
 
     };
