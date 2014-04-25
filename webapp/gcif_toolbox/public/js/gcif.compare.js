@@ -158,18 +158,6 @@ gcif.compare = (function () {
                 ;
 
 
-            _list.render = function () {
-                if (!_table) {
-                    _table = _container.append("table")
-                                       .attr("class", "table table-hover table-striped")
-                    ;
-                } else {
-                    _table.html("");
-                }
-                renderHead(_table);
-                renderBody(_table);
-            };
-
             function renderHead(table) {
 
                 _thead = table.append("thead").append("tr");
@@ -227,6 +215,19 @@ gcif.compare = (function () {
                 row.exit().remove();
 
             }
+
+            // PUBLIC methods
+             _list.render = function () {
+                if (!_table) {
+                    _table = _container.append("table")
+                                       .attr("class", "table table-hover table-striped")
+                    ;
+                } else {
+                    _table.html("");
+                }
+                renderHead(_table);
+                renderBody(_table);
+            };
 
             _list.data = function(_) {
                 if (!arguments.length) return _data;
@@ -361,7 +362,6 @@ gcif.compare = (function () {
             renderAll();
         });
 
-
         //listen to changes in theme dropdown
         d3Map.d3theme_dropdown.on("change", function(){
             var t = d3Map.d3theme_dropdown.node().value;
@@ -370,35 +370,6 @@ gcif.compare = (function () {
             rendersvg(); redraw();
             renderAll();
         });
-
-
-        function wrap(text, width) {
-            text.each(function() {
-                var text = d3.select(this)
-                , words = text.text().split(/\s+/).reverse()
-                , word
-                , line = []
-                , lineNumber = 0
-                , lineHeight = 1.1 // ems
-                , y = text.attr("y")
-                , dy = parseFloat(text.attr("dy"))
-                , tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
-                ;
-
-                while (word = words.pop()) {
-                    line.push(word);
-                    tspan.text(line.join(" "));
-                    if (tspan.node().getComputedTextLength() > width) {
-                        line.pop();
-                        tspan.text(line.join(" "));
-                        line = [word];
-                        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-                    }
-                }
-
-            });
-        }
-
 
         /* load data from MongoDB */
         function loadMongodb() {
@@ -440,6 +411,221 @@ gcif.compare = (function () {
             });
 
         }
+
+
+        function Parralel() {
+
+            var
+                 margin = {top: 25, right: 5, bottom: 150, left: 5}
+               , minwidth = 500, minheight = 300
+               , width, height
+               , svg
+               , x = d3.scale.ordinal()
+               , y = {}
+               , dragging = {}
+               , line = d3.svg.line()
+               , axis = d3.svg.axis().orient("left")
+               , background
+               , foreground
+               , point
+               , dimensions
+               , tooltip = d3.select("body").append("div")
+                                .attr("class", "tooltip")
+                                .style("opacity", 0)
+
+               , list
+               ;
+
+
+
+            var
+              // Check the dropdown and load only those indicators mapped to a list
+              ilist = stateMap.theme === "all" ? stateMap.abundant_themes_db().map(function(idoc){ return idoc["indicator"]; }) :
+                  stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 }).map(function(idoc){ return idoc["indicator"]; })
+            , cities = stateMap.cities
+            ;
+
+
+            // Extract the list of dimensions and create a scale for each.
+            x.domain(dimensions = d3.keys(cities[0]).filter(function(header) {
+
+                return header !== ("_id") &&
+
+                       // filter the headers here based on ilist defined above
+                       (ilist.indexOf(header) >=0)  &&
+
+                       // initialize the y scale (y)
+                       // y is a global dictionary {} of y-scales for each column (header)
+                            //can check if we are mean centering
+                       (y[header] = d3.scale.linear()
+                                 .domain([0, d3.max(cities, function(document) { return +document[header];})])
+                                 .range([height, 0])
+                       );
+            }));
+
+            // Add grey background lines for context.
+            background = svg.append("g")
+                .attr("class", "background")
+                .selectAll("path")
+                .data(cities)
+                .enter().append("path")
+                .attr("d", path);
+
+            // Add blue foreground lines for focus.
+            foreground = svg.append("g")
+                .attr("class", "foreground")
+                .selectAll("path")
+                .data(cities)
+                .enter()
+                .append("path")
+                .attr("class", "unhighlight")
+                .attr("d", path);
+
+            // Add a group element for each dimension.
+            var g = svg.selectAll(".dimension")
+                .data(dimensions)
+               .enter()
+                .append("g")
+                .attr("class", "dimension")
+                .attr("transform", function(d) { return "translate(" + x(d) + ")"; })
+                .call(
+                    d3.behavior.drag()
+                    .on("dragstart", function(d) {
+                        dragging[d] = this.__origin__ = x(d);
+                        background.attr("visibility", "hidden");
+                    })
+                    .on("drag", function(d) {
+                        dragging[d] = Math.min(width, Math.max(0, this.__origin__ += d3.event.dx));
+                        foreground.attr("d", path);
+                        dimensions.sort(function(a, b) { return position(a) - position(b); });
+                        x.domain(dimensions);
+                        g.attr("transform", function(d) { return "translate(" + position(d) + ")"; })
+                    })
+                    .on("dragend", function(d) {
+                        delete this.__origin__;
+                        delete dragging[d];
+                        transition(d3.select(this)).attr("transform", "translate(" + x(d) + ")");
+
+                        transition(foreground).attr("d", path);
+
+                        background.attr("d", path)
+                                .transition()
+                                .delay(500)
+                                .duration(0)
+                                .attr("visibility", null);
+                    })
+                )
+                ;
+
+
+            // Add a group for each set of points
+            var points = svg.selectAll(".dimension")
+                             .append("g").attr("class","points");
+            point = points.selectAll(".point")
+                   .data(cities)
+                  .enter()
+                   .append("circle")
+                   .attr({ cy     :  function(city){
+                                         var p = d3.select(this.parentNode).datum();
+                                         return y[p](city[p]);
+                                     }
+                          , cx    : 0
+                          , r     : 3
+                          , class : "unhighlight point"
+                    })
+            ;
+
+            // Add an axis and title.
+            g.append("g")
+                .attr("class", "axis")
+                .each(function(d) { d3.select(this).call(axis.scale(y[d])); })
+                .append("text")
+                .attr("text-anchor", "middle")
+                .attr("y", height)
+                .attr("dy", "2em")
+                .text(String)
+            ;
+
+            //try to wrap the labels
+            d3.selectAll("g.axis > text").call(gcif.util.wrap, 0.80 * (x.range()[1] - x.range()[0]));
+
+            // Add and store a brush for each axis if there is > 1 indicator
+            if(ilist.length > 1){
+                g.append("g")
+                    .attr("class", "brush")
+                    .each(function(d) {
+                            d3.select(this).call(
+                            y[d].brush = d3.svg.brush().y(y[d])
+                                                       .on("brush.chart", brush)
+                                                       .on("brush.table", renderAll) // need to reset data
+                        );
+                    })
+                    .selectAll("rect")
+                    .attr("x", -8)
+                    .attr("width", 16);
+            }
+
+            // register listener for mouseover, mouseout, and click
+            d3.selectAll(".foreground > path")
+                .on("mouseover", function(d){
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(d["CityName"])
+                        .style("left", (d3.event.pageX + 20) + "px")
+                        .style("top", (d3.event.pageY - 20) + "px");
+                })
+                .on("mouseout", function(d){
+                    // get rid of the tooltip when mousing away
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                })
+                .on("click", function(d){
+
+                    var pathdata = d3.select(this).data()[0];
+
+                    //In this case, loops through each city along any axis and asks:
+                    // Is this city the same city (CityUniqueID_) being highlighted?
+                    point.attr("class", function(pointdata){
+
+                        if (pointdata["CityUniqueID"] === pathdata["CityUniqueID"]){
+                            return d3.select(this).attr("class") === "unhighlight point" ? "highlight point" : "unhighlight point";
+                        } else {
+                            return "unhighlight point";
+                        }
+                    });
+
+                    //toggle the color of clicked paths
+                    d3.select(this).attr("class", function(){
+                        return d3.select(this).attr("class") === "unhighlight" ? "highlight" : "unhighlight";
+                    });
+                })
+                ;
+
+            // register listener for mouseover, mouseout for points
+            d3.selectAll(".point")
+                .on("mouseover", function(d){
+                    tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    tooltip.html(d["CityName"])
+                        .style("left", (d3.event.pageX + 20) + "px")
+                        .style("top", (d3.event.pageY - 20) + "px");
+                })
+                .on("mouseout", function(d){
+                    // get rid of the tooltip when mousing away
+                    tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+                })
+            ;
+
+
+            renderAll();
+
+        }//END /redraw/
+
 
 
         function redraw() {
