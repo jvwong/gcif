@@ -23,14 +23,11 @@ gcif.compare = (function () {
             '<h3 class="sub-header">Comparison</h3>' +
 
             '<div class="row">' +
-
                 '<ul id="myTab" class="nav nav-tabs">' +
                     '<li class="active"><a href="#graphical" data-toggle="tab">Graphical</a></li>' +
                     '<li class=""><a href="#tabular" data-toggle="tab">Tablular</a></li>' +
                 '</ul>' +
-
                 '<div id="myTabContent" class="tab-content">' +
-
                     '<div class="tab-pane fade active in" id="graphical">' +
                         '<form class="form" role="form">' +
                             '<div class="form-group gcif-compare menu">' +
@@ -52,24 +49,11 @@ gcif.compare = (function () {
                         '</form>' +
                         '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
-
                     '<div class="tab-pane fade" id="tabular">' +
                         '<div class="gcif-compare table col-lg-12">' +
                         '</div>' +
                     '</div>' +
-
-
-//                    '<div class="tab-pane fade" id="tabular">' +
-//                        '<div class="gcif-compare table col-lg-12">' +
-//                            '<table class="table table-hover table-striped">' +
-//                                '<thead></thead>' +
-//                                '<tbody></tbody>' +
-//                            '</table>' +
-//                        '</div>' +
-//                    '</div>' +
-
                 '</div>' +
-
             '</div>'
     }
     , stateMap = {
@@ -157,10 +141,9 @@ gcif.compare = (function () {
         /************************************ TABULAR TAB ************************************************************/
 
         // Render the list
-        function drawList() {
-//            list.each( function(method){
-//                d3.select(this).call(method);
-//            });
+        function renderAll() {
+            list.data( stateMap.cities );
+            list.render();
         }
 
         function List( d3container ) {
@@ -171,7 +154,7 @@ gcif.compare = (function () {
                 , _container = d3container
                 , _table
                 , _thead
-                , _body
+                , _tbody
                 ;
 
 
@@ -180,16 +163,18 @@ gcif.compare = (function () {
                     _table = _container.append("table")
                                        .attr("class", "table table-hover table-striped")
                     ;
+                } else {
+                    _table.html("");
                 }
                 renderHead(_table);
-//                renderBody(_table);
+                renderBody(_table);
             };
 
             function renderHead(table) {
 
                 _thead = table.append("thead").append("tr");
                 _thead.append("th")
-                     .attr("class", "city header")
+                     .attr("class", "header")
                      .text("City")
                 ;
 
@@ -197,108 +182,59 @@ gcif.compare = (function () {
                      .data(dimensions)
                     .enter()
                      .append("th")
-                     .attr("class", "indicator header")
+                     .attr("class", "header")
                      .text(function(d){
                         return d;
                     })
                 ;
             }
 
-            function renderBody() {
+            function renderBody(table) {
 
-//                var   city
-//                    , cityEnter
-//
-//                    , tbody = d3.select(this).select("tbody").html("")
-//                    ;
-//
-
-//                //append a <tr class="city") for each city
-//                city = tbody.selectAll(".city")
-//                            .data(data, function(d) { return d["UniqueID"]; });
-//
-//                cityEnter = city.enter()
-//                    .append("tr")
-//                        .attr("class", "city")
-//                    ;
-//
-//                cityEnter.append("td")
-//                         .attr("class", "cityname indicator")
-//                         .text(function(d){ return d["CityName"]})
-//                ;
-//
-//                dimensions.forEach(function(dimension){
-//                    cityEnter.append("td")
-//                             .attr("class", "indicator")
-//                             .text(function(d){
-//                                    return d[dimension]
-//                            })
-//                    ;
-//                });
-//
-//                city.exit().remove();
-
-            }
-
-            return _list;
-        }
-
-        function cityList(div) {
-
-            // TBD: data here should reflect selection (bold) and brushing (subsetting)
-            var data = stateMap.cities;
-
-            div.each(function() {
-
-                var   city
-                    , cityEnter
-
-                    , thead = d3.select(this).select("thead").html("").append("tr")
-
-                    , tbody = d3.select(this).select("tbody").html("")
-                    ;
-
-                thead.append("th")
-                     .attr("class", "city header")
-                     .text("City")
+                var row
+                , rowEnter
                 ;
 
-                thead.selectAll(".field")
-                     .data(dimensions)
-                    .enter()
-                     .append("th")
-                     .attr("class", "indicator header")
-                     .text(function(d){
-                        return d;
-                    })
-                ;
+                _tbody = table.append("tbody");
+
 
                 //append a <tr class="city") for each city
-                city = tbody.selectAll(".city")
-                            .data(data, function(d) { return d["UniqueID"]; });
+                row = _tbody.selectAll(".datarow")
+                            .data(_data, function(d) {
+                                    return d["CityUniqueID"];
+                            })
+                            ;
 
-                cityEnter = city.enter()
-                    .append("tr")
-                        .attr("class", "city")
-                    ;
+                rowEnter = row.enter()
+                              .append("tr")
+                              .attr("class", "datarow")
+                ;
 
-                cityEnter.append("td")
-                         .attr("class", "cityname indicator")
+                rowEnter.append("td")
+                         .attr("class", "indicator")
                          .text(function(d){ return d["CityName"]})
                 ;
 
                 dimensions.forEach(function(dimension){
-                    cityEnter.append("td")
-                             .attr("class", "indicator")
-                             .text(function(d){
-                                    return d[dimension]
+                    rowEnter.append("td")
+                            .attr("class", "indicator")
+                            .text(function(d){
+                                return d[dimension]
                             })
                     ;
                 });
 
-                city.exit().remove();
+                row.exit().remove();
 
-            });
+            }
+
+            _list.data = function(_) {
+                if (!arguments.length) return _data;
+                _data = _;
+                return _list;
+            };
+
+            return _list;
         }
 
 
@@ -422,7 +358,7 @@ gcif.compare = (function () {
                 //call the brush function on this brush to redraw data within extent
                 d3.select(this).call( brush );
             });
-            drawList();
+            renderAll();
         });
 
 
@@ -432,7 +368,7 @@ gcif.compare = (function () {
             stateMap.theme  = t;
             //need to clear the svg and redraw
             rendersvg(); redraw();
-//            drawList();
+            renderAll();
         });
 
 
@@ -495,6 +431,8 @@ gcif.compare = (function () {
                     d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
                         //this is pre-filtered for the indicators of interest
                         stateMap.abundant_themes_db.insert(abundant_themes);
+
+                        list.data( stateMap.cities );
                         redraw();
                     });
 
@@ -624,7 +562,7 @@ gcif.compare = (function () {
                             d3.select(this).call(
                             y[d].brush = d3.svg.brush().y(y[d])
                                                        .on("brush.chart", brush)
-                                                       .on("brush.table", drawList)
+                                                       .on("brush.table", renderAll) // need to reset data
                         );
                     })
                     .selectAll("rect")
@@ -688,10 +626,8 @@ gcif.compare = (function () {
                 })
             ;
 
-            drawList();
-            list.render();
 
-            console.log(d3Map.d3table);
+            renderAll();
 
         }//END /redraw/
 
@@ -706,8 +642,6 @@ gcif.compare = (function () {
 
         // Tabular
         list = List( d3Map.d3table );
-//        list = d3Map.d3table.data([cityList]);
-
 
     };
     // END private method /render/

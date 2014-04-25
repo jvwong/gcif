@@ -92,7 +92,7 @@ div.gcif-compare.table tr:hover td{
     text-align: center;
 }
 
-.gcif-compare.table td.cityname.indicator{
+.gcif-compare.table td.key.indicator{
     text-align: left;
 }
 
