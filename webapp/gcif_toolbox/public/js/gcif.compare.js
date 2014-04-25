@@ -39,10 +39,16 @@ gcif.compare = (function () {
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare reset col-sm-offset-2 col-sm-10">' +
                                     '<button type="button" class="btn btn-default" id="reset-highlight">' +
-                                        '<span class="glyphicon glyphicon-pencil"></span> Reset Highlight' +
+                                        '<span class="glyphicon glyphicon-pencil"></span> Clear Highlights' +
                                     '</button>' +
                                     '<button type="button" class="btn btn-default" id="reset-brushes">' +
-                                        '<span class="glyphicon glyphicon-pencil"></span> Reset Brushes' +
+                                        '<span class="glyphicon glyphicon-pencil"></span> Clear Brushes' +
+                                    '</button>' +
+                                    '<button type="button" class="btn btn-default" id="subset-brushes">' +
+                                        '<span class="glyphicon glyphicon-pencil"></span> Isolate Brushed' +
+                                    '</button>' +
+                                    '<button type="button" class="btn btn-default" id="refresh">' +
+                                        '<span class="glyphicon glyphicon-refresh"></span> Refresh' +
                                     '</button>' +
                                 '</div>' +
                             '</div>' +
@@ -61,15 +67,11 @@ gcif.compare = (function () {
 
           , cities                    : undefined
           , indicators                : undefined
-
-          , isClicked                 : false
-          , theme                     : "education"
-          , means                     : {}
+          , theme                     : undefined
 
           , member_cities_db          : TAFFY()
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
-          , car_data                  : TAFFY()
           , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
                                          "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
                                          "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
@@ -78,7 +80,7 @@ gcif.compare = (function () {
                                          "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
                                          "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
                                          "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -107,8 +109,12 @@ gcif.compare = (function () {
     setd3Map = function(){
         d3Map = {
               d3compare           : d3.select(".gcif-compare.chart")
+
             , d3reset_highlight   : d3.select(".gcif-compare.reset button#reset-highlight")
             , d3reset_brushes     : d3.select(".gcif-compare.reset button#reset-brushes")
+            , d3subset_brushes    : d3.select(".gcif-compare.reset button#subset-brushes")
+            , d3refresh         : d3.select(".gcif-compare.reset button#refresh")
+
             , d3theme_dropdown    : d3.select(".gcif-compare.menu select#theme-dropdown")
             , d3table             : d3.select(".gcif-compare.table")
         };
@@ -248,6 +254,15 @@ gcif.compare = (function () {
             .each(renderAll);
         }
 
+        function resetState(){
+            stateMap.theme      = undefined;
+            stateMap.indicators = undefined;
+            stateMap.cities     = undefined;
+            stateMap.member_cities_db = TAFFY();
+            stateMap.performance_indicators_db = TAFFY();
+            stateMap.abundant_themes_db = TAFFY();
+        }
+
         //reset button for highlighted paths
         d3Map.d3reset_highlight.on("click", function(){
                 parallelChart.clearHighlight(d3Map.d3compare.selectAll(".foreground path.highlight"))
@@ -256,6 +271,18 @@ gcif.compare = (function () {
         //reset button for brushes
         d3Map.d3reset_brushes.on("click", function(){//
             parallelChart.clearBrush( d3.selectAll(".brush") )
+        });
+
+        //subset button for brushes
+        d3Map.d3subset_brushes.on("click", function(){//
+            parallelChart.subsetBrush();
+            renderAll();
+        });
+
+        //listen to the clear all button
+        d3Map.d3refresh.on("click", function(){
+            resetState();
+            loadMongodb();
         });
 
         //listen to changes in theme dropdown
@@ -268,6 +295,8 @@ gcif.compare = (function () {
                                       .map(function(idoc){ return idoc["indicator"]; });
             renderAll();
         });
+
+
 
         /* load data from MongoDB */
         function loadMongodb() {
@@ -286,24 +315,28 @@ gcif.compare = (function () {
                 d3.json("/performance_indicators/list", function(performance_indicators_data) {
                     stateMap.performance_indicators_db.insert(performance_indicators_data);
 
-                    //Load (top) indicators into dropdown menu
-                    d3Map.d3theme_dropdown.selectAll("option")
-                        .data(stateMap.performance_indicators_db(function(){
+
+                    var dropdata = stateMap.performance_indicators_db(function(){
                                 //only include indicators in top 5 themes
                                 return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
-                            }).distinct("theme"))
+                            }).distinct("theme");
+                    dropdata.splice(0,0,"all")
+
+                    //Load (top) indicators into dropdown menu
+                    d3Map.d3theme_dropdown.selectAll("option")
+                        .data(dropdata)
                        .enter()
                         .append("option")
                         .text(function(theme) { return theme; });
-                    d3Map.d3theme_dropdown.append("option").text("all");
-
-                    //initialize this set to the default
-                    stateMap.indicators =  stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
-                                                   .map(function(idoc){ return idoc["indicator"]; });
 
                     d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
                         //this is pre-filtered for the indicators of interest
                         stateMap.abundant_themes_db.insert(abundant_themes);
+
+                        //initialize this set to the default -- all
+                        stateMap.theme = "all"
+                        stateMap.indicators =  stateMap.abundant_themes_db()
+                                                   .map(function(idoc){ return idoc["indicator"]; });
                         renderAll();
                     });
 
@@ -628,10 +661,13 @@ gcif.compare = (function () {
                 })
             };
 
+             _parallel.subsetBrush = function(){
+            };
+
             _parallel.clearHighlight = function(d3paths){
                 d3paths.each(function(d){
                         d3.select(this).attr("class","unhighlight");
-                    })
+                })
             };
 
             _parallel.data = function(_){
