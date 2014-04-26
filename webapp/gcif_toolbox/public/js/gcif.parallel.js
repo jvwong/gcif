@@ -31,6 +31,8 @@ gcif.parallel = (function () {
         , _y = {}
 
         , _metadata = []
+        , _metadb = TAFFY()
+        , _color = d3.scale.category10()
         , _data = []
 
         , _dragging = {}
@@ -243,6 +245,9 @@ gcif.parallel = (function () {
                 .each(function(d) { d3.select(this).call( _axis.scale(_y[d])); })
                 .append("text")
                 .attr("text-anchor", "middle")
+                .attr("fill", function(d){
+                    return _color(_metadb({indicator: d}).select("theme"));
+                })
                 .attr("y", _height)
                 .attr("dy", "2em")
                 .text(String)
@@ -361,6 +366,12 @@ gcif.parallel = (function () {
         _parallel.metadata = function(_){
             if (!arguments.length) return _metadata;
             _metadata = _;
+            return _parallel;
+        };
+
+        _parallel.metadb = function(_){
+            if (!arguments.length) return _metadb();
+            _metadb.insert(_);
             return _parallel;
         };
 

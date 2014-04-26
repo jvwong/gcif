@@ -100,7 +100,7 @@ gcif.compare = (function () {
 //                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
 //                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
 //                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -160,6 +160,7 @@ gcif.compare = (function () {
         function renderAll() {
             list.metadata( stateMap.indicators );
             list.data( stateMap.cities );
+            parallelChart.metadb( stateMap.performance_indicators_db().get() );
             parallelChart.metadata( stateMap.indicators );
             parallelChart.data( stateMap.cities );
             parallelChart.dispatch( dispatch );
@@ -185,16 +186,27 @@ gcif.compare = (function () {
         }
 
         function getData() {
-            d3.json("assets/data/performance_indicators.json", function(performance_indicators_data) {
+            d3.json("/performance_indicators/list", function(performance_indicators_data) {
                 dispatch.load_indicators(performance_indicators_data);
                 d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
                     dispatch.load_themes(abundant_themes);
-                    d3.json("assets/data/member_cities.json", function(member_cities_data) {
+                    d3.json("/member_cities/list", function(member_cities_data) {
                         dispatch.load_cities(member_cities_data);
                         dispatch.done_load();
                     });
                 });
             });
+
+//            d3.json("assets/data/performance_indicators.json", function(performance_indicators_data) {
+//                dispatch.load_indicators(performance_indicators_data);
+//                d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+//                    dispatch.load_themes(abundant_themes);
+//                    d3.json("assets/data/member_cities.json", function(member_cities_data) {
+//                        dispatch.load_cities(member_cities_data);
+//                        dispatch.done_load();
+//                    });
+//                });
+//            });
         }
 
         /* event listeners */
@@ -297,6 +309,7 @@ gcif.compare = (function () {
         d3Map.d3refresh.on("click", function(){
             resetState();
             getData();
+            change();
         });
 
         //listen to changes in theme dropdown
