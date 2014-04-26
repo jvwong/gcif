@@ -331,10 +331,6 @@ gcif.compare = (function () {
     //--------------------- BEGIN DISPATCH LISTENERS ----------------------
     dispatch.on("brush", function(brusheddata){
         stateMap.cities = brusheddata;
-        console.log(brusheddata.length);
-        console.log(brusheddata);
-        var u = stateMap.cities.map( function(d){ return d["CityName"]; } );
-        console.log(u);
         dispatch.data_update();
     });
 
