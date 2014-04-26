@@ -1,0 +1,709 @@
+[
+  {
+    "_id": "5355add0fa6f8c0c4aaf062f",
+    "core": 1,
+    "theme": "economy",
+    "type": "performance",
+    "indicator": "City's unemployment rate"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0630",
+    "core": 1,
+    "theme": "economy",
+    "type": "performance",
+    "indicator": "Assessed value of commercial and industrial properties as a percentage of total assessed value of all properties"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0631",
+    "core": 1,
+    "theme": "economy",
+    "type": "performance",
+    "indicator": "Percentage of city population living in poverty"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0632",
+    "core": 0,
+    "theme": "economy",
+    "type": "performance",
+    "indicator": "Percentage of persons in full time employment"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0633",
+    "core": 0,
+    "theme": "economy",
+    "type": "performance",
+    "indicator": "Youth unemployment rate"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0634",
+    "core": 0,
+    "theme": "economy",
+    "type": "performance",
+    "indicator": "Number of businesses per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0635",
+    "core": 0,
+    "theme": "economy",
+    "type": "performance",
+    "indicator": "Number of new patents per 100 000 population per year"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0636",
+    "core": 1,
+    "theme": "education",
+    "type": "performance",
+    "indicator": "Percentage of female school-aged population enrolled in schools"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0637",
+    "core": 1,
+    "theme": "education",
+    "type": "performance",
+    "indicator": "Percentage of students completing primary education"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0638",
+    "core": 1,
+    "theme": "education",
+    "type": "performance",
+    "indicator": "Percentage of students completing secondary education"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0639",
+    "core": 1,
+    "theme": "education",
+    "type": "performance",
+    "indicator": "Primary education student/teacher ratio"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf063a",
+    "core": 0,
+    "theme": "education",
+    "type": "performance",
+    "indicator": "Percentage of male school-aged population enrolled in schools"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf063b",
+    "core": 0,
+    "theme": "education",
+    "type": "performance",
+    "indicator": "Percentage of school-aged population enrolled in schools"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf063c",
+    "core": 0,
+    "theme": "education",
+    "type": "performance",
+    "indicator": "Number of higher education degrees per 100 000"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf063d",
+    "core": 1,
+    "theme": "energy",
+    "type": "performance",
+    "indicator": "Total residential electrical energy use per capita (kWh/year)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf063e",
+    "core": 1,
+    "theme": "energy",
+    "type": "performance",
+    "indicator": "Percentage of city population with authorized electrical service"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf063f",
+    "core": 1,
+    "theme": "energy",
+    "type": "performance",
+    "indicator": "Energy consumption of public buildings per year (kWh/m2)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0640",
+    "core": 1,
+    "theme": "energy",
+    "type": "performance",
+    "indicator": "Percentage of total energy derived from renewable sources, as a share of the cityâ€™s total energy consumption"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0641",
+    "core": 0,
+    "theme": "energy",
+    "type": "performance",
+    "indicator": "Total electrical energy use per capita (kWh/year)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0642",
+    "core": 0,
+    "theme": "energy",
+    "type": "performance",
+    "indicator": "Average number of electrical interruptions per customer per year"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0643",
+    "core": 0,
+    "theme": "energy",
+    "type": "performance",
+    "indicator": "Average length of electrical interruptions (in hours)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0644",
+    "core": 1,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "Fine Particulate Matter (PM2.5) concentration"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0645",
+    "core": 1,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "Particulate Matter (PM10) concentration"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0646",
+    "core": 1,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "Greenhouse gas emissions measured in tonnes per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0647",
+    "core": 0,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "NO2  (nitrogen dioxide) concentration"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0648",
+    "core": 0,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "SO2 (sulphur dioxide) concentration"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0649",
+    "core": 0,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "O3 (ozone) concentration"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf064a",
+    "core": 0,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "Noise pollution"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf064b",
+    "core": 0,
+    "theme": "environment",
+    "type": "performance",
+    "indicator": "Percentage change in number of native species"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf064c",
+    "core": 1,
+    "theme": "finance",
+    "type": "performance",
+    "indicator": "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf064d",
+    "core": 0,
+    "theme": "finance",
+    "type": "performance",
+    "indicator": "Tax collected as percentage of tax billed"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf065c",
+    "core": 1,
+    "theme": "health",
+    "type": "performance",
+    "indicator": "Average life expectancy"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf064e",
+    "core": 0,
+    "theme": "finance",
+    "type": "performance",
+    "indicator": "Own-source revenue as a percentage of total revenues"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf064f",
+    "core": 0,
+    "theme": "finance",
+    "type": "performance",
+    "indicator": "Capital spending as percentage of total expenditures"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0650",
+    "core": 1,
+    "theme": "fire and emergency response",
+    "type": "performance",
+    "indicator": "Number of firefighters per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0651",
+    "core": 1,
+    "theme": "fire and emergency response",
+    "type": "performance",
+    "indicator": "Number of fire related deaths per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0652",
+    "core": 1,
+    "theme": "fire and emergency response",
+    "type": "performance",
+    "indicator": "Number of natural disaster related deaths per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0653",
+    "core": 0,
+    "theme": "fire and emergency response",
+    "type": "performance",
+    "indicator": "Number of volunteer and part-time firefighters per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0654",
+    "core": 0,
+    "theme": "fire and emergency response",
+    "type": "performance",
+    "indicator": "Response time for emergency response services from initial call"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0655",
+    "core": 0,
+    "theme": "fire and emergency response",
+    "type": "performance",
+    "indicator": "Response time for fire department from initial call"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0656",
+    "core": 1,
+    "theme": "governance",
+    "type": "performance",
+    "indicator": "Voter participation in last municipal election (as a percent of eligible voters)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0657",
+    "core": 1,
+    "theme": "governance",
+    "type": "performance",
+    "indicator": "Women as a percentage of total elected to city-level office"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0658",
+    "core": 0,
+    "theme": "governance",
+    "type": "performance",
+    "indicator": "Percentage of women employed in the city government workforce"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0659",
+    "core": 0,
+    "theme": "governance",
+    "type": "performance",
+    "indicator": "Number of convictions for corruption and or bribery by city officials per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf065a",
+    "core": 0,
+    "theme": "governance",
+    "type": "performance",
+    "indicator": "Citizen's representation: Number of local officials elected to office per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf065b",
+    "core": 0,
+    "theme": "governance",
+    "type": "performance",
+    "indicator": "Number of registered voters as a percentage of the voting age population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf065d",
+    "core": 1,
+    "theme": "health",
+    "type": "performance",
+    "indicator": "Number of in-patient hospital beds per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf065e",
+    "core": 1,
+    "theme": "health",
+    "type": "performance",
+    "indicator": "Number of physicians per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf065f",
+    "core": 1,
+    "theme": "health",
+    "type": "performance",
+    "indicator": "Under age five mortality per 1000 live births"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0660",
+    "core": 0,
+    "theme": "health",
+    "type": "performance",
+    "indicator": "Number of nursing and midwifery personnel per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0661",
+    "core": 0,
+    "theme": "health",
+    "type": "performance",
+    "indicator": "Number of mental health practitioners per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0662",
+    "core": 0,
+    "theme": "health",
+    "type": "performance",
+    "indicator": "Suicide rate per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0663",
+    "core": 0,
+    "theme": "recreation",
+    "type": "performance",
+    "indicator": "Square metres of public indoor recreation space per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0664",
+    "core": 0,
+    "theme": "recreation",
+    "type": "performance",
+    "indicator": "Square metres of public outdoor recreation space per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0665",
+    "core": 1,
+    "theme": "safety",
+    "type": "performance",
+    "indicator": "Number of police officers per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0666",
+    "core": 1,
+    "theme": "safety",
+    "type": "performance",
+    "indicator": "Number of homicides per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0667",
+    "core": 0,
+    "theme": "safety",
+    "type": "performance",
+    "indicator": "Crimes against property per 100 000"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0668",
+    "core": 0,
+    "theme": "safety",
+    "type": "performance",
+    "indicator": "Response time for police department from initial call"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0669",
+    "core": 0,
+    "theme": "safety",
+    "type": "performance",
+    "indicator": "Violent crime rate per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf066a",
+    "core": 1,
+    "theme": "shelter",
+    "type": "performance",
+    "indicator": "Percentage of city population living in slums"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf066b",
+    "core": 0,
+    "theme": "shelter",
+    "type": "performance",
+    "indicator": "Number of homeless people per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf066c",
+    "core": 0,
+    "theme": "shelter",
+    "type": "performance",
+    "indicator": "Percentage of households that exist without registered legal titles"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf066d",
+    "core": 1,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of city population with regular solid waste collection (residential)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf066e",
+    "core": 1,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Total collected municipal solid waste per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf066f",
+    "core": 1,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of city's solid waste that is recycled"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0670",
+    "core": 0,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of the city's solid waste that is disposed of in an sanitary landfill"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0671",
+    "core": 0,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of the city's solid waste that is disposed of in an incinerator"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0672",
+    "core": 0,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of the city's solid waste that is burned openly"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0673",
+    "core": 0,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of the city's solid waste that is disposed of in an open dump"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0674",
+    "core": 0,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of the city's solid waste that is disposed of by other means"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0675",
+    "core": 0,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Hazardous waste generation per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0676",
+    "core": 0,
+    "theme": "solid waste",
+    "type": "performance",
+    "indicator": "Percentage of cityâ€™s hazardous waste that is recycled"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0677",
+    "core": 1,
+    "theme": "technology and innovation",
+    "type": "performance",
+    "indicator": "Number of internet connections per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0678",
+    "core": 1,
+    "theme": "technology and innovation",
+    "type": "performance",
+    "indicator": "Number of cell phone connections per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0679",
+    "core": 0,
+    "theme": "technology and innovation",
+    "type": "performance",
+    "indicator": "Number of telephone connections (landlines and cell phones) per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf067a",
+    "core": 0,
+    "theme": "technology and innovation",
+    "type": "performance",
+    "indicator": "Number of landline phone connections per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf067b",
+    "core": 1,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Kilometres of high capacity public transport system per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf067c",
+    "core": 1,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Kilometres of light passenger public transport system per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf067d",
+    "core": 1,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Annual number of public transport trips per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf067e",
+    "core": 1,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Number of personal automobiles per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf067f",
+    "core": 0,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Percentage of commuters using a travel mode other than a personal vehicle"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0680",
+    "core": 0,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Number of two-wheel motorized vehicles per capita"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0681",
+    "core": 0,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Kilometres of bicycle paths and lanes per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0682",
+    "core": 0,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Transportation fatalities per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0683",
+    "core": 0,
+    "theme": "transportation",
+    "type": "performance",
+    "indicator": "Commercial Air Connectivity (number of non-stop commercial air destinations)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0684",
+    "core": 1,
+    "theme": "urban planning",
+    "type": "performance",
+    "indicator": "Green area (hectares) per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0685",
+    "core": 0,
+    "theme": "urban planning",
+    "type": "performance",
+    "indicator": "Annual number of trees planted per 100 000 population"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0686",
+    "core": 0,
+    "theme": "urban planning",
+    "type": "performance",
+    "indicator": "Areal size of informal settlements as a percent of city area"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0687",
+    "core": 0,
+    "theme": "urban planning",
+    "type": "performance",
+    "indicator": "Jobs/Housing Ratio"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0688",
+    "core": 1,
+    "theme": "wastewater",
+    "type": "performance",
+    "indicator": "Percentage of city population served by wastewater collection"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0689",
+    "core": 1,
+    "theme": "wastewater",
+    "type": "performance",
+    "indicator": "Percentage of the city's wastewater that has received no treatment"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf068a",
+    "core": 1,
+    "theme": "wastewater",
+    "type": "performance",
+    "indicator": "Percentage of the city's wastewater receiving primary treatment"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf068b",
+    "core": 1,
+    "theme": "wastewater",
+    "type": "performance",
+    "indicator": "Percentage of the city's wastewater receiving secondary treatment"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf068c",
+    "core": 1,
+    "theme": "wastewater",
+    "type": "performance",
+    "indicator": "Percentage of the city's wastewater receiving tertiary treatment"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf068d",
+    "core": 1,
+    "theme": "water and sanitation",
+    "type": "performance",
+    "indicator": "Percentage of city population with potable water supply service"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf068e",
+    "core": 1,
+    "theme": "water and sanitation",
+    "type": "performance",
+    "indicator": "Percentage of city population with sustainable access to an improved water source"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf068f",
+    "core": 1,
+    "theme": "water and sanitation",
+    "type": "performance",
+    "indicator": "Percentage of population with access to improved sanitation"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0690",
+    "core": 1,
+    "theme": "water and sanitation",
+    "type": "performance",
+    "indicator": "Total domestic water consumption per capita (litres/day)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0691",
+    "core": 0,
+    "theme": "water and sanitation",
+    "type": "performance",
+    "indicator": "Total water consumption per capita (litres/day)"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0692",
+    "core": 0,
+    "theme": "water and sanitation",
+    "type": "performance",
+    "indicator": "Average annual hours of water service interruptions per household"
+  },
+  {
+    "_id": "5355add0fa6f8c0c4aaf0693",
+    "core": 0,
+    "theme": "water and sanitation",
+    "type": "performance",
+    "indicator": "Percentage of water loss (unaccounted for water)"
+  }
+]

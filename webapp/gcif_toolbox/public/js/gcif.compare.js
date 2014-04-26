@@ -464,14 +464,12 @@ gcif.compare = (function () {
                 // Add and store a brush for each axis if there is > 1 indicator
                 if(_metadata.length > 1){
 
-                    console.log(brush);
-
                     g.append("g")
                         .attr("class", "brush")
                         .each(function(d) {
                                 d3.select(this).call(
                                 _y[d].brush = d3.svg.brush().y(_y[d])
-                                                           .on("brush.chart", d3.select(this).brush)
+                                                           .on("brush.chart", brush)
                             );
                         })
                         .selectAll("rect")
@@ -645,16 +643,12 @@ gcif.compare = (function () {
         // window resizing
         d3.select(window).on('resize', resize );
 
-
-        function dummy(){
-            console.log("brushed!");
-        }
-
         /* load data from MongoDB */
         function loadMongodb() {
 
             // push member city data from mongodb collection "member_cities" in TAFFY DB
-            d3.json("/member_cities/list", function(member_cities_data) {
+//            d3.json("/member_cities/list", function(member_cities_data) {
+            d3.json("assets/data/member_cities.json", function(member_cities_data) {
                 stateMap.member_cities_db.insert(member_cities_data);
                 //cache the cities in the stateMap
                 stateMap.cities = stateMap.member_cities_db(function(){
@@ -664,7 +658,8 @@ gcif.compare = (function () {
 
 
                 // push performance indicator data from mongodb collection "performance_indicators" in TAFFY DB
-                d3.json("/performance_indicators/list", function(performance_indicators_data) {
+//                d3.json("/performance_indicators/list", function(performance_indicators_data) {
+                d3.json("assets/data/performance_indicators.json", function(performance_indicators_data) {
                     stateMap.performance_indicators_db.insert(performance_indicators_data);
 
 
@@ -672,7 +667,7 @@ gcif.compare = (function () {
                                 //only include indicators in top 5 themes
                                 return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
                             }).distinct("theme");
-                    dropdata.splice(0,0,"all")
+                    dropdata.splice(0, 0, "all");
 
                     //Load (top) indicators into dropdown menu
                     d3Map.d3theme_dropdown.selectAll("option")
@@ -686,7 +681,7 @@ gcif.compare = (function () {
                         stateMap.abundant_themes_db.insert(abundant_themes);
 
                         //initialize this set to the default -- all
-                        stateMap.theme = "all"
+                        stateMap.theme = "all";
                         stateMap.indicators =  stateMap.abundant_themes_db()
                                                    .map(function(idoc){ return idoc["indicator"]; });
                         renderAll();
