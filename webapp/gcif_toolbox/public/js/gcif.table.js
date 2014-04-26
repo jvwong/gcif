@@ -1,6 +1,6 @@
 /*
  * gcif.table.js
- * User Interface module
+ * table chart
  */
 
 /*jslint           browser : true,   continue : true,
@@ -9,122 +9,111 @@
  regexp : true,    sloppy : true,       vars : false,
  white  : true
  */
-/*global $, d3, gcif */
+/*global $, d3, gcif*/
 
 gcif.table = (function () {
-    'use strict';
 
-    //---------------- BEGIN MODULE SCOPE VARIABLES --------------
     var
-    configMap = {
+    Table = function(d3container){
 
-        main_html : String() +
+        var _list = {};
 
-            '<h4 class="sub-header">Indicator Data</h4>' +
-                '<div class="table-responsive">' +
-                    '<table class="table table-striped">' +
-                        '<thead>' +
-                            '<tr>' +
-                                '<th>#</th>' +
-                                '<th>Header</th>' +
-                                '<th>Header</th>' +
-                                '<th>Header</th>' +
-                                '<th>Header</th>' +
-                            '</tr>' +
-                        '</thead>' +
-                        '<tbody>' +
-                            '<tr>' +
-                                '<td>1,001</td>' +
-                                '<td>Lorem</td>' +
-                                '<td>ipsum</td>' +
-                                '<td>dolor</td>' +
-                                '<td>sit</td>' +
-                            '</tr>' +
-                            '<tr>' +
-                                '<td>1,002</td>' +
-                                '<td>amet</td>' +
-                                '<td>consectetur</td>' +
-                                '<td>adipiscing</td>' +
-                                '<td>elit</td>' +
-                            '</tr>' +
-                        '</tbody>' +
-                    '</table>' +
-                '</div>'
-    }
-    , stateMap = {
-          $container : undefined
-        , $dataUrl   : undefined
-    }
-    , jqueryMap = {}
-    , setJqueryMap
-    , setDataUrl
-    , initModule;
+        var   _data = []
+            , _metadata = []
 
-    //---------------- END MODULE SCOPE VARIABLES --------------
+            , _container = d3container
+            , _table
+            , _thead
+            , _tbody
+            ;
 
 
-    //--------------------- BEGIN DOM METHODS --------------------
+        function renderHead(table) {
 
-    setJqueryMap = function(){
-        var
-          $container = stateMap.$container
+            _thead = table.append("thead").append("tr");
+            _thead.append("th")
+                .attr("class", "header")
+                .text("City")
+            ;
 
-        jqueryMap = {
-              $container : $container
+            _thead.selectAll(".field")
+                .data(_metadata)
+                .enter()
+                .append("th")
+                .attr("class", "header")
+                .text(function(d){
+                    return d;
+                })
+            ;
+        }
+
+        function renderBody(table) {
+
+            var row
+                , rowEnter
+                ;
+
+            _tbody = table.append("tbody");
+
+
+            //append a <tr class="city") for each city
+            row = _tbody.selectAll(".datarow")
+                .data(_data, function(d) {
+                    return d["CityUniqueID"];
+                })
+            ;
+
+            rowEnter = row.enter()
+                .append("tr")
+                .attr("class", "datarow")
+            ;
+
+            rowEnter.append("td")
+                .attr("class", "indicator")
+                .text(function(d){ return d["CityName"]})
+            ;
+
+            _metadata.forEach(function(p){
+                rowEnter.append("td")
+                    .attr("class", "indicator")
+                    .text(function(d){
+                        return d[p]
+                    })
+                ;
+            });
+
+            row.exit().remove();
+
+        }
+
+        // PUBLIC methods
+        _list.render = function () {
+            if (!_table) {
+                _table = _container.append("table")
+                    .attr("class", "table table-hover table-striped")
+                ;
+            } else {
+                _table.html("");
+            }
+            renderHead(_table);
+            renderBody(_table);
         };
-    };
-    //--------------------- END DOM METHODS ----------------------
 
+        _list.data = function(_) {
+            if (!arguments.length) return _data;
+            _data = _;
+            return _list;
+        };
 
-    //------------------- BEGIN EVENT HANDLERS -------------------
+        _list.metadata = function(_) {
+            if (!arguments.length) return _metadata;
+            _metadata = _;
+            return _list;
+        };
 
-    //-------------------- END EVENT HANDLERS --------------------
+        return _list;
+    }
 
-
-    //---------------------- BEGIN CALLBACKS ---------------------
-
-    //------------------- BEGIN PUBLIC METHODS -------------------
-
-    // Begin Public method /setDataurl/
-    // Example   : gcif.table.setDataUrl( "/path/to/data" );
-    // Purpose   :
-    //   Sets the stateMap key for $dataurl
-    // Arguments :
-    //   * absolute path to a valid file
-    // Action    :
-    //   Populates $dataUrl value
-    // Returns   : none
-    // Throws    : none
-    setDataUrl = function(url){
-        stateMap.$dataUrl = url;
-    };
-    // End PUBLIC method /setDataurl/
-
-    // Begin Public method /initModule/
-    // Example   : chart.dash.initModule( $('.container') );
-    // Purpose   :
-    //   Adds a dash board and graphics to the shell element
-    // Arguments :
-    //   * $container(example: $('.container')).
-    //     A jQuery selection representing a single DOM container
-    // Action    :
-    //   Populates $container with the shell of the UI
-    //   and then configures and initializes feature modules.
-    // Returns   : none
-    // Throws    : none
-    initModule = function ( $container ) {
-
-        //store container in stateMap
-        stateMap.$container = $container;
-        $container.html(configMap.main_html);
-        setJqueryMap();
-
-    };
-    // End PUBLIC method /initModule/
-
-    return {   initModule  : initModule
-             , setDataUrl  : setDataUrl
-            };
+    return { Table   : Table };
     //------------------- END PUBLIC METHODS ---------------------
 })();
-

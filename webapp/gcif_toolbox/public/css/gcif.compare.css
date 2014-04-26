@@ -72,7 +72,7 @@ svg{
 
 /*tabular */
 div.gcif-compare.table{
-    margin-top: 5em;
+    margin-top: 2em;
 }
 
 div.gcif-compare.table tbody:nth-child(even)
