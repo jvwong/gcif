@@ -19,12 +19,14 @@ gcif.table = (function () {
         var _list = {};
 
         var   _data = []
+            , _metadb = TAFFY()
             , _metadata = []
 
             , _container = d3container
             , _table
             , _thead
             , _tbody
+            , _color
             ;
 
 
@@ -41,6 +43,10 @@ gcif.table = (function () {
                 .enter()
                 .append("th")
                 .attr("class", "header")
+                .append("font")
+                .attr("color", function(d){
+                    return _color(_metadb({indicator: d}).select("theme"));
+                })
                 .text(function(d){
                     return d;
                 })
@@ -105,14 +111,26 @@ gcif.table = (function () {
             return _list;
         };
 
+        _list.metadb = function(_){
+            if (!arguments.length) return _metadb();
+            _metadb.insert(_);
+            return _list;
+        };
+
         _list.metadata = function(_) {
             if (!arguments.length) return _metadata;
             _metadata = _;
             return _list;
         };
 
+        _list.color = function(_){
+            if (!arguments.length) return _color;
+            _color = _;
+            return _list;
+        };
+
         return _list;
-    }
+    };
 
     return { Table   : Table };
     //------------------- END PUBLIC METHODS ---------------------

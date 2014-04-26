@@ -29,10 +29,11 @@ gcif.parallel = (function () {
         , _height
         , _x = d3.scale.ordinal()
         , _y = {}
+        , _eps = 0.0001
 
         , _metadata = []
         , _metadb = TAFFY()
-        , _color = d3.scale.category10()
+        , _color
         , _data = []
 
         , _dragging = {}
@@ -94,7 +95,7 @@ gcif.parallel = (function () {
            // y is a global dictionary {} of y-scales for each column (header)
            _metadata.forEach( function(header){
                _y[header] = d3.scale.linear()
-                                    .domain([0, d3.max(_data, function(document) { return +document[header];})])
+                                    .domain([0, d3.max(_data, function(document) { return +document[header];}) + _eps])
                                     .range([_height, 0])
                ;
            });
@@ -378,6 +379,12 @@ gcif.parallel = (function () {
         _parallel.dispatch = function(_){
             if (!arguments.length) return _dispatch;
             _dispatch = _;
+            return _parallel;
+        };
+
+        _parallel.color = function(_){
+            if (!arguments.length) return _color;
+            _color = _;
             return _parallel;
         };
 

@@ -89,18 +89,20 @@ gcif.compare = (function () {
           , indicators                : undefined
           , theme                     : undefined
 
+          , color                     : undefined
+
           , member_cities_db          : TAFFY()
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
-//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
-//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
-//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
-//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
-//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
-//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -158,6 +160,7 @@ gcif.compare = (function () {
 
         /* rendering */
         function renderAll() {
+            list.metadb( stateMap.performance_indicators_db().get() );
             list.metadata( stateMap.indicators );
             list.data( stateMap.cities );
             parallelChart.metadb( stateMap.performance_indicators_db().get() );
@@ -231,6 +234,7 @@ gcif.compare = (function () {
                 //only include indicators in top 5 themes
                 return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
             }).distinct("theme");
+
             dropdata.splice(0, 0, "all");
             //Load (top) indicators into dropdown menu
             d3Map.d3theme_dropdown.selectAll("option")
@@ -243,7 +247,6 @@ gcif.compare = (function () {
         dispatch.on("load_themes", function(data){
             //this is pre-filtered for the indicators of interest
             stateMap.abundant_themes_db.insert(data);
-
             //initialize this set to the default -- all
             stateMap.theme = "all";
             stateMap.indicators =  stateMap.abundant_themes_db()
@@ -282,7 +285,6 @@ gcif.compare = (function () {
                 .attr("xmlns", "http://www.w3.org/2000/svg")
                 .node().parentNode.innerHTML;
 
-            console.log(d3Map.d3images);
             var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
             var img = '<img src="'+ imgsrc +'">';
             d3Map.d3images.html(img);
@@ -329,8 +331,15 @@ gcif.compare = (function () {
         /* Load the data, then draw */
         getData();
         dispatch.on("done_load", function(){
+            stateMap.color = d3.scale.ordinal()
+                               .domain(stateMap.abundant_themes_db().distinct("theme"))
+                               .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
+
             parallelChart = gcif.parallel.Parallel( d3Map.d3compare );
+            parallelChart.color(stateMap.color);
+
             list = gcif.table.Table( d3Map.d3table );
+            list.color(stateMap.color);
             change();
         });
 
