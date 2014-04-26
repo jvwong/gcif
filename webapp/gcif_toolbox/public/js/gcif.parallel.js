@@ -40,11 +40,7 @@ gcif.parallel = (function () {
         , _foreground
         , _point
 
-        , _tooltip = d3.select("body")
-                    .append("div")
-                    .attr("class", "tooltip")
-                    .style("opacity", 0)
-
+        , _tooltip
         , _dispatch
         ;
 
@@ -52,13 +48,25 @@ gcif.parallel = (function () {
         /* sets the svg dimensions based upon the current browser window */
         function setsvgdim(){
             var
-              verticalScaling = 0.70
+              verticalScaling = 0.60
             , horizontalScaling = 0.75
             ;
 
             _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
             _x.rangePoints([0, _width], 1);
+        }
+
+        function renderTooltip(){
+
+            d3.select(".tooltip").remove();
+
+            _tooltip = d3.select("body")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0)
+                ;
+
         }
 
         /* renders the containing svg element */
@@ -134,8 +142,6 @@ gcif.parallel = (function () {
                     return null;
                 }
 
-                _dispatch.brush(brushedCities);
-
                 return "none";
 
             });
@@ -149,6 +155,7 @@ gcif.parallel = (function () {
                 }) ? null : "none";
             });
 
+            _dispatch.brush(brushedCities);
         }
 
         function renderBody(){
@@ -283,7 +290,6 @@ gcif.parallel = (function () {
                     //In this case, loops through each city along any axis and asks:
                     // Is this city the same city (CityUniqueID_) being highlighted?
                     _point.attr("class", function(pointdata){
-
                         if (pointdata["CityUniqueID"] === pathdata["CityUniqueID"]){
                             return d3.select(this)
                                      .attr("class") === "unhighlight point" ? "highlight point" : "unhighlight point";
@@ -322,6 +328,7 @@ gcif.parallel = (function () {
             setsvgdim();
             _svg = rendersvg(_container);
             renderAxes();
+            renderTooltip();
             renderBody();
         };
 
@@ -336,10 +343,13 @@ gcif.parallel = (function () {
          _parallel.subsetBrush = function(){
         };
 
-        _parallel.clearHighlight = function(d3paths){
+        _parallel.clearHighlight = function(d3paths, d3points){
             d3paths.each(function(d){
                     d3.select(this).attr("class","unhighlight");
-            })
+            });
+            d3points.each(function(d){
+                d3.select(this).attr("class","point unhighlight");
+            });
         };
 
         _parallel.data = function(_){

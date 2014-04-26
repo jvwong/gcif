@@ -40,13 +40,13 @@ gcif.compare = (function () {
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare graphical col-sm-offset-1 col-sm-11">' +
                                     '<button type="button" class="btn btn-default" id="clear-highlights">' +
-                                        '<span class="glyphicon glyphicon-pencil"></span> Clear Highlights' +
+                                        '<span class="glyphicon glyphicon-remove"></span> Clear Highlights' +
                                     '</button>' +
                                     '<button type="button" class="btn btn-default" id="clear-brushes">' +
-                                        '<span class="glyphicon glyphicon-pencil"></span> Clear Brushes' +
+                                        '<span class="glyphicon glyphicon-remove"></span> Clear Brushes' +
                                     '</button>' +
                                     '<button type="button" class="btn btn-default" id="isolate-brushed">' +
-                                        '<span class="glyphicon glyphicon-pencil"></span> Isolate Brushed' +
+                                        '<span class="glyphicon glyphicon-th"></span> Isolate Brushed' +
                                     '</button>' +
                                     '<button type="button" class="btn btn-default" id="refresh">' +
                                         '<span class="glyphicon glyphicon-refresh"></span> Refresh' +
@@ -92,15 +92,15 @@ gcif.compare = (function () {
           , member_cities_db          : TAFFY()
           , performance_indicators_db : TAFFY()
           , abundant_themes_db        : TAFFY()
-          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
-                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
-                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
-                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
-                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
-                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
-                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
-                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+//                                         "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+//                                         "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+//                                         "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+//                                         "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+//                                         "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+//                                         "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+//                                         "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+          , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE"]
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
@@ -171,7 +171,7 @@ gcif.compare = (function () {
         /* Update graph using new width and height (code below) */
         function change() {
             d3.transition()
-            .duration(750)
+            .duration(700)
             .each(renderAll);
         }
 
@@ -279,7 +279,7 @@ gcif.compare = (function () {
 
         //reset button for highlighted paths
         d3Map.d3clear_highlights.on("click", function(){
-            parallelChart.clearHighlight(d3Map.d3compare.selectAll(".foreground path.highlight"))
+            parallelChart.clearHighlight(d3Map.d3compare.selectAll(".foreground path.highlight"), d3Map.d3compare.selectAll(".point.highlight"))
         });
 
         //reset button for brushes
@@ -290,7 +290,7 @@ gcif.compare = (function () {
         //subset button for brushes
         d3Map.d3isolate_brushed.on("click", function(){//
             parallelChart.subsetBrush();
-            change();
+            renderAll();
         });
 
         //listen to the clear all button
@@ -311,7 +311,7 @@ gcif.compare = (function () {
         });
 
         // window resizing
-        d3.select(window).on('resize', change );
+        d3.select(window).on('resize', renderAll );
 
         /* Load the data, then draw */
         getData();
@@ -331,6 +331,10 @@ gcif.compare = (function () {
     //--------------------- BEGIN DISPATCH LISTENERS ----------------------
     dispatch.on("brush", function(brusheddata){
         stateMap.cities = brusheddata;
+        console.log(brusheddata.length);
+        console.log(brusheddata);
+        var u = stateMap.cities.map( function(d){ return d["CityName"]; } );
+        console.log(u);
         dispatch.data_update();
     });
 
