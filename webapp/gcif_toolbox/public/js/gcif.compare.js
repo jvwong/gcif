@@ -295,14 +295,16 @@ gcif.compare = (function () {
             resetState();
             loadData();
 
-            jqueryMap.$theme_dropdown.find("option").filter(function() {
-                    return $(this).text() === "all";
-            }).prop('selected', true);
-            jqueryMap.$region_dropdown.find("option").filter(function() {
-                    return $(this).text() === "all";
-            }).prop('selected', true);
+            dispatch.on("done_load", function(){
+                jqueryMap.$theme_dropdown.find("option").filter(function() {
+                        return $(this).text() === "all";
+                }).prop('selected', true);
+                jqueryMap.$region_dropdown.find("option").filter(function() {
+                        return $(this).text() === "all";
+                }).prop('selected', true);
 
-            redraw();
+                redraw();
+            });
         });
 
         //listen to changes in theme dropdown
@@ -349,6 +351,7 @@ gcif.compare = (function () {
             list.metadb( stateMap.performance_indicators_db().get() );
             list.metadata( stateMap.indicators );
             list.data( stateMap.cities );
+
             list.render();
 
             if (!listonly){
