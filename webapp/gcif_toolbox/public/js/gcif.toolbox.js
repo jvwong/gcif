@@ -1,5 +1,5 @@
 /*
- * gcif.dash.js
+ * gcif.toolbox.js
  * User Interface module
  */
 
@@ -11,7 +11,7 @@
  */
 /*global $, d3, gcif */
 
-gcif.dash = (function () {
+gcif.toolbox = (function () {
     'use strict';
 
     //---------------- BEGIN MODULE SCOPE VARIABLES --------------
@@ -33,12 +33,10 @@ gcif.dash = (function () {
                         '<span class="text-muted">Top 50 Reporting</span>' +
                     '</div>' +
                     '<div class="col-xs-6 col-sm-3 gcif-shell-dash-toolbox-select-placeholder1">' +
-                        '<h4>Placeholder1</h4>' +
-                        '<span class="text-muted">Placeholder1 Blurb</span>' +
+                        '<h4></h4>' +
                     '</div>' +
                     '<div class="col-xs-6 col-sm-3 gcif-shell-dash-toolbox-select-placeholder2">' +
-                        '<h4>Placeholder2</h4>' +
-                        '<span class="text-muted">Placeholder2 Blurb</span>' +
+                        '<h4></h4>' +
                     '</div>' +
                 '</div>' +
 
@@ -80,6 +78,7 @@ gcif.dash = (function () {
     display = function(){
 
         gcif.compare.initModule( jqueryMap.$compare );
+        gcif.compare.render();
 
     };
     //end /display/
@@ -108,7 +107,6 @@ gcif.dash = (function () {
     // Returns   : none
     // Throws    : none
     initModule = function ( $container ) {
-
         //store container in stateMap
         stateMap.$container = $container;
         $container.html(configMap.main_html);

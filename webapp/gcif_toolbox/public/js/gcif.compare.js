@@ -16,7 +16,7 @@ gcif.compare = (function () {
 
     //---------------- BEGIN MODULE SCOPE VARIABLES --------------
     var
-    configMap = {
+      configMap = {
 
         main_html : String() +
 
@@ -26,7 +26,6 @@ gcif.compare = (function () {
                 '<ul id="myTab" class="nav nav-tabs">' +
                     '<li class="active"><a href="#graphical" data-toggle="tab">Graphical</a></li>' +
                     '<li class=""><a href="#tabular" data-toggle="tab">Tablular</a></li>' +
-                    '<li class=""><a href="#images" data-toggle="tab">Images</a></li>' +
                 '</ul>' +
                 '<div id="myTabContent" class="tab-content">' +
                     '<div class="tab-pane fade active in" id="graphical">' +
@@ -51,9 +50,6 @@ gcif.compare = (function () {
                                     '<button type="button" class="btn btn-default" id="refresh">' +
                                         '<span class="glyphicon glyphicon-refresh"></span> Refresh' +
                                     '</button>' +
-                                    '<button type="button" class="btn btn-default" id="save-png">' +
-                                        '<span class="glyphicon glyphicon-picture"></span>' +
-                                    '</button>' +
                                 '</div>' +
                             '</div>' +
                         '</form>' +
@@ -73,10 +69,6 @@ gcif.compare = (function () {
                             '</div>' +
                         '</form>' +
                         '<div class="gcif-compare table col-lg-12"></div>' +
-                    '</div>' +
-
-                    '<div class="tab-pane fade" id="images">' +
-                        '<div class="gcif-compare images col-lg-12"></div>' +
                     '</div>' +
 
                 '</div>' +
@@ -106,12 +98,14 @@ gcif.compare = (function () {
           , top5Themes                : ["education","finance","health","safety","urban planning"]
     }
 
-    , jqueryMap = {}
-    , d3Map= {}
-    , setJqueryMap
-    , setd3Map
-    , render
+    , jqueryMap = {}, d3Map= {}
+    , setJqueryMap, setd3Map
+
     , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "load_themes", "done_load")
+
+    , parallelChart, list
+
+    , loadData, loadListeners, initCharts, resetState, render, redraw
     , initModule;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
@@ -128,7 +122,6 @@ gcif.compare = (function () {
         };
     };
 
-
     setd3Map = function(){
         d3Map = {
               d3compare           : d3.select(".gcif-compare.chart")
@@ -143,63 +136,42 @@ gcif.compare = (function () {
             , d3export_csv        : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
             , d3downloadanchor    : d3.select(".btn-group.gcif-compare.tabular a")
 
-            , d3export_png        : d3.select(".btn-group.gcif-compare.graphical button#save-png")
-
             , d3images             : d3.select(".gcif-compare.images")
         };
     };
 
+    initCharts = function(){
+        stateMap.color = d3.scale.ordinal()
+                           .domain(stateMap.abundant_themes_db().distinct("theme"))
+                           .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
 
-    // BEGIN private method /render/
-    render = function(){
+        parallelChart = gcif.parallel.Parallel( d3Map.d3compare );
+        parallelChart.color(stateMap.color);
 
-        var
-        parallelChart
-        , list
-        ;
+        list = gcif.table.Table( d3Map.d3table );
+        list.color(stateMap.color);
+    };
 
-        /* rendering */
-        function renderAll() {
-            list.metadb( stateMap.performance_indicators_db().get() );
-            list.metadata( stateMap.indicators );
-            list.data( stateMap.cities );
-            parallelChart.metadb( stateMap.performance_indicators_db().get() );
-            parallelChart.metadata( stateMap.indicators );
-            parallelChart.data( stateMap.cities );
-            parallelChart.dispatch( dispatch );
+    resetState = function (){
+        stateMap.theme      = undefined;
+        stateMap.indicators = undefined;
+        stateMap.cities     = undefined;
+        stateMap.member_cities_db = TAFFY();
+        stateMap.performance_indicators_db = TAFFY();
+        stateMap.abundant_themes_db = TAFFY();
+    };
 
-            list.render();
-            parallelChart.render();
-        }
-
-        /* Update graph using new width and height (code below) */
-        function change() {
-            d3.transition()
-            .duration(700)
-            .each(renderAll);
-        }
-
-        function resetState(){
-            stateMap.theme      = undefined;
-            stateMap.indicators = undefined;
-            stateMap.cities     = undefined;
-            stateMap.member_cities_db = TAFFY();
-            stateMap.performance_indicators_db = TAFFY();
-            stateMap.abundant_themes_db = TAFFY();
-        }
-
-        function getData() {
-//            d3.json("/performance_indicators/list", function(performance_indicators_data) {
-//                dispatch.load_indicators(performance_indicators_data);
-//                d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
-//                   dispatch.load_themes(abundant_themes);
-//                    d3.json("/member_cities/list", function(member_cities_data) {
-//                        dispatch.load_cities(member_cities_data);
-//                        dispatch.done_load();
-//                    });
+    loadData = function(){
+//        d3.json("/performance_indicators/list", function(performance_indicators_data) {
+//            dispatch.load_indicators(performance_indicators_data);
+//            d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+//                dispatch.load_themes(abundant_themes);
+//                d3.json("/member_cities/list", function(member_cities_data) {
+//                    dispatch.load_cities(member_cities_data);
+//                    dispatch.done_load();
 //                });
-//           });
-
+//            });
+//        });
             d3.json("assets/data/performance_indicators.json", function(performance_indicators_data) {
                 dispatch.load_indicators(performance_indicators_data);
                 d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
@@ -210,13 +182,17 @@ gcif.compare = (function () {
                     });
                 });
             });
-        }
+    };
 
-        /* event listeners */
-        //list for dispatch events
+    loadListeners = function(){
+                //--------------------- BEGIN EVENT LISTENERS ----------------------
+        dispatch.on("brush", function(brusheddata){
+            stateMap.cities = brusheddata;
+            dispatch.data_update();
+        });
+
         dispatch.on("data_update", function(){
-            list.data( stateMap.cities );
-            list.render();
+            redraw(true);
         });
 
         dispatch.on("load_cities", function(data){
@@ -278,19 +254,6 @@ gcif.compare = (function () {
             });
         });
 
-        //table button for exporting csv
-        d3Map.d3export_png.on("click", function(){
-            var html = d3.select("svg")
-                .attr("version", 1.1)
-                .attr("xmlns", "http://www.w3.org/2000/svg")
-                .node().parentNode.innerHTML;
-
-            var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-            var img = '<img src="'+ imgsrc +'">';
-            d3Map.d3images.html(img);
-
-        });
-
         //reset button for highlighted paths
         d3Map.d3clear_highlights.on("click", function(){
             parallelChart.clearHighlight(d3Map.d3compare.selectAll(".foreground path.highlight"), d3Map.d3compare.selectAll(".point.highlight"))
@@ -304,14 +267,14 @@ gcif.compare = (function () {
         //subset button for brushes
         d3Map.d3isolate_brushed.on("click", function(){//
             parallelChart.subsetBrush();
-            renderAll();
+            redraw();
         });
 
         //listen to the clear all button
         d3Map.d3refresh.on("click", function(){
             resetState();
-            getData();
-            change();
+            loadData();
+            redraw();
         });
 
         //listen to changes in theme dropdown
@@ -322,42 +285,63 @@ gcif.compare = (function () {
                     .map(function(idoc){ return idoc["indicator"]; }) :
                 stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
                     .map(function(idoc){ return idoc["indicator"]; });
-            change();
+            redraw();
         });
 
         // window resizing
-        d3.select(window).on('resize', renderAll );
+        d3.select(window).on('resize', redraw );
 
-        /* Load the data, then draw */
-        getData();
+        //--------------------- END EVENT LISTENERS ----------------------
+
+    };
+
+    redraw = function(listonly){
+        listonly = typeof listonly !== 'undefined' ? listonly : false;
+
+        d3.transition()
+        .duration(500)
+        .each(function(){return renderAll(listonly);});
+
+        function renderAll(listonly){
+            list.metadb( stateMap.performance_indicators_db().get() );
+            list.metadata( stateMap.indicators );
+            list.data( stateMap.cities );
+            list.render();
+
+            if (!listonly){
+                parallelChart.metadb( stateMap.performance_indicators_db().get() );
+                parallelChart.metadata( stateMap.indicators );
+                parallelChart.data( stateMap.cities );
+                parallelChart.dispatch( dispatch );
+                parallelChart.render();
+            }
+        }
+
+    };
+
+    // BEGIN public method /render/
+    // Example   : gcif.compare.render();
+    // Purpose   :
+    //   Adds the graphical and tabular elements to the page
+    // Arguments : none
+    // Action    :
+    //   Loads data, populates d3compare and d3table elements, and
+    //   triggers listeners
+    // Returns   : none
+    // Throws    : none
+    render = function(){
+        loadListeners();
+        loadData();
+
         dispatch.on("done_load", function(){
-            stateMap.color = d3.scale.ordinal()
-                               .domain(stateMap.abundant_themes_db().distinct("theme"))
-                               .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
-
-            parallelChart = gcif.parallel.Parallel( d3Map.d3compare );
-            parallelChart.color(stateMap.color);
-
-            list = gcif.table.Table( d3Map.d3table );
-            list.color(stateMap.color);
-            change();
+            initCharts();
+            redraw();
         });
-
 
     };
     // END private method /render/
 
     //--------------------- END DOM METHODS ----------------------
-
-
-    //--------------------- BEGIN DISPATCH LISTENERS ----------------------
-    dispatch.on("brush", function(brusheddata){
-        stateMap.cities = brusheddata;
-        dispatch.data_update();
-    });
-
-    //--------------------- END DISPATCH LISTENERS ----------------------
-
 
     // Begin Public method /initModule/
     // Example   : chart.dash.initModule( $('.container') );
@@ -372,17 +356,18 @@ gcif.compare = (function () {
     // Returns   : none
     // Throws    : none
     initModule = function ( $container ) {
-
+        resetState();
         //store container in stateMap
         stateMap.$container = $container;
         $container.html( configMap.main_html );
         setJqueryMap();
         setd3Map();
-        render();
     };
     // End PUBLIC method /initModule/
 
-    return { initModule   : initModule };
+    return { initModule   : initModule
+           , render       : render
+    };
     //------------------- END PUBLIC METHODS ---------------------
 })();
 
