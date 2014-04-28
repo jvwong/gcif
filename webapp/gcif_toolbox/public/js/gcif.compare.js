@@ -31,9 +31,13 @@ gcif.compare = (function () {
                     '<div class="tab-pane fade active in" id="graphical">' +
                         '<form class="form" role="form">' +
                             '<div class="form-group gcif-compare graphical menu">' +
-                                '<label for="category-dropdown" class="col-sm-1 control-label">Theme</label>' +
+                                '<label for="theme-dropdown" class="col-sm-1 control-label">Theme</label>' +
                                 '<div class="col-sm-11">' +
                                     '<select id="theme-dropdown" class="form-control"></select>' +
+                                '</div>' +
+                                '<label for="region-dropdown" class="col-sm-1 control-label">Region</label>' +
+                                '<div class="col-sm-11">' +
+                                    '<select id="region-dropdown" class="form-control"></select>' +
                                 '</div>' +
                             '</div>' +
                             '<div class="form-group">' +
@@ -202,6 +206,8 @@ gcif.compare = (function () {
                 //only include the top 50 cities by indicator count
                 return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
             }).get();
+
+            console.log(stateMap.member_cities_db().distinct("Region"));
         });
 
         dispatch.on("load_indicators", function(data){

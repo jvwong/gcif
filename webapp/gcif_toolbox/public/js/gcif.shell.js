@@ -134,7 +134,7 @@ gcif.shell = (function () {
         jqueryMap.$sidebar_tally.on("click", onClickTally);
         jqueryMap.$sidebar_toolbox.on("click", onClickToolbox);
 
-        jqueryMap.$sidebar_tally.click();
+        jqueryMap.$sidebar_toolbox.click();
     };
     // End PUBLIC method /initModule/
 
