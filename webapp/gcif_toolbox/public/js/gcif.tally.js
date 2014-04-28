@@ -21,12 +21,12 @@ gcif.tally = (function () {
         main_html : String() +
 
             '<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">' +
-                '<h3 class="page-header">Data Source</h3>' +
+                '<h3 class="page-header">Data Source: <span id="gcif-tally-sources-title"></span></h3>' +
 
                 '<div class="row gcif-tally-sources">' +
                     '<div class="col-xs-6 col-sm-3 gcif-tally-source member">' +
                         '<img src="assets/images/tally/blue-pastel.png" class="img-responsive" alt="member_recent" />' +
-                        '<h4>Member</h4>' +
+                        '<h4>Members</h4>' +
                         '<span class="text-muted">255 Reporting</span>' +
                     '</div>' +
 
@@ -38,7 +38,7 @@ gcif.tally = (function () {
 
                     '<div class="col-xs-6 col-sm-3 gcif-tally-source">' +
                         '<img src="assets/images/tally/mint-pastel.png" class="img-responsive" alt="nonmember" />' +
-                        '<h4>Non-Member</h4>' +
+                        '<h4>Non-Members</h4>' +
                         '<span class="text-muted">8 Reported</span>' +
                     '</div>' +
 
@@ -72,6 +72,7 @@ gcif.tally = (function () {
 
         jqueryMap = {
                $container     : $container
+             , $sourceTitle   : $container.find('#gcif-tally-sources-title')
              , $dataSourceImg : $container.find('.gcif-tally-source img')
              , $hbar          : $container.find('.gcif-tally-hbar')
         };
@@ -91,13 +92,11 @@ gcif.tally = (function () {
     //------------------- BEGIN EVENT HANDLERS -------------------
 
     onClickSource = function(e){
-
         // get the source clicked from the "alt" attribute
         configMap.data_source =  e.currentTarget["alt"];
-
+        jqueryMap.$sourceTitle.html($(e.target).siblings("h4").html());
         // push that source as a prefix to the data urls generated within the graph modules
         renderGraphs(configMap.data_source);
-
     };
 
     //-------------------- END EVENT HANDLERS --------------------
@@ -107,37 +106,6 @@ gcif.tally = (function () {
 
 
     //------------------- BEGIN PUBLIC METHODS -------------------
-    // Begin Public method /setDataSource/
-    // Example   : gcif.dash.setDataSource( 'simpledata.json' );
-    // Purpose   :
-    //   Accepts a string indicating the data source to prefix a data file name with
-    // Arguments :
-    //   * source (example: 'china' )
-    // Action    :
-    //   Sets the configMap setDataSource attribute
-    // Returns   : none
-    // Throws    : error if this is not a valid url for d3
-//    setDataSource = function ( source ) {
-//
-//        if (source){
-//
-//            //store in stateMap
-//            configMap.data_source = source;
-//
-//            //pass to graph functions
-//            try{
-//                renderGraphs(source);
-//            }
-//            catch(error){
-//                console.log(error);
-//            }
-//
-//        }
-//
-//    };
-    // End PUBLIC method /setDataSource/
-
-
 
     // Begin Public method /initModule/
     // Example   : chart.dash.initModule( $('.container') );
