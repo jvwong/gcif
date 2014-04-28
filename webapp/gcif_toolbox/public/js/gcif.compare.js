@@ -189,27 +189,27 @@ gcif.compare = (function () {
         }
 
         function getData() {
-            d3.json("/performance_indicators/list", function(performance_indicators_data) {
+//            d3.json("/performance_indicators/list", function(performance_indicators_data) {
+//                dispatch.load_indicators(performance_indicators_data);
+//                d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+//                   dispatch.load_themes(abundant_themes);
+//                    d3.json("/member_cities/list", function(member_cities_data) {
+//                        dispatch.load_cities(member_cities_data);
+//                        dispatch.done_load();
+//                    });
+//                });
+//           });
+
+            d3.json("assets/data/performance_indicators.json", function(performance_indicators_data) {
                 dispatch.load_indicators(performance_indicators_data);
                 d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
                     dispatch.load_themes(abundant_themes);
-                    d3.json("/member_cities/list", function(member_cities_data) {
+                    d3.json("assets/data/member_cities.json", function(member_cities_data) {
                         dispatch.load_cities(member_cities_data);
                         dispatch.done_load();
                     });
                 });
             });
-
-//            d3.json("assets/data/performance_indicators.json", function(performance_indicators_data) {
-//                dispatch.load_indicators(performance_indicators_data);
-//                d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
-//                    dispatch.load_themes(abundant_themes);
-//                    d3.json("assets/data/member_cities.json", function(member_cities_data) {
-//                        dispatch.load_cities(member_cities_data);
-//                        dispatch.done_load();
-//                    });
-//                });
-//            });
         }
 
         /* event listeners */
