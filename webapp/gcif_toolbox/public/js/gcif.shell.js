@@ -54,8 +54,8 @@ gcif.shell = (function () {
                         '<ul class="nav nav-sidebar">' +
                             '<li id="tally"><a href="#">Tally</a></li>' +
                             '<li id="toolbox"><a href="#">Toolbox</a></li>' +
-                            '<li><a href="#">Analytics</a></li>' +
-                            '<li><a href="#">Export</a></li>' +
+                            '<li><a href="#">--</a></li>' +
+                            '<li><a href="#">--</a></li>' +
                         '</ul>' +
                     '</div>' +
 
