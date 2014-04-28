@@ -21,7 +21,7 @@ gcif.toolbox = (function () {
         main_html : String() +
 
             '<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">' +
-                '<h3 class="page-header">GCIF Toolbox</h3>' +
+                '<h3 class="page-header">Toolbox</h3>' +
 
                 '<div class="row gcif-shell-dash-toolbox">' +
                     '<div class="col-xs-6 col-sm-3 gcif-shell-dash-toolbox-select-compare">' +

@@ -75,18 +75,3 @@ a:link, a:hover {
     margin-top: 0;
 }
 
-/*
-* Data source row
-*/
-
-.gcif-dash-source {
-    min-width: 10em;
-    margin-bottom: 30px;
-    text-align: center;
-}
-.gcif-dash-source h4 {
-    text-align: center;
-    margin-bottom: 0;
-}
-
-
