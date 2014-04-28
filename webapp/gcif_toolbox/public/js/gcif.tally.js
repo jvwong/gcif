@@ -23,39 +23,34 @@ gcif.tally = (function () {
             '<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">' +
                 '<h3 class="page-header">Data Source</h3>' +
 
-                '<div class="row gcif-data-sources">' +
-                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
-                        '<img src="assets/images/tally/blue-pastel.png" class="img-responsive gcif-dash-source-img" alt="member_recent" />' +
+                '<div class="row gcif-tally-sources">' +
+                    '<div class="col-xs-6 col-sm-3 gcif-tally-source member">' +
+                        '<img src="assets/images/tally/blue-pastel.png" class="img-responsive" alt="member_recent" />' +
                         '<h4>Member</h4>' +
                         '<span class="text-muted">255 Reporting</span>' +
                     '</div>' +
 
-                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
-                        '<img src="assets/images/tally/brown-pastel.png" class="img-responsive gcif-dash-source-img" alt="china" />' +
+                    '<div class="col-xs-6 col-sm-3 gcif-tally-source">' +
+                        '<img src="assets/images/tally/brown-pastel.png" class="img-responsive" alt="china" />' +
                         '<h4>China</h4>' +
                         '<span class="text-muted">285 Reporting</span>' +
                     '</div>' +
 
-                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
-                        '<img src="assets/images/tally/mint-pastel.png" class="img-responsive gcif-dash-source-img" alt="nonmember" />' +
+                    '<div class="col-xs-6 col-sm-3 gcif-tally-source">' +
+                        '<img src="assets/images/tally/mint-pastel.png" class="img-responsive" alt="nonmember" />' +
                         '<h4>Non-Member</h4>' +
                         '<span class="text-muted">8 Reported</span>' +
                     '</div>' +
 
-                    '<div class="col-xs-6 col-sm-3 gcif-dash-source">' +
-                        '<img src="assets/images/tally/violet-pastel.png" class="img-responsive gcif-dash-source-img" alt="ontario" />' +
+                    '<div class="col-xs-6 col-sm-3 gcif-tally-source">' +
+                        '<img src="assets/images/tally/violet-pastel.png" class="img-responsive" alt="ontario" />' +
                         '<h4>Other</h4>' +
                         '<span class="text-muted"></span>' +
                     '</div>' +
                  '</div>' +
 
-                 '<div class="gcif-shell-dash-hbar"></div>' +
+                 '<div class="gcif-tally-hbar"></div>' +
             '</div>'
-
-
-
-
-
     }
     , stateMap = {
         $container : undefined
@@ -73,13 +68,12 @@ gcif.tally = (function () {
 
     setJqueryMap = function(){
         var
-          $container = stateMap.$container
+          $container = stateMap.$container;
 
         jqueryMap = {
                $container     : $container
-             , $dataSourceImg : $container.find('.gcif-dash-source-img')
-             , $hbar          : $container.find('.gcif-shell-dash-hbar')
-             , $table         : $container.find('.gcif-shell-dash-table')
+             , $dataSourceImg : $container.find('.gcif-tally-source img')
+             , $hbar          : $container.find('.gcif-tally-hbar')
         };
     };
     //--------------------- END DOM METHODS ----------------------
@@ -88,10 +82,8 @@ gcif.tally = (function () {
 
     // private method /renderGraphs/
     renderGraphs = function( source ){
-
         gcif.hbar.setDataUrls( source );
         gcif.hbar.initModule( jqueryMap.$hbar );
-
     };
     //end /renderGraphs/
 
@@ -168,6 +160,7 @@ gcif.tally = (function () {
 
         //register listeners
         jqueryMap.$dataSourceImg.click(onClickSource);
+        $('.gcif-tally-source.member img').click();
 
     };
     // End PUBLIC method /initModule/

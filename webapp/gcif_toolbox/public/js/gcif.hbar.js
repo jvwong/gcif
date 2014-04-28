@@ -26,15 +26,15 @@ gcif.hbar = (function () {
                 '<form class="form" role="form">' +
 
                     '<div class="form-group gcif-hbar menu">' +
-                        '<label for="category-dropdown" class="col-sm-2 control-label">Category</label>' +
-                        '<div class="col-sm-10">' +
+                        '<label for="category-dropdown" class="col-sm-1 control-label">Theme</label>' +
+                        '<div class="col-sm-11">' +
                             '<select id="category-dropdown" class="form-control"></select>' +
                         '</div>' +
                     '<div>' +
 
                     '<div class="form-group gcif-hbar number">' +
-                        '<label for="number-dropdown" class="col-sm-2 control-label">Show</label>' +
-                        '<div class="col-sm-10">' +
+                        '<label for="number-dropdown" class="col-sm-1 control-label">Show</label>' +
+                        '<div class="col-sm-11">' +
                             '<select id="number-dropdown" class="form-control">' +
                                 '<option value="25"><25</option>' +
                                 '<option value="50"><50</option>' +
@@ -46,7 +46,7 @@ gcif.hbar = (function () {
                     '<div>' +
 
                     '<div class="form-group">' +
-                        '<div class="btn-group gcif-hbar sort col-sm-offset-2 col-sm-10">' +
+                        '<div class="btn-group gcif-hbar sort col-sm-offset-1 col-sm-11">' +
                             '<button type="button" class="btn btn-default" id="alphabetical">' +
                                 '<span class="glyphicon glyphicon-sort-by-alphabet"></span> Alphabetical' +
                             '</button>' +
