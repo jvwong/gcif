@@ -29,16 +29,20 @@ gcif.toolbox = (function () {
                             '<h4>Compare</h4>' +
                         '</a>' +
                     '</div>' +
-                    '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool similar">' +
+                    '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool placeholder">' +
                         '<a href="#">' +
-                            '<h4>Similar</h4>' +
+                            '<h4></h4>' +
                         '</a>' +
                     '</div>' +
                     '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool placeholder1">' +
-                        '<h4></h4>' +
+                        '<a href="#">' +
+                            '<h4></h4>' +
+                        '</a>' +
                     '</div>' +
                     '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool placeholder2">' +
-                        '<h4></h4>' +
+                        '<a href="#">' +
+                            '<h4></h4>' +
+                        '</a>' +
                     '</div>' +
                 '</div>' +
 
