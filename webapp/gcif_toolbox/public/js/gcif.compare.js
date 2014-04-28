@@ -20,7 +20,7 @@ gcif.compare = (function () {
 
         main_html : String() +
 
-            '<h3 class="sub-header">Comparison</h3>' +
+            '<h3 class="sub-header"></h3>' +
 
             '<div class="row">' +
                 '<ul id="myTab" class="nav nav-tabs">' +

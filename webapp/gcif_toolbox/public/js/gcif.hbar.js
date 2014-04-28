@@ -20,7 +20,7 @@ gcif.hbar = (function () {
 
         main_html : String() +
 
-            '<h3 class="sub-header">Core Indicators</h3>' +
+            '<h3 class="sub-header"></h3>' +
 
             '<div class="row">' +
                 '<form class="form" role="form">' +
