@@ -84,6 +84,7 @@ gcif.compare = (function () {
           , cities                    : undefined
           , indicators                : undefined
           , theme                     : undefined
+          , region                    : undefined
 
           , color                     : undefined
 
@@ -135,6 +136,7 @@ gcif.compare = (function () {
             , d3isolate_brushed   : d3.select(".btn-group.gcif-compare.graphical button#isolate-brushed")
             , d3refresh           : d3.select(".btn-group.gcif-compare.graphical button#refresh")
             , d3theme_dropdown    : d3.select(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
+            , d3region_dropdown    : d3.select(".form-group.gcif-compare.graphical.menu select#region-dropdown")
 
             , d3table             : d3.select(".gcif-compare.table")
             , d3export_csv        : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
@@ -207,7 +209,19 @@ gcif.compare = (function () {
                 return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
             }).get();
 
-            console.log(stateMap.member_cities_db().distinct("Region"));
+            var dropdata = stateMap.member_cities_db(function(){
+                //only include regions from top 50 cities
+                return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
+            }).distinct("Region");
+
+            dropdata.splice(0, 0, "all");
+            //Load (top) regions into dropdown menu
+            d3Map.d3region_dropdown.selectAll("option")
+                .data(dropdata)
+                .enter()
+                .append("option")
+                .text(function(theme) { return theme; });
+            stateMap.region = "all";
         });
 
         dispatch.on("load_indicators", function(data){
@@ -291,6 +305,21 @@ gcif.compare = (function () {
                     .map(function(idoc){ return idoc["indicator"]; }) :
                 stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
                     .map(function(idoc){ return idoc["indicator"]; });
+            redraw();
+        });
+
+        //listen to changes in region dropdown
+        d3Map.d3region_dropdown.on("change", function(){
+            stateMap.region = d3Map.d3region_dropdown.node().value;
+            var cities = stateMap.member_cities_db(function(){
+                    return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
+                }).get();
+
+            stateMap.cities = stateMap.region === "all" ? cities :
+                stateMap.member_cities_db(function(){
+                    return (stateMap.top50Cities.indexOf(this["CityName"])) >= 0 &&
+                        (this["Region"] === stateMap.region);
+                }).get();
             redraw();
         });
 
