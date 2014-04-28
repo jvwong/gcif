@@ -321,15 +321,9 @@ gcif.compare = (function () {
         //listen to changes in region dropdown
         d3Map.d3region_dropdown.on("change", function(){
             stateMap.region = d3Map.d3region_dropdown.node().value;
-            var cities = stateMap.member_cities_db(function(){
-                    return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
-                }).get();
-
-            stateMap.cities = stateMap.region === "all" ? cities :
-                stateMap.member_cities_db(function(){
-                    return (stateMap.top50Cities.indexOf(this["CityName"])) >= 0 &&
-                        (this["Region"] === stateMap.region);
-                }).get();
+            stateMap.cities = stateMap.cities.filter( function(d){
+                return d["Region"] === stateMap.region;
+            });
             redraw();
         });
 
