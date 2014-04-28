@@ -122,8 +122,10 @@ gcif.compare = (function () {
           $container = stateMap.$container;
 
         jqueryMap = {
-            $container  : $container
-          , $compare    : $container.find(".gcif-compare.chart")
+            $container       : $container
+          , $compare         : $container.find(".gcif-compare.chart")
+          , $theme_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu #theme-dropdown")
+          , $region_dropdown : $container.find(".form-group.gcif-compare.graphical.menu #region-dropdown")
         };
     };
 
@@ -136,13 +138,11 @@ gcif.compare = (function () {
             , d3isolate_brushed   : d3.select(".btn-group.gcif-compare.graphical button#isolate-brushed")
             , d3refresh           : d3.select(".btn-group.gcif-compare.graphical button#refresh")
             , d3theme_dropdown    : d3.select(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
-            , d3region_dropdown    : d3.select(".form-group.gcif-compare.graphical.menu select#region-dropdown")
+            , d3region_dropdown   : d3.select(".form-group.gcif-compare.graphical.menu select#region-dropdown")
 
             , d3table             : d3.select(".gcif-compare.table")
             , d3export_csv        : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
             , d3downloadanchor    : d3.select(".btn-group.gcif-compare.tabular a")
-
-            , d3images             : d3.select(".gcif-compare.images")
         };
     };
 
@@ -294,6 +294,14 @@ gcif.compare = (function () {
         d3Map.d3refresh.on("click", function(){
             resetState();
             loadData();
+
+            jqueryMap.$theme_dropdown.find("option").filter(function() {
+                    return $(this).text() === "all";
+            }).prop('selected', true);
+            jqueryMap.$region_dropdown.find("option").filter(function() {
+                    return $(this).text() === "all";
+            }).prop('selected', true);
+
             redraw();
         });
 
