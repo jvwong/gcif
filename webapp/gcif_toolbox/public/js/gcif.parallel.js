@@ -29,7 +29,7 @@ gcif.parallel = (function () {
         , _height
         , _x = d3.scale.ordinal()
         , _y = {}
-        , _eps = 0.0001
+        , _eps = 5
 
         , _metadata = []
         , _metadb = TAFFY()
