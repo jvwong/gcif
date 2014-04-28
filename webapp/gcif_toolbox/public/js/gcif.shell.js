@@ -50,10 +50,10 @@ gcif.shell = (function () {
             ' <div class="container-fluid">' +
                 '<div class="row">' +
 
-                    '<div class="col-sm-3 col-md-2 sidebar">' +
+                    '<div class="col-sm-3 col-md-2 gcif-shell sidebar">' +
                         '<ul class="nav nav-sidebar">' +
-                            '<li><a href="#">Overview</a></li>' +
-                            '<li class="active"><a href="#">Toolbox</a></li>' +
+                            '<li id="tally"><a href="#">Tally</a></li>' +
+                            '<li id="toolbox"><a href="#">Toolbox</a></li>' +
                             '<li><a href="#">Analytics</a></li>' +
                             '<li><a href="#">Export</a></li>' +
                         '</ul>' +
@@ -63,16 +63,13 @@ gcif.shell = (function () {
 
                 '</div>' +
             '</div>'
-
-
-
-
     }
     , stateMap = {
         $outerDiv : undefined
     }
     , jqueryMap = {}
     , setJqueryMap
+    , onClickTally, onClickToolbox
     , initModule;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
@@ -85,8 +82,11 @@ gcif.shell = (function () {
           $outerDiv = stateMap.$outerDiv
 
         jqueryMap = {
-            $outerDiv   : $outerDiv
-          , $content    : $outerDiv.find('#content')
+            $outerDiv        : $outerDiv
+          , $content         : $outerDiv.find('#content')
+
+          , $sidebar_tally   : $outerDiv.find('.gcif-shell.sidebar li#tally')
+          , $sidebar_toolbox : $outerDiv.find('.gcif-shell.sidebar li#toolbox')
 
         };
     };
@@ -95,6 +95,13 @@ gcif.shell = (function () {
 
 
     //------------------- BEGIN EVENT HANDLERS -------------------
+    onClickTally = function(){
+        gcif.tally.initModule( jqueryMap.$content );
+    };
+
+    onClickToolbox = function(){
+        gcif.toolbox.initModule( jqueryMap.$content );
+    };
 
     //-------------------- END EVENT HANDLERS --------------------
 
@@ -123,9 +130,11 @@ gcif.shell = (function () {
         $outerDiv.append(configMap.sidebar_html);
         setJqueryMap();
 
-        // configure and initialize feature modules
-        gcif.dash.initModule( jqueryMap.$content );
+        // event listeners for navbar
+        jqueryMap.$sidebar_tally.on("click", onClickTally);
+        jqueryMap.$sidebar_toolbox.on("click", onClickToolbox);
 
+        jqueryMap.$sidebar_toolbox.click();
     };
     // End PUBLIC method /initModule/
 
