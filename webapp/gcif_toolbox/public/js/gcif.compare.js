@@ -39,6 +39,14 @@ gcif.compare = (function () {
                                 '<div class="col-sm-11">' +
                                     '<select id="region-dropdown" class="form-control"></select>' +
                                 '</div>' +
+//                                '<label for="population-dropdown" class="col-sm-1 control-label">Population</label>' +
+//                                '<div class="col-sm-11">' +
+//                                    '<select id="population-dropdown" class="form-control"></select>' +
+//                                '</div>' +
+//                                '<label for="gdp-dropdown" class="col-sm-1 control-label">GDP</label>' +
+//                                '<div class="col-sm-11">' +
+//                                    '<select id="gdp-dropdown" class="form-control"></select>' +
+//                                '</div>' +
                             '</div>' +
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare graphical col-sm-offset-1 col-sm-11">' +
