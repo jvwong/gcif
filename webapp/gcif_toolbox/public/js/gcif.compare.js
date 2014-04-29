@@ -326,7 +326,8 @@ gcif.compare = (function () {
             redraw();
         });
 
-        //listen to changes in region dropdown
+        // --- FILTER ---
+        // listen to changes in region dropdown --- FILTER
         d3Map.d3region_dropdown.on("change", function(){
             stateMap.region = d3Map.d3region_dropdown.node().value;
             var cities = stateMap.member_cities_db(function(){
