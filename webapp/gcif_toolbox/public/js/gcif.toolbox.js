@@ -24,16 +24,17 @@ gcif.toolbox = (function () {
                 '<h3 class="page-header">Tool: <span id="gcif-toolbox-tool-title"></span></h3>' +
 
                 '<div class="row gcif-toolbox-tools">' +
-                    '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool compare">' +
-                        '<a href="#">' +
-                            '<h4>Compare</h4>' +
-                        '</a>' +
-                    '</div>' +
-                    '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool placeholder">' +
-                        '<a href="#">' +
-                            '<h4></h4>' +
-                        '</a>' +
-                    '</div>' +
+                    '<a href="#">' +
+                        '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool compare">' +
+                                '<h4>Compare</h4>' +
+                        '</div>' +
+                    '</a>' +
+                    '<a href="#">' +
+                        '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool similar">' +
+                                '<h4>Similar</h4>' +
+                            '</a>' +
+                        '</div>' +
+                    '</a>' +
                     '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool placeholder1">' +
                         '<a href="#">' +
                             '<h4></h4>' +
@@ -46,7 +47,7 @@ gcif.toolbox = (function () {
                     '</div>' +
                 '</div>' +
 
-                '<div class="gcif-toolbox-compare"></div>' +
+                '<div class="gcif-toolbox-tool-chart"></div>' +
             '</div>'
 
 
@@ -73,11 +74,10 @@ gcif.toolbox = (function () {
           $container = stateMap.$container;
 
         jqueryMap = {
-               $container      : $container
-             , $compare        : $container.find('.gcif-toolbox-compare')
-             , $toolTitle      : $container.find('#gcif-toolbox-tool-title')
-             , $toolSelection  : $container.find('.gcif-toolbox-tool')
-             , $similar        : $container.find('.gcif-toolbox-similar')
+              $container      : $container
+            , $toolTitle      : $container.find('#gcif-toolbox-tool-title')
+            , $toolSelection  : $container.find('.gcif-toolbox-tool')
+            , $toolChart      : $container.find('.gcif-toolbox-tool-chart')
         };
     };
     //--------------------- END DOM METHODS ----------------------
@@ -87,8 +87,11 @@ gcif.toolbox = (function () {
     // private method /display/
     display = function(tool){
         if(tool === "Compare"){
-            gcif.compare.initModule( jqueryMap.$compare );
+            gcif.compare.initModule( jqueryMap.$toolChart );
             gcif.compare.render();
+        }else if( tool === "Similar"){
+            gcif.similar.initModule( jqueryMap.$toolChart );
+            gcif.similar.render();
         }
     };
     //end /display/
@@ -98,7 +101,7 @@ gcif.toolbox = (function () {
 
     onClickTool = function(e){
         // get the tool clicked
-        configMap.tool = $(e.target).find("h4").html();
+        configMap.tool = $(e.target).html();
         jqueryMap.$toolTitle.html( configMap.tool );
         display(configMap.tool);
     };
@@ -131,7 +134,8 @@ gcif.toolbox = (function () {
 
         //register listeners
         jqueryMap.$toolSelection.click(onClickTool);
-        $('.gcif-toolbox-tool.compare').click();
+//        $('.gcif-toolbox-tool.compare h4').click();
+        $('.gcif-toolbox-tool.similar h4').click();
 
     };
     // End PUBLIC method /initModule/
