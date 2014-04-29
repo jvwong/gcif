@@ -22,13 +22,14 @@ gcif.chord = (function () {
           _container = d3container
         , _svg
 
-        , _margin = { top: 25, right: 5, bottom: 150, left: 5 }
+        , _margin = { top: 15, right: 5, bottom: 5, left: 5 }
         , _min_width = 300
         , _min_height = 200
         , _width
         , _height
-        , _x
-        , _y
+
+        , _padding = 0.05
+
 
         , _color
         , _data = []
@@ -87,9 +88,13 @@ gcif.chord = (function () {
 
         function renderBody(){
             var chord = d3.layout.chord()
-                .padding(.05)
+                .padding(_padding)
                 .sortSubgroups(d3.descending)
                 .matrix(_data);
+
+
+            console.log(chord.chords());
+            console.log(chord.groups());
 
             var   innerRadius = Math.min(_width, _height) * .41
                 , outerRadius = innerRadius * 1.1
@@ -171,19 +176,9 @@ gcif.chord = (function () {
             renderBody();
         };
 
-        _chord.clearHighlight = function(d3paths, d3points){
-            d3paths.each(function(d){
-                    d3.select(this).attr("class","unhighlight");
-            });
-            d3points.each(function(d){
-                d3.select(this).attr("class","point unhighlight");
-            });
-        };
-
         _chord.data = function(_){
             if (!arguments.length) return _data;
             _data = _;
-            console.log(_data);
             return _chord;
         };
 
