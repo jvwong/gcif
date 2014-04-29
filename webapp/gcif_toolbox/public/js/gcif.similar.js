@@ -30,14 +30,14 @@ gcif.similar = (function () {
                     '</ul>' +
                     '<div id="myTabContent" class="tab-content">' +
                         '<div class="tab-pane fade active in" id="gcif-similar-graphical">' +
-                            '<form class="form" role="form">' +
-                                '<div class="form-group gcif-similar graphical menu">' +
-                                    '<label for="theme-dropdown" class="col-sm-1 control-label">Theme</label>' +
-                                    '<div class="col-sm-11">' +
-                                        '<select id="theme-dropdown" class="form-control"></select>' +
-                                    '</div>' +
-                                '</div>' +
-                            '</form>' +
+//                            '<form class="form" role="form">' +
+//                                '<div class="form-group gcif-similar graphical menu">' +
+//                                    '<label for="theme-dropdown" class="col-sm-1 control-label">Theme</label>' +
+//                                    '<div class="col-sm-11">' +
+//                                        '<select id="theme-dropdown" class="form-control"></select>' +
+//                                    '</div>' +
+//                                '</div>' +
+//                            '</form>' +
                             '<div class="gcif-similar chart col-lg-12"></div>' +
                         '</div>' +
 
@@ -78,6 +78,8 @@ gcif.similar = (function () {
         , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "load_themes", "done_load")
 
         , loadData, loadListeners, initCharts, resetState, render, redraw
+
+        , chord
         , initModule;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
@@ -96,17 +98,7 @@ gcif.similar = (function () {
     setd3Map = function(){
         d3Map = {
               d3similar           : d3.select(".gcif-similar.chart")
-
-            , d3clear_highlights  : d3.select(".btn-group.gcif-compare.graphical button#clear-highlights")
-            , d3clear_brushes     : d3.select(".btn-group.gcif-compare.graphical button#clear-brushes")
-            , d3isolate_brushed   : d3.select(".btn-group.gcif-compare.graphical button#isolate-brushed")
-            , d3refresh           : d3.select(".btn-group.gcif-compare.graphical button#refresh")
-            , d3theme_dropdown    : d3.select(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
-            , d3region_dropdown   : d3.select(".form-group.gcif-compare.graphical.menu select#region-dropdown")
-
-            , d3table             : d3.select(".gcif-compare.table")
-            , d3export_csv        : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
-            , d3downloadanchor    : d3.select(".btn-group.gcif-compare.tabular a")
+            , d3table             : d3.select(".gcif-similar.table")
         };
     };
 
@@ -114,6 +106,19 @@ gcif.similar = (function () {
         stateMap.color = d3.scale.ordinal()
             .domain(stateMap.abundant_themes_db().distinct("theme"))
             .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
+
+        chord = gcif.chord.Chord( d3Map.d3similar );
+
+        var matrix = [
+            [11975,  5871, 8916, 2868],
+            [ 1951, 10048, 2060, 6171],
+            [ 8010, 16145, 8090, 8045],
+            [ 1013,   990,  940, 6907]
+        ];
+        chord.data(matrix);
+        chord.render();
+
+        console.log(d3Map.d3similar.select("g.body"));
     };
 
     resetState = function (){
@@ -160,8 +165,8 @@ gcif.similar = (function () {
             stateMap.cities = stateMap.member_cities_db(function(){
                 return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
             }).get();
-            console.log("success: load_cities");
-            console.log(stateMap.cities.length);
+//            console.log("success: load_cities");
+//            console.log(stateMap.cities.length);
         });
 
         dispatch.on("load_indicators", function(data){
@@ -169,14 +174,14 @@ gcif.similar = (function () {
             stateMap.indicators = stateMap.performance_indicators_db(function(){
                 return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
             }).get();
-            console.log("success: load_indicators");
-            console.log(stateMap.indicators.length);
+//            console.log("success: load_indicators");
+//            console.log(stateMap.indicators.length);
         });
 
         dispatch.on("load_themes", function(data){
             stateMap.abundant_themes_db.insert(data);
-            console.log("success: load_themes");
-            console.log(stateMap.abundant_themes_db().distinct("theme"));
+//            console.log("success: load_themes");
+//            console.log(stateMap.abundant_themes_db().distinct("theme"));
         });
 
 
@@ -193,7 +198,9 @@ gcif.similar = (function () {
             .duration(500)
             .each(renderAll);
 
-        function renderAll(){}
+        function renderAll(){
+            chord.render();
+        }
 
     };
 
