@@ -24,11 +24,11 @@ gcif.compare = (function () {
 
             '<div class="row">' +
                 '<ul id="myTab" class="nav nav-tabs">' +
-                    '<li class="active"><a href="#graphical" data-toggle="tab">Graphical</a></li>' +
-                    '<li class=""><a href="#tabular" data-toggle="tab">Tablular</a></li>' +
+                    '<li class="active"><a href="#gcif-compare-graphical" data-toggle="tab">Graphical</a></li>' +
+                    '<li class=""><a href="#gcif-compare-tabular" data-toggle="tab">Tablular</a></li>' +
                 '</ul>' +
                 '<div id="myTabContent" class="tab-content">' +
-                    '<div class="tab-pane fade active in" id="graphical">' +
+                    '<div class="tab-pane fade active in" id="gcif-compare-graphical">' +
                         '<form class="form" role="form">' +
                             '<div class="form-group gcif-compare graphical menu">' +
                                 '<label for="theme-dropdown" class="col-sm-1 control-label">Theme</label>' +
@@ -39,14 +39,6 @@ gcif.compare = (function () {
                                 '<div class="col-sm-11">' +
                                     '<select id="region-dropdown" class="form-control"></select>' +
                                 '</div>' +
-//                                '<label for="population-dropdown" class="col-sm-1 control-label">Population</label>' +
-//                                '<div class="col-sm-11">' +
-//                                    '<select id="population-dropdown" class="form-control"></select>' +
-//                                '</div>' +
-//                                '<label for="gdp-dropdown" class="col-sm-1 control-label">GDP</label>' +
-//                                '<div class="col-sm-11">' +
-//                                    '<select id="gdp-dropdown" class="form-control"></select>' +
-//                                '</div>' +
                             '</div>' +
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare graphical col-sm-offset-1 col-sm-11">' +
@@ -68,7 +60,7 @@ gcif.compare = (function () {
                         '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
 
-                    '<div class="tab-pane fade" id="tabular">' +
+                    '<div class="tab-pane fade" id="gcif-compare-tabular">' +
                         '<form class="form" role="form">' +
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare tabular col-sm-12">' +
@@ -131,7 +123,6 @@ gcif.compare = (function () {
 
         jqueryMap = {
             $container       : $container
-          , $compare         : $container.find(".gcif-compare.chart")
           , $theme_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu #theme-dropdown")
           , $region_dropdown : $container.find(".form-group.gcif-compare.graphical.menu #region-dropdown")
         };
@@ -391,8 +382,6 @@ gcif.compare = (function () {
         dispatch.on("done_load", function(){
             initCharts();
             redraw();
-
-//            console.log(stateMap.cities);
         });
 
     };

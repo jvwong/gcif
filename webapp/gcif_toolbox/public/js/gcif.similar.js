@@ -16,118 +16,217 @@ gcif.similar = (function () {
 
     //---------------- BEGIN MODULE SCOPE VARIABLES --------------
     var
-    configMap = {
+        configMap = {
 
-        main_html : String() +
+            main_html : String() +
 
-            '<h3 class="sub-header">Indicators</h3>' +
+                '<h3 class="sub-header"></h3>' +
 
-            '<div class="row">' +
-            '<div>'
+                '<div class="row">' +
 
+                    '<ul id="myTab" class="nav nav-tabs">' +
+                        '<li class="active"><a href="#gcif-similar-graphical" data-toggle="tab">Graphical</a></li>' +
+                        '<li class=""><a href="#gcif-similar-tabular" data-toggle="tab">Tablular</a></li>' +
+                    '</ul>' +
+                    '<div id="myTabContent" class="tab-content">' +
+                        '<div class="tab-pane fade active in" id="gcif-similar-graphical">' +
+//                            '<form class="form" role="form">' +
+//                                '<div class="form-group gcif-similar graphical menu">' +
+//                                    '<label for="theme-dropdown" class="col-sm-1 control-label">Theme</label>' +
+//                                    '<div class="col-sm-11">' +
+//                                        '<select id="theme-dropdown" class="form-control"></select>' +
+//                                    '</div>' +
+//                                '</div>' +
+//                            '</form>' +
+                            '<div class="gcif-similar chart col-lg-12"></div>' +
+                        '</div>' +
 
-    }
-    , stateMap = {
-          $container : undefined
-    }
+                        '<div class="tab-pane fade" id="gcif-similar-tabular">' +
+                            '<div class="gcif-similar table col-lg-12"></div>' +
+                        '</div>' +
+                    '</div>' +
 
-    , jqueryMap = {}
-    , d3Map= {}
-    , setJqueryMap
-    , setd3Map
-    , render
-    , initModule;
+                '</div>'
+        }
+        , stateMap = {
+            $container                  : undefined
+
+            , cities                    : undefined
+            , indicators                : undefined
+            , theme                     : undefined
+
+            , color                     : undefined
+
+            , member_cities_db          : TAFFY()
+            , performance_indicators_db : TAFFY()
+            , abundant_themes_db        : TAFFY()
+            , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
+                "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
+                "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
+                "HAIPHONG","LISBON","MILAN","OLONGAPO","CANCUN","DURBAN","MOMBASA","TRUJILLO",
+                "OSHAWA","SAO BERNARDO DO CAMPO","SURREY","KRYVYI RIH","PUERTO PRINCESA",
+                "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
+                "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
+                "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
+//          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
+            , top5Themes                : ["education","finance","health","safety","urban planning"]
+        }
+
+        , jqueryMap = {}, d3Map= {}
+        , setJqueryMap, setd3Map
+
+        , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "load_themes", "done_load")
+
+        , loadData, loadListeners, initCharts, resetState, render, redraw
+
+        , chord
+        , initModule;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
 
 
     //--------------------- BEGIN DOM METHODS --------------------
-
     setJqueryMap = function(){
         var
-          $container = stateMap.$container;
+            $container = stateMap.$container;
 
         jqueryMap = {
-              $container  : $container
+              $container       : $container
         };
     };
 
     setd3Map = function(){
         d3Map = {
+              d3similar           : d3.select(".gcif-similar.chart")
+            , d3table             : d3.select(".gcif-similar.table")
         };
     };
 
+    initCharts = function(){
+        stateMap.color = d3.scale.ordinal()
+            .domain(stateMap.abundant_themes_db().distinct("theme"))
+            .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
 
-    // BEGIN private method /render/
-    render = function(){
-       var
-          margin = {top: 50, right: 80, bottom: 10, left: 200}
-        , width
-        , height
-        , svg;
+        chord = gcif.chord.Chord( d3Map.d3similar );
 
+        var matrix = [
+            [11975,  5871, 8916, 2868],
+            [ 1951, 10048, 2060, 6171],
+            [ 8010, 16145, 8090, 8045],
+            [ 1013,   990,  940, 6907]
+        ];
+        chord.data(matrix);
+        chord.render();
 
-        function setsvgdim(){
+        console.log(d3Map.d3similar.select("g.body"));
+    };
 
-            var
-              verticalScaling = 1
-            ;
+    resetState = function (){
+        stateMap.theme      = undefined;
+        stateMap.indicators = undefined;
+        stateMap.cities     = undefined;
+        stateMap.member_cities_db = TAFFY();
+        stateMap.performance_indicators_db = TAFFY();
+        stateMap.abundant_themes_db = TAFFY();
+    };
 
-            width = $( window ).width() * 0.8 - margin.left - margin.right;
-            height = $( window ).height() * verticalScaling - margin.top - margin.bottom;
-        }
+    loadData = function(){
+//        d3.json("/performance_indicators/list", function(performance_indicators_data) {
+//            dispatch.load_indicators(performance_indicators_data);
+//            d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+//                dispatch.load_themes(abundant_themes);
+//                d3.json("/member_cities/list", function(member_cities_data) {
+//                    dispatch.load_cities(member_cities_data);
+//                    dispatch.done_load();
+//                });
+//            });
+//        });
+        d3.json("assets/data/performance_indicators.json", function(performance_indicators_data) {
+            dispatch.load_indicators(performance_indicators_data);
+            d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
+                dispatch.load_themes(abundant_themes);
+                d3.json("assets/data/member_cities.json", function(member_cities_data) {
+                    dispatch.load_cities(member_cities_data);
+                    dispatch.done_load();
+                });
+            });
+        });
+    };
 
+    loadListeners = function(){
+        //--------------------- BEGIN EVENT LISTENERS ----------------------
 
-        function rendersvg(){
-
-            //clear out any residual svg elements
-            d3.select("svg").remove();
-
-        }
-
-
-        /* register event listeners*/
-        d3.select(window).on('resize', resize);
-
-        /* read in the data */
-        d3.csv(dataurl, function(data) {
-
+        dispatch.on("data_update", function(){
+            redraw(true);
         });
 
-        /* Update graph using new width and height (code below) */
-        function resize() {
-            setsvgdim();
-            rendersvg();
-            change();
+        dispatch.on("load_cities", function(data){
+            stateMap.member_cities_db.insert(data);
+            stateMap.cities = stateMap.member_cities_db(function(){
+                return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
+            }).get();
+//            console.log("success: load_cities");
+//            console.log(stateMap.cities.length);
+        });
+
+        dispatch.on("load_indicators", function(data){
+            stateMap.performance_indicators_db.insert(data);
+            stateMap.indicators = stateMap.performance_indicators_db(function(){
+                return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
+            }).get();
+//            console.log("success: load_indicators");
+//            console.log(stateMap.indicators.length);
+        });
+
+        dispatch.on("load_themes", function(data){
+            stateMap.abundant_themes_db.insert(data);
+//            console.log("success: load_themes");
+//            console.log(stateMap.abundant_themes_db().distinct("theme"));
+        });
+
+
+
+        // window resizing
+        d3.select(window).on('resize', redraw );
+
+        //--------------------- END EVENT LISTENERS ----------------------
+
+    };
+
+    redraw = function(){
+        d3.transition()
+            .duration(500)
+            .each(renderAll);
+
+        function renderAll(){
+            chord.render();
         }
 
+    };
 
-        function change() {
-            d3.transition()
-                .duration(750)
-                .each(redraw);
-        }
+    // BEGIN public method /render/
+    // Example   : gcif.compare.render();
+    // Purpose   :
+    //   Adds the graphical and tabular elements to the page
+    // Arguments : none
+    // Action    :
+    //   Loads data, populates d3compare and d3table elements, and
+    //   triggers listeners
+    // Returns   : none
+    // Throws    : none
+    render = function(){
+        loadListeners();
+        loadData();
 
-
-        function redraw() {
-
-            //get the category
-            var x;
-        }
-
+        dispatch.on("done_load", function(){
+            initCharts();
+            redraw();
+        });
 
     };
     // END private method /render/
 
     //--------------------- END DOM METHODS ----------------------
-
-
-    //------------------- BEGIN EVENT HANDLERS -------------------
-    //-------------------- END EVENT HANDLERS --------------------
-
-
-    //---------------------- BEGIN CALLBACKS ---------------------
-    //------------------- BEGIN PUBLIC METHODS -------------------
 
     // Begin Public method /initModule/
     // Example   : chart.dash.initModule( $('.container') );
@@ -142,17 +241,18 @@ gcif.similar = (function () {
     // Returns   : none
     // Throws    : none
     initModule = function ( $container ) {
-
+        resetState();
         //store container in stateMap
         stateMap.$container = $container;
-        $container.html(configMap.main_html);
+        $container.html( configMap.main_html );
         setJqueryMap();
         setd3Map();
-        render();
     };
     // End PUBLIC method /initModule/
 
-    return { initModule   : initModule };
+    return { initModule   : initModule
+        , render       : render
+    };
     //------------------- END PUBLIC METHODS ---------------------
 })();
 
