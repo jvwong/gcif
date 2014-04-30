@@ -93,8 +93,8 @@ gcif.chord = (function () {
                 .matrix(_data);
 
 
-            console.log(chord.chords());
-            console.log(chord.groups());
+//            console.log(chord.chords());
+//            console.log(chord.groups());
 
             var   innerRadius = Math.min(_width, _height) * .41
                 , outerRadius = innerRadius * 1.1
