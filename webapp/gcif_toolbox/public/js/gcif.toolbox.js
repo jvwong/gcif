@@ -30,8 +30,8 @@ gcif.toolbox = (function () {
                         '</div>' +
                     '</a>' +
                     '<a href="#">' +
-                        '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool similar">' +
-                                '<h4>Similar</h4>' +
+                        '<div class="col-xs-6 col-sm-3 gcif-toolbox-tool correlate">' +
+                                '<h4>Correlate</h4>' +
                             '</a>' +
                         '</div>' +
                     '</a>' +
@@ -89,9 +89,9 @@ gcif.toolbox = (function () {
         if(tool === "Compare"){
             gcif.compare.initModule( jqueryMap.$toolChart );
             gcif.compare.render();
-        }else if( tool === "Similar"){
-            gcif.similar.initModule( jqueryMap.$toolChart );
-            gcif.similar.render();
+        }else if( tool === "Correlate"){
+            gcif.correlate.initModule( jqueryMap.$toolChart );
+            gcif.correlate.render();
         }
     };
     //end /display/
@@ -135,7 +135,7 @@ gcif.toolbox = (function () {
         //register listeners
         jqueryMap.$toolSelection.click(onClickTool);
 //        $('.gcif-toolbox-tool.compare h4').click();
-        $('.gcif-toolbox-tool.similar h4').click();
+        $('.gcif-toolbox-tool.correlate h4').click();
 
     };
     // End PUBLIC method /initModule/
