@@ -22,13 +22,14 @@ svg{
     .gcif-correlate.chart .scatter.point {
         stroke: black;
         stroke-width: 0.5;
+        opacity : 0.45;
     }
 
-    .gcif-correlate.chart.scatter .background.scatter .scatter.point{
+    .gcif-correlate.chart .background.scatter .scatter.point{
         fill: lightgrey;
     }
 
-    .gcif-correlate.chart.scatter .foreground.scatter .scatter.point{
+    .gcif-correlate.chart .foreground.scatter .scatter.point{
         fill: #8B0000;
     }
 

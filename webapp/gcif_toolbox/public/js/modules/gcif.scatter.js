@@ -36,7 +36,7 @@ gcif.scatter = (function () {
         , _div
         , _points = null
 
-        , _margin = { top: 10, right: 10, bottom: 50, left: 60 }
+        , _margin = { top: 10, right: 80, bottom: 50, left: 60 }
         , _min_height = 200
         , _width
         , _height
@@ -44,23 +44,27 @@ gcif.scatter = (function () {
         , _x = d3.scale.linear()
         , _y = d3.scale.linear()
 
+        , _xValue = ""
+        , _yValue = ""
+
+        , _fxValue = function(d){ return d[_xValue]}
+        , _fyValue = function(d){ return d[_yValue]}
+
         , _xAxis = d3.svg.axis()
         , _yAxis = d3.svg.axis()
 
-        , _xLabel = "x axis"
-        , _yLabel = "y axis"
+        , _xlabel = "x axis"
+        , _ylabel = "y axis"
         , _title = "Title"
 
-        , _dimension = null
-        , _xValue = function(d){ return d.x; }
-        , _yValue = function(d){ return d.y; }
 
+        , _dimension = null
         , _quadtree = null
         , _brush = d3.svg.brush()
         , _brushDirty = false
         , _extent = [ [0,0], [0,0] ]
 
-        , _radius = 2
+        , _radius = 4
 
         , _color
         , _data_db = TAFFY()
@@ -74,8 +78,8 @@ gcif.scatter = (function () {
         /* sets the svg dimensions based upon the current browser window */
         function setsvgdim(){
             var
-              verticalScaling = 0.35
-            , horizontalScaling = 0.35
+              verticalScaling = 0.50
+            , horizontalScaling = 0.50
             ;
 
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
@@ -106,7 +110,9 @@ gcif.scatter = (function () {
 
         function renderXAxis(){
 
-            _xAxis.scale(_x.range([0, _width])).orient("bottom");
+            _xAxis.scale(_x.domain([0, d3.max(_data, function(d){ return (d.x) * 1.1; })]).range([0, _width])
+                  )
+                  .orient("bottom");
 
             return _svg.append("g")
                        .attr("class", "scatter x axis")
@@ -116,7 +122,7 @@ gcif.scatter = (function () {
 
         function renderYAxis(){
 
-            _yAxis.scale(_y.range([_height, 0])).orient("left");
+            _yAxis.scale(_y.domain([0, d3.max(_data, function(d){ return (d.y) * 1.1; })]).range([_height, 0])).orient("left");
 
             return _svg.append("g")
                 .attr("class", "scatter y axis")
@@ -129,11 +135,11 @@ gcif.scatter = (function () {
                 .append("text")
                 .attr({
                     class : "scatter x label",
-                    x : ( ( _width + _margin.left ) / 2 ),
+                    x : ( ( _width + _margin.left ) / 1 ),
                     y : 40
                 })
                 .style("text-anchor", "end")
-                .text(_xLabel)
+                .text(_xValue)
             ;
 
             _svg.select(".y.axis")
@@ -141,11 +147,11 @@ gcif.scatter = (function () {
                 .attr({
                     class : "scatter y label",
                     transform : "rotate(-90)",
-                    x : -( (_height - _margin.bottom ) / 2 ),
+                    x : -( (_height - _margin.bottom ) / 2.5 ),
                     y : - 50
                 })
                 .style("text-anchor", "end")
-                .text(_yLabel)
+                .text(_yValue)
             ;
 
             _div.insert("div","svg")
@@ -153,6 +159,9 @@ gcif.scatter = (function () {
                 .append("text")
                 .text(_title)
             ;
+
+            //try to wrap the labels
+            //d3.selectAll("g.axis > text").call(gcif.util.wrap, 300);
         }
 
 
@@ -220,19 +229,29 @@ gcif.scatter = (function () {
             renderYAxis();
             renderLabels();
             renderData();
+
+            console.log(_svg);
         };
 
         _scatter.data = function(_){
             if (!arguments.length) return _data;
             _data = _.map(function(d) {
-
-                console.log(d);
-                return {x: _xValue.call({}, d), y: _yValue.call({}, d) };
+                return {x: _fxValue.call({}, d), y: _fyValue.call({}, d) };
             });
-            console.log(_data);
-
 
             _data_db.insert(_);
+            return _scatter;
+        };
+
+        _scatter.xValue = function(_){
+            if (!arguments.length) return _xValue;
+            _xValue = _;
+            return _scatter;
+        };
+
+        _scatter.yValue = function(_){
+            if (!arguments.length) return _yValue;
+            _yValue = _;
             return _scatter;
         };
 
@@ -248,15 +267,9 @@ gcif.scatter = (function () {
             return _scatter;
         };
 
-        _scatter.xDomain = function (_) {
-            if (!arguments.length){ return _x.domain(); }
-            _x.domain(_);
-            return _scatter;
-        };
-
-        _scatter.yDomain = function (_) {
-            if (!arguments.length){ return _y.domain(); }
-            _y.domain(_);
+        _scatter.title = function(_){
+            if (!arguments.length) return _title;
+            _title = _;
             return _scatter;
         };
 
