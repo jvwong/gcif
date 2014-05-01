@@ -39,10 +39,10 @@ gcif.compare = (function () {
                                 '<div class="col-sm-11">' +
                                     '<select id="theme-dropdown" class="form-control"></select>' +
                                 '</div>' +
-                                '<label for="region-dropdown" class="col-sm-1 control-label">Region</label>' +
-                                '<div class="col-sm-11">' +
-                                    '<select id="region-dropdown" class="form-control"></select>' +
-                                '</div>' +
+//                                '<label for="region-dropdown" class="col-sm-1 control-label">Region</label>' +
+//                                '<div class="col-sm-11">' +
+//                                    '<select id="region-dropdown" class="form-control"></select>' +
+//                                '</div>' +
                             '</div>' +
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare graphical col-sm-offset-1 col-sm-11">' +
@@ -88,6 +88,7 @@ gcif.compare = (function () {
           , source                    : undefined
           , cities                    : undefined
           , indicators                : undefined
+          , flagged_indicators        : ["Percentage of population with access to improved sanitation"]
           , theme                     : undefined
           , region                    : undefined
 
@@ -97,7 +98,6 @@ gcif.compare = (function () {
           , chinese_cities_db         : TAFFY()
 
           , performance_indicators_db : TAFFY()
-          , abundant_themes_db        : TAFFY()
           , top50Cities               : ["AMMAN","TORONTO","BOGOTA","RICHMOND HILL","GREATER BRISBANE",
                                          "BELO HORIZONTE","BUENOS AIRES","GOIANIA","PEORIA","SAANICH","SANTA ANA",
                                          "DALLAS","LVIV","SASKATOON","TUGUEGARAO","CALI","HAMILTON","ILE-DE-FRANCE",
@@ -107,13 +107,14 @@ gcif.compare = (function () {
                                          "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
                                          "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
 //          , top50Cities               : ["AMMAN","TORONTO","BOGOTA"]
-          , top5Themes                : ["education","finance","health","safety","urban planning"]
+          , topThemes                : ["education","finance","health","safety","urban planning", "wastewater",
+                                        "water and sanitation"]
     }
 
     , jqueryMap = {}, d3Map= {}
     , setJqueryMap, setd3Map
 
-    , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "load_themes", "done_load")
+    , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "done_load")
 
     , parallelChart, list
 
@@ -157,7 +158,7 @@ gcif.compare = (function () {
 
     initCharts = function(){
         stateMap.color = d3.scale.ordinal()
-                           .domain(stateMap.abundant_themes_db().distinct("theme"))
+                           .domain(stateMap.topThemes)
                            .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
 
         parallelChart = gcif.parallel.Parallel( d3Map.d3compare );
@@ -173,16 +174,11 @@ gcif.compare = (function () {
         stateMap.cities     = undefined;
         stateMap.member_cities_db = TAFFY();
         stateMap.performance_indicators_db = TAFFY();
-        stateMap.abundant_themes_db = TAFFY();
     };
 
     loadData = function(){
         d3.json("/performance_indicators/list", function(performance_indicators_data) {
             dispatch.load_indicators(performance_indicators_data);
-        });
-
-        d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
-            dispatch.load_themes(abundant_themes);
         });
 
         d3.json("/member_cities/list", function(member_cities_data) {
@@ -227,18 +223,19 @@ gcif.compare = (function () {
 
             //setup the Source drop down
             d3Map.d3source_dropdown.selectAll("option")
-                .data(["member", "china", "all"])
+                .data(["all", "member", "china"])
                 .enter()
                 .append("option")
                 .text(function(d) { return d; });
 
             //by default, cache the top member cities in the stateMap
-            stateMap.source= "member";
+            stateMap.source= "all";
 
-            stateMap.cities = stateMap.member_cities_db(function(){
-                //only include the top 50 cities by indicator count
-                return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
-            }).get();
+            stateMap.cities = (stateMap.chinese_cities_db().limit(50).get())
+                .concat( stateMap.member_cities_db(function(){
+                    return stateMap.top50Cities.indexOf(this["CityName"]) >= 0;
+                }).get()
+            );
 
             // setup the region drop down
             var dropdata = stateMap.member_cities_db(function(){
@@ -260,7 +257,7 @@ gcif.compare = (function () {
             stateMap.performance_indicators_db.insert(data);
             var dropdata = stateMap.performance_indicators_db(function(){
                 //only include indicators in top 5 themes
-                return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
+                return stateMap.topThemes.indexOf(this["theme"]) >= 0;
             }).distinct("theme");
 
             dropdata.splice(0, 0, "all");
@@ -270,15 +267,17 @@ gcif.compare = (function () {
                 .enter()
                 .append("option")
                 .text(function(theme) { return theme; });
-        });
 
-        dispatch.on("load_themes", function(data){
-            //this is pre-filtered for the indicators of interest
-            stateMap.abundant_themes_db.insert(data);
-            //initialize this set to the default -- all
+
             stateMap.theme = "all";
-            stateMap.indicators =  stateMap.abundant_themes_db()
-                .map(function(idoc){ return idoc["indicator"]; });
+            stateMap.indicators = (stateMap.performance_indicators_db(function(){
+                return stateMap.topThemes.indexOf(this["theme"]) >= 0 &&
+                    this["core"] === 1 &&
+                    stateMap.flagged_indicators.indexOf(this["indicator"]) < 0;
+            }).get())
+            .map(function(d){
+               return d["indicator"]
+            });
         });
 
         //table button for exporting csv
@@ -372,10 +371,22 @@ gcif.compare = (function () {
         d3Map.d3theme_dropdown.on("change", function(){
             stateMap.theme = d3Map.d3theme_dropdown.node().value;
             stateMap.indicators = stateMap.theme === "all" ?
-                stateMap.abundant_themes_db()
-                    .map(function(idoc){ return idoc["indicator"]; }) :
+                (stateMap.performance_indicators_db(function(){
+                    return stateMap.topThemes.indexOf(this["theme"]) >= 0 &&
+                        this["core"] === 1 &&
+                        stateMap.flagged_indicators.indexOf(this["indicator"]) < 0;
+                }).get())
+                    .map(function(d){
+                        return d["indicator"]
+                }) :
                 stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
-                    .map(function(idoc){ return idoc["indicator"]; });
+                    .get()
+                    .filter(function(d){
+                        return stateMap.flagged_indicators.indexOf(d["indicator"]) < 0;
+                    })
+                    .map(function(d){
+                        return d["indicator"];
+                    });
             redraw();
         });
 
