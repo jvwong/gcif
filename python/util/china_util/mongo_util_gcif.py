@@ -43,15 +43,14 @@ def getdbhandle(hostname="localhost", db_name="test"):
 
 
 
-# function: getDocs
-# @description: makes a list of embedded documents for the gcif data
-# @pre-condition: valid csv files
+# function: getCityDocs
+# @description: makes a list of dicts for each city's indicators data. Here we clean and convert to ISO
 # @input:
-#   schemacsv - a csv with "name", "indicator_id", "type", "category", "data_type" (Javascript)
-#   datacsv - a csv with the city data and headers matching "names" in schema
+#   datacsv - a csv with the city data and headers matching profile and performance indicators
+#           will have to make accomodations here between ISO and gcif headers
 # @output:
-#   docs - a list of documents ready for pymongo insert
-def getDocs(datacsv):
+#   docs - a list of dicts suitable for mongoDB insert
+def getCityDocs(datacsv):
 
     #*# open the data csv
     with open(datacsv, 'rb') as datafile:
@@ -60,238 +59,156 @@ def getDocs(datacsv):
         doclist = []
 
         #Instantiate a csv reader
-        datareader = csv.reader(datafile, delimiter=',')
-        #Read in first row of headers
-        dataheaders = datareader.next()
+        csvreader = csv.reader(datafile, delimiter=',')
+
+        #Read in first row of headers and clean them up
+        dirty_data_headers = csvreader.next()
+        data_headers = [(d.split("_")[0]).strip() for d in dirty_data_headers]
+
+        headers = []
+
+        gcif_replace = ["City unemployment rate",
+                        "Commercial/industrial assessment as a percentage of total assessment",
+                        "Student/teacher ratio",
+                        "Total electrical use per capita (kWh/year)",
+                        "PM10 Concentration",
+                        "Number of firefighters per 100,000 population",
+                        "Number of fire related deaths per 100,000 population",
+                        "Percentage of city population with regular solid waste collection",
+                        "Km of high capacity public transit system per 100,000 population",
+                        "Km of light passenger transit system per 100,000 population",
+                        "Annual number of public transit trips per capita",
+                        "Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)",
+                        "Number of in-patient hospital beds per 100,000 population",
+                        "Number of physicians per 100,000 population",
+                        "Under age five mortality per 1,000 live births",
+                        "Number of police officers per 100,000 population",
+                        "Number of homicides per 100,000 population",
+                        "Percentage of the city's solid waste that is recycled",
+                        "Number of internet connections per 100,000 population",
+                        "Number of cell phone connections per 100,000 population",
+                        "Green area (hectares) per 100,000 population",
+                        "Percentage of female population enrolled in schools"]
+
+
+        ISO_replace = ["City's unemployment rate",
+                       "Assessed value of commercial and industrial properties as a percentage of total assessed value of all properties",
+                       "Primary education student/teacher ratio",
+                       "Total residential electrical energy use per capita (kWh/year)",
+                       "Particulate Matter (PM10) concentration",
+                       "Number of firefighters per 100 000 population",
+                       "Number of fire related deaths per 100 000 population",
+                       "Percentage of city population with regular solid waste collection (residential)",
+                       "Kilometres of high capacity public transport system per 100 000 population",
+                       "Kilometres of light passenger public transport system per 100 000 population",
+                       "Annual number of public transport trips per capita",
+                       "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)",
+                       "Number of in-patient hospital beds per 100 000 population",
+                       "Number of physicians per 100 000 population",
+                       "Under age five mortality per 1000 live births",
+                       "Number of police officers per 100 000 population",
+                       "Number of homicides per 100 000 population",
+                       "Percentage of city's solid waste that is recycled",
+                       "Number of internet connections per 100 000 population",
+                       "Number of cell phone connections per 100 000 population",
+                       "Green area (hectares) per 100 000 population",
+                       "Percentage of female school-aged population enrolled in schools"]
+
+
+
+        for h in data_headers:
+            if re.match('(?:datayear)|(?:data year)|(?:comments)|(?:n/a)', h.lower()):
+                continue
+            elif h in gcif_replace:
+                h = ISO_replace[gcif_replace.index(h)]
+
+            headers.append(h)
 
         # create a document for each city (255 total)
-        for indd, datarow in enumerate(datareader):
-
+        for indd, row in enumerate(csvreader):
             doc = {}
-            #loop over each entry
-            for indc, cell in enumerate(datarow):
 
-                # *************** embedded output
-                # get the indicator name, get out the schema values, and push in the data
-                # indicator_name = dataheaders[indc]
-                # indicator_dict = schemadict[indicator_name]
-                # indicator_dict["value"] = datarow[indc]
-                # doc[headname] = indicator_dict
+            #loop over each header
+            for indh, header in enumerate(headers):
 
-                # add a new entry for each header name
-                # Get the header name. Gotta replace any dots (.) with comma
-                headname = re.sub('\.', ',', dataheaders[indc])
+                # get the header index from the original data csv -- tricky
+                if header in ISO_replace:
+                    legacy_name = gcif_replace[ISO_replace.index(header)]
+                    dataheader_index = data_headers.index(legacy_name)
+                else:
+                    dataheader_index = data_headers.index(header)
 
-                # *************** simple output
-                doc[headname] = datarow[indc]
+                # clean up dots [.] so it's BSON-compatible
+                header_safe = re.sub('\.', ',', header)
+                doc[header_safe] = row[dataheader_index]
 
             doclist.append(copy.deepcopy(doc))
 
     return doclist
 
 
-# function: getSchema
-# @description: makes a list of the indicators schema
-# @pre-condition: valid csv file
-# @input:
-#   schemacsv - a csv with "name", "indicator_id", "type", "category", and "Number" (Javascript)
-# @output:
-#   docs - a list of documents ready for pymongo insert
-def getSchemaDoc(schemacsv):
 
-    doclist = []
-
-    # open the schema csv and format this for retrieval below
-    with open(schemacsv, 'rb') as schemafile:
-        #Instantiate a csv reader
-        schemareader = csv.reader(schemafile, delimiter=',')
-        #Read in first row of headers
-        schemaheaders = schemareader.next()
-
-        #Get index of the headers (name, indicator_id, type, category)
-        iname = schemaheaders.index('name')
-        iindicator_id = schemaheaders.index('indicator_id')
-        itype = schemaheaders.index('type')
-        icategory = schemaheaders.index('category')
-        idata_type = schemaheaders.index('data_type')
-
-
-        for ind, schemarow in enumerate(schemareader):
-
-            schemadoc = {"name": schemarow[iname]
-                       , "indicator_id": schemarow[iindicator_id]
-                       , "type": schemarow[itype]
-                       , "category": schemarow[icategory]
-                       , "data_type": schemarow[idata_type]}
-
-            doclist.append(copy.deepcopy(schemadoc))
-
-    return doclist
-
-
-# function: getCategoryIndicators
-# @description: makes a json of the core performance categories and their respective indicators
-# @pre-condition: valid db_handle and collection of indicator schema
-# @input:
-#   db_handle - a handle to a mongo db database
-# @output:
-#   cats_indicators - a json of the form {"category_i": [ind_i1, ..., ind_in],..., "category_m": [ind_m1, ..., ind_mn]}
-def getCategoryIndicators(db_handle):
-
-    cats_indicators = {}
-
-    categories = ["economy", "education", "energy", "environment", "finance", "fire and emergency response"
-                , "governance", "health", "safety", "solid waste", "telecommunication and innovation", "transportation"
-                , "shelter", "urban planning", "wastewater", "water and sanitation"]
-
-    for category in categories:
-        indslist = []
-
-        indicators = db_handle.schema_gcif.find({"type": "core", "category": category})
-
-        for indicator in indicators:
-            indslist.append((indicator.get("name")).encode('UTF-8'))
-
-        cats_indicators[category] = indslist
-
-    return cats_indicators
-
-
-
-# function: getCoreList
-# @description: makes a csv chart of the cities and core indicator values
-# @pre-condition: valid mongo collections
+# function: getThemeCounts
+# @description: generates a csv of theme counts for each set of city core performance indicators
+# @pre-condition: valid mongo collection "performance_indicators_gcif"
 # @input:
 #   dbhandle - the pymongo data base handle
 # @output:
-#   coreOut - a csv list of cities and core indicator values
-def getCoreList(dbhandle):
+#   themecounts - a csv of indicator counts for each theme
+def getThemeCounts(db_handle):
 
-    # A list to store the csv
-    coreOut = []
+    # A dict to store the themes (key) and indicators (values)
+    themecounts = []
 
-    # Get the document collections for the schema and data
-    schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.members_recent_gcif_simple.find()
+    # A list of indicator themes
+    themes = [theme.encode('UTF-8') for theme in sorted(db_handle.performance_indicators_gcif.find({"core": 1}).distinct("theme"))]
 
-    # Write out the header row
-    corenames = []
-    corenames = [core.get("name").encode('UTF-8') for core in schema]
-    corenames.insert(0, 'CityUniqueID_')
-    corenames.insert(0, 'CityName')
-    coreOut.append(corenames)
+    headers = themes[0:]
+    headers.insert(0, "CityUniqueID")
+    headers.insert(0, "CityName")
+    headers.append("all")
 
-    ###loop over each city (255) and extract that indicator
-    for city in cities:
+    themecounts.append(headers)
 
-        citydata = []
+    ### get the city data
+    cities = db_handle.member_gcif.find()
 
-        ### loop over the core indicator names (39)
-        for corename in corenames:
-            citydata.append((city[corename]).encode('UTF-8'))
-
-        coreOut.append(citydata)
-
-    return coreOut
-
-
-
-# function: getCoreJson
-# @description: outputs json of the cities (key = CityUniqueID_) and data for core indicators
-# @pre-condition: valid mongo collections
-# @input:
-#   dbhandle - the pymongo data base handle
-# @output:
-#   coreOut - a json of { CityUniqueID_: [{core_indicator1: val1,...,core_indicatorN: valN}] }
-def getCoreJson(dbhandle):
-
-    #Output as json
-    cityjson = {}
-
-    # Get the document collections for the schema and data
-    schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.china_gcif.find()
-
-    # Write out the core indicator list
-    corenames = [core.get("name").encode('UTF-8') for core in schema]
-    corenames.insert(0, 'CityUniqueID_')
-    corenames.insert(0, 'CityName')
-
-    ###loop over each city (255)
-    for city in cities:
-
-        #store the embedded json of data here
-        citydata = {}
-
-        ### loop over the core indicator names (39)
-        for corename in corenames:
-            citydata[corename] = (city[corename]).encode('UTF-8')
-
-        cityjson[city["CityUniqueID_"]] = copy.deepcopy(citydata)
-
-    return cityjson
-
-
-
-# function: getCategoryCounts
-# @description: generates a csv of category counts for each set of city core indicators
-# @pre-condition: valid mongo collections
-# @input:
-#   dbhandle - the pymongo data base handle
-# @output:
-#   coreOut - a dict of indicators for each category
-def getCategoryCounts(dbhandle):
-
-    # A dict to store the categories (key) and indicators (values)
-    catcounts = []
-
-    # A list of indicator categories
-    categories = ["economy", "education", "energy", "environment", "finance", "fire and emergency response"
-                , "governance", "health", "safety", "solid waste", "telecommunication and innovation", "transportation"
-                , "shelter", "urban planning", "wastewater", "water and sanitation"]
-
-    # Put in a header
-    catcounts.append(["CityName", "CityUniqueID_", "economy", "education", "energy", "environment", "finance"
-                , "fire and emergency response", "governance", "health", "safety", "solid waste"
-                , "telecommunication and innovation", "transportation", "shelter", "urban planning", "wastewater"
-                , "water and sanitation", "all"])
-
-    # get the city data
-    cities = dbhandle.china_gcif.find()
-
-    # loop over each city
+    # # loop over each city
     for city in cities:
 
         #Add some row indicators for the City
-        citycatcounts = [city.get('CityName').encode('UTF-8'), city.get('CityUniqueID_').encode('UTF-8')]
+        citythemecounts = [city.get('CityName').encode('UTF-8'), city.get('CityUniqueID').encode('UTF-8')]
 
         total = 0
 
-        # get a list of indicators for each category
-        for indc, category in enumerate(categories):
+        # get a list of indicators for each theme
+        for indc, theme in enumerate(themes):
 
-            #reset the count for this category
+            #reset the count for this theme
             ccount = 0
-            indicators = dbhandle.schema_gcif.find({"type": "core", "category": category})
+            indicators = db_handle.performance_indicators_gcif.find({"core": 1, "theme": theme})
 
             # loop over each of the indicator documents in the list
             for indicatordoc in indicators:
+                indicator = indicatordoc.get("indicator").encode("UTF-8")
 
-                indicator = indicatordoc.get("name")
-                #Generate a sum of counts for each indicator of the category
-                if indicator and city.get(indicator) != "":
+                #Generate a sum of counts for each indicator of the theme
+                if indicator == "Fine Particulate Matter (PM2.5) concentration":
+                    indicator = re.sub('\.', ',', indicator)
+
+                if city.get(indicator) is not None and city.get(indicator) != "":
                     ccount += 1
 
-            #store the count for this category
+            #store the count for this theme
             total += ccount
-            citycatcounts.append(ccount)
+            citythemecounts.append(ccount)
 
         # add the total
-        citycatcounts.append(total)
+        citythemecounts.append(total)
         #store the counts for this city
-        catcounts.append(citycatcounts)
+        themecounts.append(citythemecounts)
 
-    return catcounts
+    return themecounts
 
 
 
@@ -303,39 +220,33 @@ def main():
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
-    ### ******************************** DATABASE OPERATIONS *****************************************************
-    #
-    # ****************** prepare gcif collection for china ('china_gcif')
-    # datacsv = "/home/jvwong/Documents/GCIF/data/china/raw/china_gcif.csv"
-    # dlist = getDocs(datacsv)
-    # #insert
-    # gcif_handle.china_gcif.insert(dlist, safe=True)
-
-
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     ### *** Data: Generate a json of cities and it's core indicators
-    # foutcore = 'china_core_byID.json'
+    # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
     # corejson = getCoreJson(gcif_handle)
-    #
     # with open(foutcore, 'wb') as ffoutcore:
     #     ffoutcore.write(json.dumps(corejson))
 
-    ### *** Schema: Generate a json of core categories (keys) and their respective
-    # indicators (value list)
-    # foutcat = 'category_indicators.json'
-    # catjson = getCategoryIndicators(gcif_handle)
-    # #print catjson
+    ### *** Counts: Generate a csv of cities and their per-theme counts
+    # fouttheme = 'member_theme_counts.csv'
+    # themecounts = getThemeCounts(gcif_handle)
+    #
+    # with open(fouttheme, 'wb') as ffoutcatcount:
+    #     writer = csv.writer(ffoutcatcount)
+    #     writer.writerows(themecounts)
+    ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
+
+
+    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
     # #
-    # with open(foutcat, 'wb') as ffoutcat:
-    #     ffoutcat.write(json.dumps(catjson))
+    # # ****************** prepare gcif collections
+    # ********** chinese cities (gcif)
+    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/china/raw/"
+    china_data_csv = root + "china_gcif.csv"
+    china_docs = getCityDocs(china_data_csv)
 
-    ### *** Counts: Generate a csv of cities and their per-category counts
-    foutcat = 'china_category_counts.csv'
-    catcounts = getCategoryCounts(gcif_handle)
-
-    with open(foutcat, 'wb') as ffoutcatcount:
-        writer = csv.writer(ffoutcatcount)
-        writer.writerows(catcounts)
+    gcif_handle.chinese_cities.insert(china_docs, safe=True)
+    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 
 if __name__ == "__main__":

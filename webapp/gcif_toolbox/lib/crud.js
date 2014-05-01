@@ -30,6 +30,7 @@ var
     , objTypeMap  = { 'performance_indicators' : {}
                     , 'profile_indicators' : {}
                     , 'member_cities': {}
+                    , 'chinese_cities': {}
                     };
 // ------------- END MODULE SCOPE VARIABLES ---------------
 

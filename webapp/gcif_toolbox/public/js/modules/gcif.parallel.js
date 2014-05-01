@@ -183,8 +183,12 @@ gcif.parallel = (function () {
                             .data(_data)
                             .enter()
                             .append("path")
-                            .attr("class", "unhighlight")
-                            .attr("d", path);
+                            .attr("class", function(d){
+                                return "unhighlight " + d["_source"];
+                            })
+                            .attr("d", path)
+                            ;
+
 
             // Add a group element for each dimension.
             g = _svg.selectAll(".dimension")
@@ -236,7 +240,7 @@ gcif.parallel = (function () {
                                      }
                           , cx    : 0
                           , r     : 3
-                          , class : "unhighlight point"
+                          , class : function(d){return "unhighlight point " + d["_source"]}
                     })
             ;
 
@@ -297,16 +301,19 @@ gcif.parallel = (function () {
                     // Is this city the same city (CityUniqueID_) being highlighted?
                     _point.attr("class", function(pointdata){
                         if (pointdata["CityUniqueID"] === pathdata["CityUniqueID"]){
-                            return d3.select(this)
-                                     .attr("class") === "unhighlight point" ? "highlight point" : "unhighlight point";
+                            return d3.select(this).attr("class").search("unhighlight") >= 0 ?
+                                   d3.select(this).attr("class").replace("unhighlight", "highlight") :
+                                   d3.select(this).attr("class").replace("highlight", "unhighlight");
                         } else {
-                            return "unhighlight point";
+                            return d3.select(this).attr("class");
                         }
                     });
 
                     //toggle the color of clicked paths
-                    d3.select(this).attr("class", function(){
-                        return d3.select(this).attr("class") === "unhighlight" ? "highlight" : "unhighlight";
+                    d3.select(this).attr("class", function(d){
+                        return d3.select(this).attr("class").search("unhighlight") >= 0 ?
+                               d3.select(this).attr("class").replace("unhighlight", "highlight") :
+                               d3.select(this).attr("class").replace("highlight", "unhighlight");
                     });
                 })
                 ;
@@ -351,10 +358,18 @@ gcif.parallel = (function () {
 
         _parallel.clearHighlight = function(d3paths, d3points){
             d3paths.each(function(d){
-                    d3.select(this).attr("class","unhighlight");
+                    d3.select(this).attr("class", function(d){
+                        return d3.select(this).attr("class").search("unhighlight") >= 0 ?
+                            d3.select(this).attr("class").replace("unhighlight", "highlight") :
+                            d3.select(this).attr("class").replace("highlight", "unhighlight");
+                    });
             });
             d3points.each(function(d){
-                d3.select(this).attr("class","point unhighlight");
+                d3.select(this).attr("class", function(d){
+                    return d3.select(this).attr("class").search("unhighlight") >= 0 ?
+                        d3.select(this).attr("class").replace("unhighlight", "highlight") :
+                        d3.select(this).attr("class").replace("highlight", "unhighlight");
+                });
             });
         };
 
