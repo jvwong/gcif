@@ -30,6 +30,18 @@ gcif.correlate = (function () {
                     '</ul>' +
                     '<div id="myTabContent" class="tab-content">' +
                         '<div class="tab-pane fade active in" id="gcif-correlate-graphical">' +
+                            '<form class="form" role="form">' +
+                                '<div class="form-group gcif-correlate graphical menu">' +
+                                    '<label for="xVal-dropdown" class="col-sm-1 control-label">X Axis</label>' +
+                                    '<div class="col-sm-11">' +
+                                        '<select id="xVal-dropdown" class="form-control"></select>' +
+                                    '</div>' +
+                                    '<label for="yVal-dropdown" class="col-sm-1 control-label">Y Axis</label>' +
+                                    '<div class="col-sm-11">' +
+                                        '<select id="yVal-dropdown" class="form-control"></select>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</form>' +
                             '<div class="gcif-correlate chart col-lg-12"></div>' +
                         '</div>' +
                         '<div class="tab-pane fade" id="gcif-correlate-tabular">' +
@@ -44,7 +56,6 @@ gcif.correlate = (function () {
 
             , cities                    : undefined
             , indicators                : undefined
-            , theme                     : undefined
 
             , color                     : undefined
 
@@ -59,7 +70,7 @@ gcif.correlate = (function () {
                 "MAKATI","PORT OF SPAIN","KABANKALAN","MUNOZ","RIGA","SAO PAULO","TACURONG",
                 "ZAMBOANGA","BALANGA","BEIT SAHOUR","ISTANBUL","CLARINGTON","MEDICINE HAT",
                 "VAUGHAN","LAOAG","GUELPH","KING COUNTY","SANA'A","BOGOR"]
-//          , top50Cities                 : ["AMMAN","TORONTO","BOGOTA"]
+//          , top50Cities                 : ["AMMAN","TORONTO"]
           , top5Themes                  : ["education","finance","health","safety","urban planning"]
 
           , dummydata                   : TAFFY()
@@ -89,12 +100,18 @@ gcif.correlate = (function () {
 
         jqueryMap = {
               $container       : $container
+            , $xVal_dropdown   : $container.find(".form-group.gcif-correlate.graphical.menu select#xVal-dropdown")
+            , $yVal_dropdown   : $container.find(".form-group.gcif-correlate.graphical.menu select#yVal-dropdown")
+
         };
     };
 
     setd3Map = function(){
         d3Map = {
               d3correlate           : d3.select(".gcif-correlate.chart")
+
+            , d3xVal_dropdown       : d3.select(".form-group.gcif-correlate.graphical.menu select#xVal-dropdown")
+            , d3yVal_dropdown       : d3.select(".form-group.gcif-correlate.graphical.menu select#yVal-dropdown")
         };
     };
 
@@ -109,7 +126,6 @@ gcif.correlate = (function () {
     };
 
     resetState = function (){
-        stateMap.theme      = undefined;
         stateMap.indicators = undefined;
         stateMap.cities     = undefined;
         stateMap.member_cities_db = TAFFY();
@@ -156,13 +172,42 @@ gcif.correlate = (function () {
         dispatch.on("load_indicators", function(data){
             stateMap.performance_indicators_db.insert(data);
             stateMap.indicators = stateMap.performance_indicators_db(function(){
-                return stateMap.top5Themes.indexOf(this["theme"]) >= 0;
+                return stateMap.top5Themes.indexOf(this["theme"]) >= 0 &&
+                    this["core"] === 1;
             }).get();
+
+            console.log(stateMap.indicators);
+
+            // load the indicators into the x/y value drop downs
+            d3Map.d3xVal_dropdown.selectAll("option")
+                .data(stateMap.indicators)
+                .enter()
+                .append("option")
+                .text(function(d) { return d["indicator"]; });
+
+            d3Map.d3yVal_dropdown.selectAll("option")
+                .data(stateMap.indicators)
+                .enter()
+                .append("option")
+                .text(function(d) { return d["indicator"]; });
+
         });
+
+
+
 
         // window resizing
         d3.select(window).on('resize', redraw );
 
+        //listen to changes in x/y drop downs
+        d3Map.d3xVal_dropdown.on("change", function(){
+            stateMap.xValue = d3Map.d3xVal_dropdown.node().value;
+            redraw();
+        });
+        d3Map.d3yVal_dropdown.on("change", function(){
+            stateMap.yValue = d3Map.d3yVal_dropdown.node().value;
+            redraw();
+        });
         //--------------------- END EVENT LISTENERS ----------------------
 
     };
@@ -173,6 +218,8 @@ gcif.correlate = (function () {
             .each(renderAll);
 
         function renderAll(){
+            scatter.xValue( stateMap.xValue );
+            scatter.yValue( stateMap.yValue );
             scatter.render();
         }
 
@@ -225,7 +272,7 @@ gcif.correlate = (function () {
     // End PUBLIC method /initModule/
 
     return { initModule   : initModule
-        , render       : render
+           , render       : render
     };
     //------------------- END PUBLIC METHODS ---------------------
 })();

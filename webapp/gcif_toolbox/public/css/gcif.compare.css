@@ -12,7 +12,7 @@ svg{
 .gcif-compare.chart .foreground path {
     fill: none;
     stroke-opacity: .7;
-    stroke-width: 2;
+    stroke-width: 1;
 }
 
     .gcif-compare.chart .foreground path.unhighlight {
