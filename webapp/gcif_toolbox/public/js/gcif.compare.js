@@ -24,11 +24,11 @@ gcif.compare = (function () {
 
             '<div class="row">' +
                 '<ul id="myTab" class="nav nav-tabs">' +
-                    '<li class="active"><a href="#graphical" data-toggle="tab">Graphical</a></li>' +
-                    '<li class=""><a href="#tabular" data-toggle="tab">Tablular</a></li>' +
+                    '<li class="active"><a href="#gcif-compare-graphical" data-toggle="tab">Graphical</a></li>' +
+                    '<li class=""><a href="#gcif-compare-tabular" data-toggle="tab">Tablular</a></li>' +
                 '</ul>' +
                 '<div id="myTabContent" class="tab-content">' +
-                    '<div class="tab-pane fade active in" id="graphical">' +
+                    '<div class="tab-pane fade active in" id="gcif-compare-graphical">' +
                         '<form class="form" role="form">' +
                             '<div class="form-group gcif-compare graphical menu">' +
                                 '<label for="theme-dropdown" class="col-sm-1 control-label">Theme</label>' +
@@ -60,7 +60,7 @@ gcif.compare = (function () {
                         '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
 
-                    '<div class="tab-pane fade" id="tabular">' +
+                    '<div class="tab-pane fade" id="gcif-compare-tabular">' +
                         '<form class="form" role="form">' +
                             '<div class="form-group">' +
                                 '<div class="btn-group gcif-compare tabular col-sm-12">' +
@@ -123,7 +123,6 @@ gcif.compare = (function () {
 
         jqueryMap = {
             $container       : $container
-          , $compare         : $container.find(".gcif-compare.chart")
           , $theme_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu #theme-dropdown")
           , $region_dropdown : $container.find(".form-group.gcif-compare.graphical.menu #region-dropdown")
         };
@@ -318,7 +317,8 @@ gcif.compare = (function () {
             redraw();
         });
 
-        //listen to changes in region dropdown
+        // --- FILTER ---
+        // listen to changes in region dropdown --- FILTER
         d3Map.d3region_dropdown.on("change", function(){
             stateMap.region = d3Map.d3region_dropdown.node().value;
             var cities = stateMap.member_cities_db(function(){
@@ -382,8 +382,6 @@ gcif.compare = (function () {
         dispatch.on("done_load", function(){
             initCharts();
             redraw();
-
-//            console.log(stateMap.cities);
         });
 
     };

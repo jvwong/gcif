@@ -1,0 +1,128 @@
+/* generic */
+
+svg{
+    /*background-color: lightgoldenrodyellow;*/
+}
+
+.gcif-correlate.chart{
+    margin-top: 2em;
+}
+
+.gcif-correlate.chart .reset{
+    padding-left: 1em;
+    font-size: 0.8em;
+    color: steelblue;
+    font-weight: bold;
+}
+
+
+
+/* BEGIN Scatter */
+
+    .gcif-correlate.chart .scatter.point {
+        stroke: black;
+        stroke-width: 0.5;
+    }
+
+    .gcif-correlate.chart.scatter .background.scatter .scatter.point{
+        fill: lightgrey;
+    }
+
+    .gcif-correlate.chart.scatter .foreground.scatter .scatter.point{
+        fill: #8B0000;
+    }
+
+    .gcif-correlate.chart .scatter.node {
+        fill: none;
+        stroke: #8B4513;
+        opacity : 0.45;
+        shape-rendering: crispEdges;
+    }
+
+    .gcif-correlate.chart .brush rect.extent {
+        fill: steelblue;
+        fill-opacity: .25;
+    }
+
+    .gcif-correlate.chart .scatter.axis {
+        font: 0.6em sans-serif;
+    }
+
+    .gcif-correlate.chart .scatter.axis > text{
+        font: 1.5em sans-serif;
+        font-weight: 800;
+    }
+
+    .gcif-correlate.chart .title{
+        font: 1.5em;
+        font-weight: 800;
+    }
+
+    .gcif-correlate.chart .scatter.axis path,
+    .gcif-correlate.chart .scatter.axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+
+    }
+/* END Scatter */
+
+
+
+/* BEGIN BAR */
+    /*.gcif-correlate.chart.bar .title{*/
+        /*font-size: 0.9em;*/
+        /*font-weight : bold;*/
+        /*margin-bottom: 1em;*/
+    /*}*/
+
+    /*.gcif-correlate.chart.bar .reset{*/
+        /*padding-left: 1em;*/
+        /*font-size: 0.8em;*/
+        /*color: steelblue;*/
+        /*font-weight: bold;*/
+    /*}*/
+
+    /*.gcif-correlate.chart.bar a:link,*/
+    /*.gcif-correlate.chart.bar a:visited{*/
+        /*text-decoration: none;*/
+    /*}*/
+
+
+    /*.gcif-correlate.chart.bar .background.bar{*/
+        /*fill: lightgrey;*/
+    /*}*/
+
+    /*.gcif-correlate.chart.bar .foreground.bar {*/
+        /*fill: #8B0000;*/
+    /*}*/
+
+
+    /*.gcif-correlate.chart.bar .brush rect.extent {*/
+        /*fill: steelblue;*/
+        /*fill-opacity: .25;*/
+    /*}*/
+
+    /*.gcif-correlate.chart.bar .brush .resize path {*/
+        /*fill: #eee;*/
+        /*stroke: #666;*/
+    /*}*/
+
+    /*.gcif-correlate.chart.bar .bar.axis {*/
+        /*font: 0.6em sans-serif;*/
+    /*}*/
+
+    /*.gcif-correlate.chart.bar .bar.axis .bar.label{*/
+        /*font: 1.5em sans-serif;*/
+        /*font-weight: 800;*/
+    /*}*/
+
+    /*.gcif-correlate.chart.bar .bar.axes .bar.axis path,*/
+    /*.gcif-correlate.chart.bar .bar.axes .bar.axis line {*/
+        /*fill: none;*/
+        /*stroke: #000;*/
+        /*shape-rendering: crispEdges;*/
+
+    /*}*/
+
+/* END BAR */
