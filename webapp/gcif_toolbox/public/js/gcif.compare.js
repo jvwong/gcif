@@ -192,10 +192,6 @@ gcif.compare = (function () {
 //            dispatch.load_indicators(performance_indicators_data);
 //        });
 //
-//        d3.json("assets/data/abundant_themes.json", function(abundant_themes) {
-//            dispatch.load_themes(abundant_themes);
-//        });
-//
 //        d3.json("assets/data/member_cities.json", function(member_cities_data) {
 //            dispatch.load_cities(member_cities_data);
 //            dispatch.done_load();
