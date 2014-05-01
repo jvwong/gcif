@@ -16,13 +16,19 @@ svg{
     stroke-width: 2;
 }
 
-.gcif-compare.chart .foreground path.highlight {
-    fill: none;
-    stroke: orange;
-    stroke-opacity: 0.9;
-    stroke-width: 4.5;
-}
+    .gcif-compare.chart .foreground path.unhighlight.china {
+        fill: none;
+        stroke: pink;
+        stroke-opacity: .7;
+        stroke-width: 2;
+    }
 
+    .gcif-compare.chart .foreground path.highlight {
+        fill: none;
+        stroke: orange;
+        stroke-opacity: 0.9;
+        stroke-width: 4.5;
+    }
 
 .gcif-compare.chart circle.point.unhighlight {
     fill: steelblue;
@@ -30,6 +36,13 @@ svg{
     fill-opacity: .7;
     stroke-width: 0.2;
 }
+
+    .gcif-compare.chart circle.point.unhighlight.china {
+        fill: pink;
+        stroke: black;
+        fill-opacity: .7;
+        stroke-width: 0.2;
+    }
 
 .gcif-compare.chart circle.point.highlight {
     fill: orange;
