@@ -163,6 +163,9 @@ gcif.parallel = (function () {
 
         function renderBody(){
 
+
+
+
             var
               g
             , points
@@ -335,6 +338,8 @@ gcif.parallel = (function () {
                         .style("opacity", 0);
                 })
             ;
+
+
         }
 
         _parallel.render = function() {
@@ -394,6 +399,11 @@ gcif.parallel = (function () {
         _parallel.dispatch = function(_){
             if (!arguments.length) return _dispatch;
             _dispatch = _;
+
+            //register the dispatch listeners.
+            _dispatch.on("highlight", function(data){
+                console.log("change in higlight detected: %s", data);
+            });
             return _parallel;
         };
 

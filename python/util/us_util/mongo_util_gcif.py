@@ -49,7 +49,13 @@ def getdbhandle(hostname="localhost", db_name="test"):
 #           will have to make accomodations here between ISO and gcif headers
 # @output:
 #   docs - a list of dicts suitable for mongoDB insert
-def getCityDocs(datacsv):
+def getCityDocs(db_handle, datacsv):
+
+
+    # Get the performance indicator list to fill-in missing values
+    pindicators_query = db_handle.performance_indicators.find({"core": 1})
+    plist = [(p.get('indicator')).encode('UTF-8') for p in pindicators_query]
+    pmissing = []
 
     #*# open the data csv
     with open(datacsv, 'rb') as datafile:
@@ -69,7 +75,7 @@ def getCityDocs(datacsv):
         gcif_replace = ["City unemployment rate",
                         "Commercial/industrial assessment as a percentage of total assessment",
                         "Student/teacher ratio",
-                        "Total electrical use per capita (kWh/year)",
+                        "Totalrow[dataheader_index] electrical use per capita (kWh/year)",
                         "PM10 Concentration",
                         "Number of firefighters per 100,000 population",
                         "Number of fire related deaths per 100,000 population",
@@ -116,12 +122,24 @@ def getCityDocs(datacsv):
 
 
         for h in data_headers:
+            #ignore junk fields
             if re.match('(?:datayear)|(?:data year)|(?:comments)|(?:n/a)', h.lower()):
                 continue
             elif h in gcif_replace:
                 h = ISO_replace[gcif_replace.index(h)]
 
             headers.append(h)
+
+        #append missing performance indicator headers
+        for h in plist:
+            if h not in headers:
+                headers.append(h)
+                pmissing.append(h)
+            # else:
+            #     print h
+
+
+
 
         # create a document for each city (255 total)
         for indd, row in enumerate(csvreader):
@@ -131,15 +149,23 @@ def getCityDocs(datacsv):
             for indh, header in enumerate(headers):
 
                 # get the header index from the original data csv -- tricky
-                if header in ISO_replace:
+                if header in ISO_replace and header not in pmissing:
                     legacy_name = gcif_replace[ISO_replace.index(header)]
                     dataheader_index = data_headers.index(legacy_name)
-                else:
+                elif header not in pmissing:
                     dataheader_index = data_headers.index(header)
+                else:
+                    dataheader_index = -1
 
                 # clean up dots [.] so it's BSON-compatible
                 header_safe = re.sub('\.', ',', header)
-                doc[header_safe] = row[dataheader_index]
+
+                # This is to fill in missing performance indicators
+                if dataheader_index > -1:
+                    doc[header_safe] = row[dataheader_index]
+                else:
+                    doc[header_safe] = ""
+
 
             doclist.append(copy.deepcopy(doc))
 
@@ -243,11 +269,10 @@ def main():
     root = "/home/jvwong/Public/Documents/GCIF/data/datasets/us/"
     # root = "/shared/Documents/GCIF/data/datasets/us/"
     us_data_csv = root + "usa_census_2011.csv"
-    us_docs = getCityDocs(us_data_csv)
+    us_docs = getCityDocs(gcif_handle, us_data_csv)
 
-    gcif_handle.gcif_combined.insert(us_docs, safe=True)
-    #
     # gcif_handle.us_cities.insert(us_docs, safe=True)
+    gcif_handle.gcif_combined.insert(us_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 

@@ -25,6 +25,26 @@ gcif.scatter = (function () {
     var
     Scatter = function( d3container ) {
 
+        var _configMap = {
+
+            main_html : String() +
+
+                '<div class="title"></div>' +
+                '<form class="form" role="form">' +
+                    '<div class="form-group gcif-correlate graphical menu">' +
+                        '<label for="xVal-dropdown" class="col-sm-1 control-label">X Axis</label>' +
+                        '<div class="col-sm-11">' +
+                            '<select id="xVal-dropdown" class="form-control"></select>' +
+                        '</div>' +
+                        '<label for="yVal-dropdown" class="col-sm-1 control-label">Y Axis</label>' +
+                        '<div class="col-sm-11">' +
+                            '<select id="yVal-dropdown" class="form-control"></select>' +
+                        '</div>' +
+                    '</div>' +
+                '</form>'
+
+        };
+
         var _scatter = {};
 
         var
@@ -34,7 +54,6 @@ gcif.scatter = (function () {
 
         , _svg
         , _div
-        , _points = null
 
         , _margin = { top: 10, right: 80, bottom: 50, left: 60 }
         , _min_height = 200
@@ -63,7 +82,7 @@ gcif.scatter = (function () {
         , _brushDirty = false
         , _extent = [ [0,0], [0,0] ]
 
-        , _radius = 4
+        , _radius = 2
 
         , _color
         , _data_db = TAFFY()
@@ -74,9 +93,13 @@ gcif.scatter = (function () {
         ;
 
         function mapdata(){
-            _data = (_data_db().get()).map(function(d) {
-                return {x: _fxValue.call({}, d), y: _fyValue.call({}, d) };
+            _data = (_data_db().get()).filter(function(d) {
+                return _fxValue.call({}, d) !== "";
+            }).map(function(d){
+                return {x: _fxValue.call({}, d), y: _fyValue.call({}, d)}
             });
+
+
         }
 
 
@@ -171,7 +194,7 @@ gcif.scatter = (function () {
             _div.insert("div","svg")
                 .attr("class", "title")
                 .append("text")
-                .text(_title)
+                .text(_title + ": " + _data.length + " data points")
             ;
 
             //try to wrap the labels

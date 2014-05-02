@@ -336,7 +336,7 @@ def main():
     member_data_csv = root + "recent_gcif.csv"
     member_docs = getCityDocs(member_data_csv)
 
-    # gcif_handle.gcif_combined.insert(member_docs, safe=True)
+    gcif_handle.gcif_combined.insert(member_docs, safe=True)
     # gcif_handle.member_cities.insert(member_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 

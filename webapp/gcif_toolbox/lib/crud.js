@@ -30,6 +30,8 @@ var
     , objTypeMap  = { 'performance_indicators' : {}
                     , 'profile_indicators' : {}
                     , 'member_cities': {}
+                    , 'nonmember_cities': {}
+                    , 'us_cities': {}
                     , 'chinese_cities': {}
                     , 'gcif_combined': {}
                     };

@@ -31,13 +31,17 @@ gcif.compare = (function () {
                     '<div class="tab-pane fade active in" id="gcif-compare-graphical">' +
                         '<form class="form" role="form">' +
                             '<div class="form-group gcif-compare graphical menu">' +
-                                '<label for="theme-dropdown" class="col-sm-1 control-label">Theme</label>' +
+                                '<label for="theme-dropdown" class="col-sm-1 control-label">Theme </label>' +
                                 '<div class="col-sm-11">' +
                                     '<select id="theme-dropdown" class="form-control"></select>' +
                                 '</div>' +
-                                '<label for="region-dropdown" class="col-sm-1 control-label">Region</label>' +
+                                '<label for="region-dropdown" class="col-sm-1 control-label">Region </label>' +
                                 '<div class="col-sm-11">' +
                                     '<select id="region-dropdown" class="form-control"></select>' +
+                                '</div>' +
+                                '<label for="highlight-dropdown" class="col-sm-1 control-label">Highlight </label>' +
+                                '<div class="col-sm-11">' +
+                                    '<select id="highlight-dropdown" class="form-control"></select>' +
                                 '</div>' +
                             '</div>' +
                             '<div class="form-group">' +
@@ -86,6 +90,7 @@ gcif.compare = (function () {
           , indicators                : undefined
           , flagged_indicators        : ["Percentage of population with access to improved sanitation"]
           , theme                     : undefined
+          , highlight_selected        : undefined
           , region                    : undefined
 
           , color                     : undefined
@@ -100,7 +105,7 @@ gcif.compare = (function () {
     , jqueryMap = {}, d3Map= {}
     , setJqueryMap, setd3Map
 
-    , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "done_load")
+    , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "done_load", "highlight")
 
     , parallelChart, list
 
@@ -116,27 +121,29 @@ gcif.compare = (function () {
           $container = stateMap.$container;
 
         jqueryMap = {
-            $container        : $container
-          , $theme_dropdown   : $container.find(".form-group.gcif-compare.graphical.menu #theme-dropdown")
-          , $region_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu #region-dropdown")
+            $container           : $container
+          , $theme_dropdown      : $container.find(".form-group.gcif-compare.graphical.menu #theme-dropdown")
+          , $region_dropdown     : $container.find(".form-group.gcif-compare.graphical.menu #region-dropdown")
+          , $highlight_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu #highlight-dropdown")
         };
     };
 
     setd3Map = function(){
         d3Map = {
-              d3compare           : d3.select(".gcif-compare.chart")
+              d3compare              : d3.select(".gcif-compare.chart")
 
-            , d3theme_dropdown    : d3.select(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
-            , d3region_dropdown   : d3.select(".form-group.gcif-compare.graphical.menu select#region-dropdown")
+            , d3theme_dropdown       : d3.select(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
+            , d3region_dropdown      : d3.select(".form-group.gcif-compare.graphical.menu select#region-dropdown")
+            , d3highlight_dropdown   : d3.select(".form-group.gcif-compare.graphical.menu select#highlight-dropdown")
 
-            , d3clear_highlights  : d3.select(".btn-group.gcif-compare.graphical button#clear-highlights")
-            , d3clear_brushes     : d3.select(".btn-group.gcif-compare.graphical button#clear-brushes")
-            , d3isolate_brushed   : d3.select(".btn-group.gcif-compare.graphical button#isolate-brushed")
-            , d3refresh           : d3.select(".btn-group.gcif-compare.graphical button#refresh")
+            , d3clear_highlights     : d3.select(".btn-group.gcif-compare.graphical button#clear-highlights")
+            , d3clear_brushes        : d3.select(".btn-group.gcif-compare.graphical button#clear-brushes")
+            , d3isolate_brushed      : d3.select(".btn-group.gcif-compare.graphical button#isolate-brushed")
+            , d3refresh              : d3.select(".btn-group.gcif-compare.graphical button#refresh")
 
-            , d3table             : d3.select(".gcif-compare.table")
-            , d3export_csv        : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
-            , d3downloadanchor    : d3.select(".btn-group.gcif-compare.tabular a")
+            , d3table                : d3.select(".gcif-compare.table")
+            , d3export_csv           : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
+            , d3downloadanchor       : d3.select(".btn-group.gcif-compare.tabular a")
         };
     };
 
@@ -146,6 +153,7 @@ gcif.compare = (function () {
                            .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
 
         parallelChart = gcif.parallel.Parallel( d3Map.d3compare );
+        parallelChart.dispatch( dispatch );
         parallelChart.color(stateMap.color);
 
         list = gcif.table.Table( d3Map.d3table );
@@ -165,7 +173,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(city_data) {
+        d3.json("/member_cities/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });
@@ -186,12 +194,10 @@ gcif.compare = (function () {
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(598).get();
+            stateMap.cities = stateMap.cities_db().limit(50).get();
 
             // setup the region drop down
             var dropdata = stateMap.cities_db().distinct("Region");
-
-            console.log(dropdata);
 
             dropdata.splice(0, 0, "all");
             //Load (top) regions into dropdown menu
@@ -201,6 +207,14 @@ gcif.compare = (function () {
                 .append("option")
                 .text(function(theme) { return theme; });
             stateMap.region = "all";
+
+            //setup the highlight drop down
+            d3Map.d3highlight_dropdown.selectAll("option")
+                .data(["","Region","GDP","Population"])
+                .enter()
+                .append("option")
+                .text(function(dimension) { return dimension; });
+            stateMap.highlight_selected = "";
         });
 
         dispatch.on("load_indicators", function(data){
@@ -311,6 +325,15 @@ gcif.compare = (function () {
             redraw();
         });
 
+        //listen to changes in highlight dropdown
+        d3Map.d3highlight_dropdown.on("change", function(){
+            stateMap.highlight_selected = d3Map.d3highlight_dropdown.node().value;
+            console.log("Highlighting: %s", stateMap.highlight_selected);
+            dispatch.highlight(stateMap.highlight_selected);
+        });
+
+
+
         // --- FILTER ---
         // listen to changes in region dropdown --- FILTER
         d3Map.d3region_dropdown.on("change", function(){
@@ -349,7 +372,7 @@ gcif.compare = (function () {
                 parallelChart.metadb( stateMap.performance_indicators_db().get() );
                 parallelChart.metadata( stateMap.indicators );
                 parallelChart.data( stateMap.cities );
-                parallelChart.dispatch( dispatch );
+
                 parallelChart.render();
             }
         }

@@ -288,9 +288,78 @@ def getCategoryCounts(dbhandle):
 #   valid json of core indicators that can be pumped into a collection
 def alignHeaders(db_handle, fcsv):
 
+
+    added = []
+
     corejson = {}
 
     coreindicators = db_handle.schema_gcif.find({"type": "core"})
+
+    goodnames = ["Percentage of female population enrolled in schools",
+                 "Total electrical use per capita (kWh/year)",
+                 "Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)",
+                 "Percentage of the city's solid waste that is recycled",
+                 "City unemployment rate"]
+
+    badnames = ["Percentage of female school-aged population enrolled in schools",
+                "Total electrical use per capita (kilowatt/hr)",
+                "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)",
+                "Percentage of city's solid waste that is recycled",
+                "Annual average unemployment rate"]
+
+    isonames = ["Percentage of female school-aged population enrolled in schools",
+                "Total residential electrical energy use per capita (kWh/year)",
+                "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)",
+                "Percentage of city's solid waste that is recycled",
+                "City's unemployment rate"]
+
+
+    gcif_replace = ["City unemployment rate",
+                "Commercial/industrial assessment as a percentage of total assessment",
+                "Student/teacher ratio",
+                "Total electrical use per capita (kWh/year)",
+                "PM10 Concentration",
+                "Number of firefighters per 100,000 population",
+                "Number of fire related deaths per 100,000 population",
+                "Percentage of city population with regular solid waste collection",
+                "Km of high capacity public transit system per 100,000 population",
+                "Km of light passenger transit system per 100,000 population",
+                "Annual number of public transit trips per capita",
+                "Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)",
+                "Number of in-patient hospital beds per 100,000 population",
+                "Number of physicians per 100,000 population",
+                "Under age five mortality per 1,000 live births",
+                "Number of police officers per 100,000 population",
+                "Number of homicides per 100,000 population",
+                "Percentage of the city's solid waste that is recycled",
+                "Number of internet connections per 100,000 population",
+                "Number of cell phone connections per 100,000 population",
+                "Green area (hectares) per 100,000 population",
+                "Percentage of female population enrolled in schools"]
+
+
+    ISO_replace = ["City's unemployment rate",
+                   "Assessed value of commercial and industrial properties as a percentage of total assessed value of all properties",
+                   "Primary education student/teacher ratio",
+                   "Total residential electrical energy use per capita (kWh/year)",
+                   "Particulate Matter (PM10) concentration",
+                   "Number of firefighters per 100 000 population",
+                   "Number of fire related deaths per 100 000 population",
+                   "Percentage of city population with regular solid waste collection (residential)",
+                   "Kilometres of high capacity public transport system per 100 000 population",
+                   "Kilometres of light passenger public transport system per 100 000 population",
+                   "Annual number of public transport trips per capita",
+                   "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)",
+                   "Number of in-patient hospital beds per 100 000 population",
+                   "Number of physicians per 100 000 population",
+                   "Under age five mortality per 1000 live births",
+                   "Number of police officers per 100 000 population",
+                   "Number of homicides per 100 000 population",
+                   "Percentage of city's solid waste that is recycled",
+                   "Number of internet connections per 100 000 population",
+                   "Number of cell phone connections per 100 000 population",
+                   "Green area (hectares) per 100 000 population",
+                   "Percentage of female school-aged population enrolled in schools"]
 
     # open the file
     with open(fcsv, 'rb') as csvfile:
@@ -299,40 +368,28 @@ def alignHeaders(db_handle, fcsv):
         #Read in first row of headers
         header = csvreader.next()
 
+        #loop through all core indicator names
         for ind, core in enumerate(coreindicators):
             name = ((core.get("name")).encode('UTF-8')).split("_")[0]
 
-            ##Some stupid shit ass replacements
-            if name == "Percentage of female population enrolled in schools":
-                name = "Percentage of female school-aged population enrolled in schools"
-
-            #The wrong units were stated
-            elif name == "Total electrical use per capita (kWh/year)":
-                name = "Total electrical use per capita (kilowatt/hr)"
-
-            #plural
-            elif name == "Debt service ratio (debt service expenditures as a percent of a municipality's own-source revenue)":
-                name = "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)"
-
-            #"the"
-            elif name == "Percentage of the city's solid waste that is recycled":
-                name = "Percentage of city's solid waste that is recycled"
-
-            #
-            elif name == "City unemployment rate":
-                name = "Annual average unemployment rate"
-
-            # print "name: %s" % name
+            #replace the name if it's in the badlist
+            if name in goodnames:
+                name = badnames[goodnames.index(name)]
 
             for indr, row in enumerate(csvreader):
-
                 if row[0].strip() == name.strip():
-                    # print "match: %s --- %s" % (row[0].strip(), name.strip())
+
+                    # swap out any bad names
+                    if name in badnames:
+                        name = isonames[badnames.index(name)]
+                    # swap out any non-iso names
+                    elif name in gcif_replace:
+                        name = ISO_replace[gcif_replace.index(name)]
+
                     # add the database name with the sample "result" value
                     corejson[name] = row[1].strip()
+                    added.append(name)
                     continue
-
-            # print "\n"
 
             csvfile.seek(0)
 
@@ -340,6 +397,15 @@ def alignHeaders(db_handle, fcsv):
         for indr, row in enumerate(csvreader):
             if row[0].strip() == "CityName":
                 corejson["CityName"] = row[1].strip()
+
+
+    # Get the performance indicator list to fill-in missing values
+    pindicators_query = db_handle.performance_indicators.find({"core": 1})
+    plist = [(p.get('indicator')).encode('UTF-8') for p in pindicators_query]
+    for p in plist:
+        if p not in added:
+            header_safe = re.sub('\.', ',', p)
+            corejson[header_safe] = ""
 
     return corejson
 
@@ -364,13 +430,14 @@ def main():
     # ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
     # ### *** open the gcif database
 
-    # root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
-    # files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
-    #          'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
-    #
+    root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
+    files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
+             'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
+
     # for file in files:
     #     path = root + file
     #     jsonout = alignHeaders(gcif_handle, path)
+
         # gcif_handle.gcif_combined.insert(jsonout, safe=True)
         # gcif_handle.nonmember_cities.insert(jsonout, safe=True)
 
@@ -382,8 +449,8 @@ def main():
                  "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA"]
 
     for ind, city in enumerate(citynames):
-        # gcif_handle.gcif_combined.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
-        # gcif_handle.nonmember_cities.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
+        gcif_handle.gcif_combined.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
+        gcif_handle.nonmember_cities.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
 
     # found = 0
     # for city in citynames:
