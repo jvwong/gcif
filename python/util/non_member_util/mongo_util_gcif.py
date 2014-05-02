@@ -83,6 +83,46 @@ def getDocs(datacsv):
 
 
 
+# function: getSchema
+# @description: makes a list of the indicators schema
+# @pre-condition: valid csv file
+# @input:
+# schemacsv - a csv with "name", "indicator_id", "type", "category", and "Number" (Javascript)
+# @output:
+# docs - a list of documents ready for pymongo insert
+def getSchemaDoc(schemacsv):
+
+    doclist = []
+
+    # open the schema csv and format this for retrieval below
+    with open(schemacsv, 'rb') as schemafile:
+        #Instantiate a csv reader
+        schemareader = csv.reader(schemafile, delimiter=',')
+        #Read in first row of headers
+        schemaheaders = schemareader.next()
+
+        #Get index of the headers (name, indicator_id, type, category)
+        iname = schemaheaders.index('name')
+        iindicator_id = schemaheaders.index('indicator_id')
+        itype = schemaheaders.index('type')
+        icategory = schemaheaders.index('theme')
+        idata_type = schemaheaders.index('data_type')
+
+
+        for ind, schemarow in enumerate(schemareader):
+
+            schemadoc = {"name": schemarow[iname]
+                       , "indicator_id": schemarow[iindicator_id]
+                       , "type": schemarow[itype]
+                       , "theme": schemarow[icategory]
+                       , "data_type": schemarow[idata_type]}
+
+            doclist.append(copy.deepcopy(schemadoc))
+
+    return doclist
+
+
+
 # function: getCategoryIndicators
 # @description: makes a json of the core performance categories and their respective indicators
 # @pre-condition: valid db_handle and collection of indicator schema
@@ -307,31 +347,33 @@ def alignHeaders(db_handle, fcsv):
 
 
 def main():
-
     #*** open the gcif database
     gcifname = "gcif"
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
     ### ******************************** DATABASE OPERATIONS *****************************************************
+    #
+    # ****************** prepare gcif collections
+    # schemacsv = "/home/jvwong/Public/Documents/GCIF/data/standards/generic/indicator_template.csv"
+    # slist = getSchemaDoc(schemacsv)
+    # gcif_handle.schema_gcif.insert(slist, safe=True)
+
+
     # ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     # ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
     # ### *** open the gcif database
-    files = ['/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv',
-             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/windsor_gcif.csv',
-             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/greater_sudbury_gcif.csv',
-             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/saultstemarie_gcif.csv',
-             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/vilnius_gcif.csv',
-             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/prague_gcif.csv',
-             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/brno_gcif.csv',
-             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/ostrava_gcif.csv']
+
+    root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
+    files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
+             'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
 
     for file in files:
-        jsonout = getDocs(gcif_handle, file)
-        print jsonout
+        path = root + file
+        jsonout = alignHeaders(gcif_handle, path)
+        # gcif_handle.gcif_combined.insert(jsonout, safe=True)
 
 
-    # gcif_handle.gcif_.insert(jsonout, safe=True)
 
     #     gcif_handle.nonmembers_gcif_simple.insert(jsonout, safe=True)
     # #
