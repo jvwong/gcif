@@ -364,29 +364,30 @@ def main():
     # ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
     # ### *** open the gcif database
 
-    root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
-    files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
-             'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
-
-    for file in files:
-        path = root + file
-        jsonout = alignHeaders(gcif_handle, path)
+    # root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
+    # files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
+    #          'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
+    #
+    # for file in files:
+    #     path = root + file
+    #     jsonout = alignHeaders(gcif_handle, path)
         # gcif_handle.gcif_combined.insert(jsonout, safe=True)
+        # gcif_handle.nonmember_cities.insert(jsonout, safe=True)
 
 
+    # #### add a Region field
+    citynames = ["LONDON", "SAULT STE MARIE", "GREATER SUDBURY", "WINDSOR",
+                 "VILNIUS", "BRNO", "OSTRAVA", "PRAGUE"]
+    regions   = ["NORTH AMERICA", "NORTH AMERICA", "NORTH AMERICA", "NORTH AMERICA",
+                 "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA"]
 
-    #     gcif_handle.nonmembers_gcif_simple.insert(jsonout, safe=True)
-    # #
-    # #### add some bogus "CityUniqueID_"
-    # citynames = ["LONDON", "SAULT STE MARIE", "GREATER SUDBURY", "WINDSOR", "VILNIUS", "BRNO", "OSTRAVA", "PRAGUE"]
-    # ids       = ["nm001", "nm002", "nm003", "nm004", "nm005", "nm006", "nm007", "nm008"]
-    #
-    # # for ind, city in enumerate(citynames):
-    # #     gcif_handle.nonmembers_gcif_simple.update({"CityName": city},{"$set": {"CityUniqueID_": ids[ind]}})
-    #
+    for ind, city in enumerate(citynames):
+        # gcif_handle.gcif_combined.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
+        # gcif_handle.nonmember_cities.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
+
     # found = 0
     # for city in citynames:
-    #     result = gcif_handle.nonmembers_gcif_simple.find_one({"CityName": city})
+    #     result = gcif_handle.nonmember_cities.find_one({"CityName": city})
     #     print result
     #     found += 1
     #

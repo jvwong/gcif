@@ -184,7 +184,7 @@ gcif.parallel = (function () {
                             .enter()
                             .append("path")
                             .attr("class", function(d){
-                                return "unhighlight " + d["_source"];
+                                return "unhighlight";
                             })
                             .attr("d", path)
                             ;
@@ -240,7 +240,7 @@ gcif.parallel = (function () {
                                      }
                           , cx    : 0
                           , r     : 3
-                          , class : function(d){return "unhighlight point " + d["_source"]}
+                          , class : function(d){return "unhighlight point"}
                     })
             ;
 

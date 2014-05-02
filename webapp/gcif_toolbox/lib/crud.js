@@ -31,6 +31,7 @@ var
                     , 'profile_indicators' : {}
                     , 'member_cities': {}
                     , 'chinese_cities': {}
+                    , 'gcif_combined': {}
                     };
 // ------------- END MODULE SCOPE VARIABLES ---------------
 

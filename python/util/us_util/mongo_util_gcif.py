@@ -246,7 +246,7 @@ def main():
     us_docs = getCityDocs(us_data_csv)
 
     gcif_handle.gcif_combined.insert(us_docs, safe=True)
-
+    #
     # gcif_handle.us_cities.insert(us_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 

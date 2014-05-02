@@ -246,8 +246,9 @@ def main():
     china_data_csv = root + "china_gcif.csv"
     china_docs = getCityDocs(china_data_csv)
 
-    # gcif_handle.gcif_combined.insert(china_docs, safe=True)
+    # print china_docs
 
+    gcif_handle.gcif_combined.insert(china_docs, safe=True)
     # gcif_handle.chinese_cities.insert(china_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
