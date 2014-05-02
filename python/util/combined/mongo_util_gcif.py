@@ -1,6 +1,5 @@
 """
-    A sample connnection for MongoDB to store fielddef_gcif (indicator_template.csv) and
-    members_recent_gcif (recent_gcif.csv) collections
+    A sample connnection for MongoDB to store all gcif collections
 """
 
 import sys
@@ -318,26 +317,24 @@ def main():
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
     # #
     # # ****************** prepare gcif collections
-    root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
-    # root = "/shared/Documents/GCIF/docs/ISO_Indicators/"
+    # root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
+    root = "/shared/Documents/GCIF/docs/ISO_Indicators/"
     # #
     # ###  ********** indicator collections
-    # profile_indicators_csv = root + "profile_indicators_ISO.csv"
-    # profile_docs = getIndicators(profile_indicators_csv)
-    # gcif_handle.profile_indicators.insert(profile_docs, safe=True)
-    #
-    # performance_indicators_csv = root + "performance_indicators_ISO.csv"
-    # performance_docs = getIndicators(performance_indicators_csv)
-    # gcif_handle.performance_indicators.insert(performance_docs, safe=True)
+    profile_indicators_csv = root + "profile_indicators_ISO.csv"
+    profile_docs = getIndicators(profile_indicators_csv)
+    gcif_handle.profile_indicators.insert(profile_docs, safe=True)
+
+    performance_indicators_csv = root + "performance_indicators_ISO.csv"
+    performance_docs = getIndicators(performance_indicators_csv)
+    gcif_handle.performance_indicators.insert(performance_docs, safe=True)
 
     # #  ********** member city data (gcif)
-    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
-    # root = "/shared/Documents/GCIF/data/datasets/member/cleaned/recent/"
+    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
+    root = "/shared/Documents/GCIF/data/datasets/member/cleaned/recent/"
     member_data_csv = root + "recent_gcif.csv"
     member_docs = getCityDocs(member_data_csv)
-
-    # gcif_handle.gcif_combined.insert(member_docs, safe=True)
-    # gcif_handle.member_cities.insert(member_docs, safe=True)
+    gcif_handle.member_cities.insert(member_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 

@@ -314,32 +314,25 @@ def main():
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
     ### ******************************** DATABASE OPERATIONS *****************************************************
-    #
-    # ****************** prepare gcif collections
-    # schemacsv = "/home/jvwong/Documents/GCIF/data/member/workbook/recent/indicator_template.csv"
-    # datacsv = "/home/jvwong/Documents/GCIF/data/member/cleaned/recent/recent_gcif.csv"
-    # dlist = getDocs(schemacsv, datacsv)
-    # slist = getSchemaDoc(schemacsv)
-    # #insert
-    # gcif_handle.members_recent_gcif_simple.insert(dlist, safe=True)
-    # gcif_handle.members_recent_gcif.insert(dlist, safe=True)
-    # gcif_handle.schema_gcif.insert(slist, safe=True)
-
-
     # ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     # ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
     # ### *** open the gcif database
-    # files = ['/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv',
-    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/windsor_gcif.csv',
-    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/greater_sudbury_gcif.csv',
-    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/saultstemarie_gcif.csv',
-    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/vilnius_gcif.csv',
-    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/prague_gcif.csv',
-    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/brno_gcif.csv',
-    #          '/home/jvwong/Documents/GCIF/data/non_member/cleaned/ostrava_gcif.csv']
-    #
-    # for file in files:
-    #     jsonout = alignHeaders(gcif_handle, file)
+    files = ['/home/jvwong/Documents/GCIF/data/non_member/cleaned/london_gcif.csv',
+             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/windsor_gcif.csv',
+             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/greater_sudbury_gcif.csv',
+             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/saultstemarie_gcif.csv',
+             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/vilnius_gcif.csv',
+             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/prague_gcif.csv',
+             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/brno_gcif.csv',
+             '/home/jvwong/Documents/GCIF/data/non_member/cleaned/ostrava_gcif.csv']
+
+    for file in files:
+        jsonout = getDocs(gcif_handle, file)
+        print jsonout
+
+
+    # gcif_handle.gcif_.insert(jsonout, safe=True)
+
     #     gcif_handle.nonmembers_gcif_simple.insert(jsonout, safe=True)
     # #
     # #### add some bogus "CityUniqueID_"
