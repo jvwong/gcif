@@ -421,9 +421,9 @@ def main():
     ### ******************************** DATABASE OPERATIONS *****************************************************
     #
     # ****************** prepare gcif collections
-    # schemacsv = "/home/jvwong/Public/Documents/GCIF/data/standards/generic/indicator_template.csv"
-    # slist = getSchemaDoc(schemacsv)
-    # gcif_handle.schema_gcif.insert(slist, safe=True)
+    schemacsv = "/home/jvwong/Public/Documents/GCIF/data/standards/generic/indicator_template.csv"
+    slist = getSchemaDoc(schemacsv)
+    gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
     # ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
@@ -434,12 +434,12 @@ def main():
     files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
              'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
 
-    # for file in files:
-    #     path = root + file
-    #     jsonout = alignHeaders(gcif_handle, path)
-
-        # gcif_handle.gcif_combined.insert(jsonout, safe=True)
-        # gcif_handle.nonmember_cities.insert(jsonout, safe=True)
+    for file in files:
+        path = root + file
+        jsonout = alignHeaders(gcif_handle, path)
+        #
+        gcif_handle.gcif_combined.insert(jsonout, safe=True)
+        gcif_handle.nonmember_cities.insert(jsonout, safe=True)
 
 
     # #### add a Region field

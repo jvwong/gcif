@@ -249,7 +249,7 @@ def main():
     # print china_docs
 
     gcif_handle.gcif_combined.insert(china_docs, safe=True)
-    # gcif_handle.chinese_cities.insert(china_docs, safe=True)
+    gcif_handle.chinese_cities.insert(china_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 

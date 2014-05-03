@@ -271,7 +271,7 @@ def main():
     us_data_csv = root + "usa_census_2011.csv"
     us_docs = getCityDocs(gcif_handle, us_data_csv)
 
-    # gcif_handle.us_cities.insert(us_docs, safe=True)
+    gcif_handle.us_cities.insert(us_docs, safe=True)
     gcif_handle.gcif_combined.insert(us_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 

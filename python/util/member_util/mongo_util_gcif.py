@@ -318,7 +318,7 @@ def main():
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
     # #
     # # ****************** prepare gcif collections
-    root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
+    # root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
     # root = "/shared/Documents/GCIF/docs/ISO_Indicators/"
     # #
     # ###  ********** indicator collections
@@ -337,7 +337,7 @@ def main():
     member_docs = getCityDocs(member_data_csv)
 
     gcif_handle.gcif_combined.insert(member_docs, safe=True)
-    # gcif_handle.member_cities.insert(member_docs, safe=True)
+    gcif_handle.member_cities.insert(member_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 

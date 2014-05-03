@@ -151,7 +151,7 @@ gcif.correlate = (function () {
             stateMap.performance_indicators_db.insert(data);
             stateMap.indicators = stateMap.performance_indicators_db(function(){
                 return this["core"] === 1 ;//&& stateMap.topThemes.indexOf(this["theme"]) >= 0;
-            }).get();
+            }).order("indicator asec").get();
 
             // load the indicators into the x/y value drop downs
             d3Map.d3xVal_dropdown.selectAll("option")

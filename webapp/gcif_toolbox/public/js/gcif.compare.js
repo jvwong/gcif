@@ -61,6 +61,7 @@ gcif.compare = (function () {
                                 '</div>' +
                             '</div>' +
                         '</form>' +
+                        '<div class="gcif-compare legend col-xs-12 col-md-12 col-lg-12"></div>' +
                         '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
 
@@ -105,7 +106,8 @@ gcif.compare = (function () {
     , jqueryMap = {}, d3Map= {}
     , setJqueryMap, setd3Map
 
-    , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "done_load", "highlight")
+    , dispatch = d3.dispatch("load_cities", "load_indicators", "done_load",
+                             "highlight", "brush", "legend_change")
 
     , parallelChart, list
 
@@ -144,20 +146,19 @@ gcif.compare = (function () {
             , d3table                : d3.select(".gcif-compare.table")
             , d3export_csv           : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
             , d3downloadanchor       : d3.select(".btn-group.gcif-compare.tabular a")
+
+            , d3legend                : d3.select(".gcif-compare.legend")
         };
     };
 
     initCharts = function(){
-        stateMap.color = d3.scale.ordinal()
-                           .domain(stateMap.topThemes)
-                           .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]);
-
         parallelChart = gcif.parallel.Parallel( d3Map.d3compare );
+        parallelChart.datadb( stateMap.cities_db().get() );
+        parallelChart.metadb( stateMap.performance_indicators_db().get() );
         parallelChart.dispatch( dispatch );
-        parallelChart.color(stateMap.color);
 
         list = gcif.table.Table( d3Map.d3table );
-        list.color(stateMap.color);
+        list.metadb( stateMap.performance_indicators_db().get() );
     };
 
     resetState = function (){
@@ -181,20 +182,12 @@ gcif.compare = (function () {
 
     loadListeners = function(){
         //--------------------- BEGIN EVENT LISTENERS ----------------------
-        dispatch.on("brush", function(brusheddata){
-            stateMap.cities = brusheddata;
-            dispatch.data_update();
-        });
-
-        dispatch.on("data_update", function(){
-            redraw(true);
-        });
 
         dispatch.on("load_cities", function(data){
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(50).get();
+            stateMap.cities = stateMap.cities_db().limit(800).get();
 
             // setup the region drop down
             var dropdata = stateMap.cities_db().distinct("Region");
@@ -210,11 +203,11 @@ gcif.compare = (function () {
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
-                .data(["","Region","GDP","Population"])
+                .data(["Region","GDP","Population",""])
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.highlight_selected = "";
+            stateMap.highlight_selected = "Region";
         });
 
         dispatch.on("load_indicators", function(data){
@@ -242,6 +235,12 @@ gcif.compare = (function () {
             .map(function(d){
                return d["indicator"]
             });
+        });
+
+        dispatch.on("brush", function(brusheddata){
+            stateMap.cities = brusheddata;
+            list.data( stateMap.cities );
+            list.render();
         });
 
         //table button for exporting csv
@@ -302,34 +301,40 @@ gcif.compare = (function () {
             });
         });
 
-        //listen to changes in theme dropdown
-        d3Map.d3theme_dropdown.on("change", function(){
-            stateMap.theme = d3Map.d3theme_dropdown.node().value;
-            stateMap.indicators = stateMap.theme === "all" ?
-                (stateMap.performance_indicators_db(function(){
-                    return stateMap.topThemes.indexOf(this["theme"]) >= 0 &&
-                        this["core"] === 1 &&
-                        stateMap.flagged_indicators.indexOf(this["indicator"]) < 0;
-                }).get())
-                    .map(function(d){
-                        return d["indicator"]
-                }) :
-                stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
-                    .get()
-                    .filter(function(d){
-                        return stateMap.flagged_indicators.indexOf(d["indicator"]) < 0;
-                    })
-                    .map(function(d){
-                        return d["indicator"];
-                    });
-            redraw();
-        });
-
         //listen to changes in highlight dropdown
         d3Map.d3highlight_dropdown.on("change", function(){
             stateMap.highlight_selected = d3Map.d3highlight_dropdown.node().value;
-            console.log("Highlighting: %s", stateMap.highlight_selected);
             dispatch.highlight(stateMap.highlight_selected);
+            redraw();
+        });
+
+        dispatch.on("legend_change", function(colors){
+            d3Map.d3legend.html("");
+            var legendEnter = d3Map.d3legend.selectAll(".legend-entry")
+                          .data(colors.domain())
+                         .enter()
+                          .append("a")
+                          .attr("href", "#")
+                          .attr("class", "legend-entry")
+                          .style({
+                              color: function(d, i){ return colors.range()[i] }
+                            , "font-size" : "1em"
+                          })
+                          .html(function(d){
+                                return d;
+                          })
+            ;
+
+            stateMap.cities = [];
+
+            legendEnter.on("click", function(d){
+                var added = stateMap.cities_db({"Region": d}).get();
+                added.forEach(function(d){
+                    stateMap.cities.push(d);
+                });
+                console.log(stateMap.cities.length);
+                redraw();
+            });
         });
 
 
@@ -344,6 +349,29 @@ gcif.compare = (function () {
                 stateMap.cities_db(function(){
                     return this["Region"] === stateMap.region;
                 }).get();
+            redraw();
+        });
+
+        //listen to changes in theme dropdown
+        d3Map.d3theme_dropdown.on("change", function(){
+            stateMap.theme = d3Map.d3theme_dropdown.node().value;
+            stateMap.indicators = stateMap.theme === "all" ?
+                (stateMap.performance_indicators_db(function(){
+                    return stateMap.topThemes.indexOf(this["theme"]) >= 0 &&
+                        this["core"] === 1 &&
+                        stateMap.flagged_indicators.indexOf(this["indicator"]) < 0;
+                }).get())
+                    .map(function(d){
+                        return d["indicator"]
+                    }) :
+                stateMap.performance_indicators_db({ theme: stateMap.theme, core: 1 })
+                    .get()
+                    .filter(function(d){
+                        return stateMap.flagged_indicators.indexOf(d["indicator"]) < 0;
+                    })
+                    .map(function(d){
+                        return d["indicator"];
+                    });
             redraw();
         });
 
@@ -362,17 +390,15 @@ gcif.compare = (function () {
         .each(function(){return renderAll(listonly);});
 
         function renderAll(listonly){
-            list.metadb( stateMap.performance_indicators_db().get() );
+
             list.metadata( stateMap.indicators );
             list.data( stateMap.cities );
-
             list.render();
 
             if (!listonly){
-                parallelChart.metadb( stateMap.performance_indicators_db().get() );
+
                 parallelChart.metadata( stateMap.indicators );
                 parallelChart.data( stateMap.cities );
-
                 parallelChart.render();
             }
         }
@@ -395,6 +421,7 @@ gcif.compare = (function () {
 
         dispatch.on("done_load", function(){
             initCharts();
+            dispatch.highlight(stateMap.highlight_selected);
             redraw();
         });
 

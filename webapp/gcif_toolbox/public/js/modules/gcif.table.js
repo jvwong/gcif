@@ -26,7 +26,12 @@ gcif.table = (function () {
             , _table
             , _thead
             , _tbody
-            , _color
+
+            , _colors = ["#1f77b4", "#ff7f0e", "#ffbb78", "#2ca02c", "#d62728",
+                         "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2",
+                         "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#17becf",
+                         "#9edae5", "#e7969c", "#7b4173", "#a55194", "#637939"]
+            , _tcolor = d3.scale.ordinal()
             ;
 
 
@@ -45,7 +50,7 @@ gcif.table = (function () {
                 .attr("class", "header")
                 .append("font")
                 .attr("color", function(d){
-                    return _color(_metadb({indicator: d}).select("theme"));
+                    return _tcolor(_metadb({indicator: d}).select("theme"));
                 })
                 .text(function(d){
                     return d;
@@ -114,18 +119,16 @@ gcif.table = (function () {
         _list.metadb = function(_){
             if (!arguments.length) return _metadb();
             _metadb.insert(_);
+            // set the theme indicator colors
+            var t = _metadb().distinct("theme");
+            _tcolor.domain(t)
+                .range(_colors.slice(0,t.length));
             return _list;
         };
 
         _list.metadata = function(_) {
             if (!arguments.length) return _metadata;
             _metadata = _;
-            return _list;
-        };
-
-        _list.color = function(_){
-            if (!arguments.length) return _color;
-            _color = _;
             return _list;
         };
 

@@ -15,10 +15,6 @@ svg{
     stroke-width: 1;
 }
 
-    .gcif-compare.chart .foreground path.unhighlight {
-        stroke: steelblue;
-    }
-
     .gcif-compare.chart .foreground path.highlight {
         stroke: orange;
         stroke-width: 4.5;
@@ -31,9 +27,9 @@ svg{
     stroke-width: 0.2;
 }
 
-    .gcif-compare.chart circle.point.unhighlight {
-        fill: steelblue;
-    }
+    /*.gcif-compare.chart circle.point.unhighlight {*/
+        /*fill: steelblue;*/
+    /*}*/
 
     .gcif-compare.chart circle.point.highlight {
         fill: orange;
@@ -59,17 +55,46 @@ svg{
 }
 
 /* labels */
-.gcif-compare.chart .axis > text {
-    text-shadow: 0 1px 0 #fff;
-    cursor: move;
-    font-size: 0.9em;
-}
-
 .tooltip{
     font-size: 1.0em;
     font-weight: 800;
     color: black;
 }
+
+
+.gcif-compare.legend{
+    font-size: 1em;
+    margin-top: 2em;
+    margin-left: 2em;
+}
+
+.gcif-compare.chart .axis > text {
+    text-shadow: 0 1px 0 #fff;
+    cursor: move;
+    font-size: 1.1em;
+}
+
+
+@media (max-width: 768px) {
+    .gcif-compare.legend{
+        font-size: 0.9em;
+        margin-top: 1em;
+        margin-left: 1em;
+    }
+
+    .gcif-compare.chart .axis > text {
+        text-shadow: 0 1px 0 #fff;
+        cursor: move;
+        font-size: 0.9em;
+    }
+
+}
+
+
+
+
+
+
 
 /*tabular */
 div.gcif-compare.table{

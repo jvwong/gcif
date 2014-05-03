@@ -33,8 +33,8 @@ gcif.parallel = (function () {
 
         , _metadata = []
         , _metadb = TAFFY()
-        , _color
         , _data = []
+        , _datadb = TAFFY()
 
         , _dragging = {}
         , _line = d3.svg.line()
@@ -42,6 +42,17 @@ gcif.parallel = (function () {
         , _background
         , _foreground
         , _point
+
+        , _highlight = null
+
+        , _colors10 = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+                       "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
+        , _colors20 = ["#1f77b4", "#ff7f0e", "#ffbb78", "#2ca02c", "#d62728",
+                       "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2",
+                       "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#17becf",
+                       "#9edae5", "#e7969c", "#7b4173", "#a55194", "#637939"]
+        , _hcolor = d3.scale.ordinal()
+        , _tcolor = d3.scale.ordinal()
 
         , _tooltip
         , _dispatch
@@ -161,10 +172,31 @@ gcif.parallel = (function () {
             _dispatch.brush(brushedCities);
         }
 
+        function setColor(d){
+
+            if (_highlight){
+                return _hcolor(d[_highlight]);
+            } else {
+                return "steelblue";
+            }
+
+        }
+
+        /* set the highlight colour domain and range */
+        function setHighColors(type){
+            switch (type)
+            {
+                case "Region":
+                    var t = _datadb().distinct("Region");
+                    _hcolor.domain( t ).range( _colors10.slice(0,t.length) );
+                    break;
+
+                default:
+                    _hcolor.domain("").range("steelblue");
+            }
+        }
+
         function renderBody(){
-
-
-
 
             var
               g
@@ -190,6 +222,7 @@ gcif.parallel = (function () {
                                 return "unhighlight";
                             })
                             .attr("d", path)
+                            .attr("stroke", setColor )
                             ;
 
 
@@ -242,8 +275,9 @@ gcif.parallel = (function () {
                                          return _y[p](city[p]);
                                      }
                           , cx    : 0
-                          , r     : 3
+                          , r     : 2
                           , class : function(d){return "unhighlight point"}
+                          , fill  : setColor
                     })
             ;
 
@@ -254,7 +288,8 @@ gcif.parallel = (function () {
                 .append("text")
                 .attr("text-anchor", "middle")
                 .attr("fill", function(d){
-                    return _color(_metadb({indicator: d}).select("theme"));
+                      return "black";
+//                      return _tcolor(_metadb({indicator: d}).select("theme"));
                 })
                 .attr("y", _height)
                 .attr("dy", "2em")
@@ -384,6 +419,12 @@ gcif.parallel = (function () {
             return _parallel;
         };
 
+        _parallel.datadb = function(_){
+            if (!arguments.length) return _datadb();
+            _datadb.insert(_);
+            return _parallel;
+        };
+
         _parallel.metadata = function(_){
             if (!arguments.length) return _metadata;
             _metadata = _;
@@ -393,6 +434,11 @@ gcif.parallel = (function () {
         _parallel.metadb = function(_){
             if (!arguments.length) return _metadb();
             _metadb.insert(_);
+
+            // set the theme indicator colors
+            var t = _metadb().distinct("theme");
+            _tcolor.domain(t)
+                   .range(_colors20.slice(0,t.length));
             return _parallel;
         };
 
@@ -402,14 +448,10 @@ gcif.parallel = (function () {
 
             //register the dispatch listeners.
             _dispatch.on("highlight", function(data){
-                console.log("change in higlight detected: %s", data);
+                _highlight = data;
+                setHighColors(data);
+                 _dispatch.legend_change(_hcolor);
             });
-            return _parallel;
-        };
-
-        _parallel.color = function(_){
-            if (!arguments.length) return _color;
-            _color = _;
             return _parallel;
         };
 
