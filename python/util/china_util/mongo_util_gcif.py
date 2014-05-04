@@ -241,11 +241,14 @@ def main():
     # #
     # # ****************** prepare gcif collections
     # ********** chinese cities (gcif)
-    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/china/raw/"
-    root = "/shared/Documents/GCIF/data/datasets/china/raw/"
+    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/china/raw/"
+    # root = "/shared/Documents/GCIF/data/datasets/china/raw/"
     china_data_csv = root + "china_gcif.csv"
     china_docs = getCityDocs(china_data_csv)
 
+    # print china_docs
+
+    gcif_handle.gcif_combined.insert(china_docs, safe=True)
     gcif_handle.chinese_cities.insert(china_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 

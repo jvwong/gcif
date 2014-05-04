@@ -25,6 +25,26 @@ gcif.scatter = (function () {
     var
     Scatter = function( d3container ) {
 
+        var _configMap = {
+
+            main_html : String() +
+
+                '<div class="title"></div>' +
+                '<form class="form" role="form">' +
+                    '<div class="form-group gcif-correlate graphical menu">' +
+                        '<label for="xVal-dropdown" class="col-sm-1 control-label">X Axis</label>' +
+                        '<div class="col-sm-11">' +
+                            '<select id="xVal-dropdown" class="form-control"></select>' +
+                        '</div>' +
+                        '<label for="yVal-dropdown" class="col-sm-1 control-label">Y Axis</label>' +
+                        '<div class="col-sm-11">' +
+                            '<select id="yVal-dropdown" class="form-control"></select>' +
+                        '</div>' +
+                    '</div>' +
+                '</form>'
+
+        };
+
         var _scatter = {};
 
         var
@@ -34,7 +54,6 @@ gcif.scatter = (function () {
 
         , _svg
         , _div
-        , _points = null
 
         , _margin = { top: 10, right: 80, bottom: 50, left: 60 }
         , _min_height = 200
@@ -46,17 +65,16 @@ gcif.scatter = (function () {
 
         , _xValue = ""
         , _yValue = ""
+        , _minXAxisVal = 50
+        , _minYAxisVal = 50
 
-        , _fxValue = function(d){ return d[_xValue]}
-        , _fyValue = function(d){ return d[_yValue]}
+        , _fxValue
+        , _fyValue
 
         , _xAxis = d3.svg.axis()
         , _yAxis = d3.svg.axis()
 
-        , _xlabel = "x axis"
-        , _ylabel = "y axis"
         , _title = "Title"
-
 
         , _dimension = null
         , _quadtree = null
@@ -64,7 +82,7 @@ gcif.scatter = (function () {
         , _brushDirty = false
         , _extent = [ [0,0], [0,0] ]
 
-        , _radius = 4
+        , _radius = 2
 
         , _color
         , _data_db = TAFFY()
@@ -73,6 +91,16 @@ gcif.scatter = (function () {
         , _dispatch
 
         ;
+
+        function mapdata(){
+            _data = (_data_db().get()).filter(function(d) {
+                return _fxValue.call({}, d) !== "";
+            }).map(function(d){
+                return {x: _fxValue.call({}, d), y: _fyValue.call({}, d)}
+            });
+
+
+        }
 
 
         /* sets the svg dimensions based upon the current browser window */
@@ -110,7 +138,11 @@ gcif.scatter = (function () {
 
         function renderXAxis(){
 
-            _xAxis.scale(_x.domain([0, d3.max(_data, function(d){ return (d.x) * 1.1; })]).range([0, _width])
+            _xAxis.scale(
+                        _x.domain(
+                            [0, Math.max(d3.max(_data, function(d){ return (d.x) * 1.1; }), _minXAxisVal)]
+                          )
+                          .range([0, _width])
                   )
                   .orient("bottom");
 
@@ -122,7 +154,12 @@ gcif.scatter = (function () {
 
         function renderYAxis(){
 
-            _yAxis.scale(_y.domain([0, d3.max(_data, function(d){ return (d.y) * 1.1; })]).range([_height, 0])).orient("left");
+            _yAxis.scale(
+                        _y.domain(
+                            [0, Math.max(d3.max(_data, function(d){ return (d.y) * 1.1; }), _minYAxisVal)]
+                        ).range([_height, 0])
+                    )
+                  .orient("left");
 
             return _svg.append("g")
                 .attr("class", "scatter y axis")
@@ -157,7 +194,7 @@ gcif.scatter = (function () {
             _div.insert("div","svg")
                 .attr("class", "title")
                 .append("text")
-                .text(_title)
+                .text(_title + ": " + _data.length + " data points")
             ;
 
             //try to wrap the labels
@@ -225,20 +262,19 @@ gcif.scatter = (function () {
             setsvgdim();
             rendersvg(_container);
             defineBodyClip();
+
+            mapdata();
+
             renderXAxis();
             renderYAxis();
             renderLabels();
             renderData();
-
-            console.log(_svg);
         };
 
         _scatter.data = function(_){
             if (!arguments.length) return _data;
-            _data = _.map(function(d) {
-                return {x: _fxValue.call({}, d), y: _fyValue.call({}, d) };
-            });
-
+            //map data
+            _data = _;
             _data_db.insert(_);
             return _scatter;
         };
@@ -246,12 +282,16 @@ gcif.scatter = (function () {
         _scatter.xValue = function(_){
             if (!arguments.length) return _xValue;
             _xValue = _;
+            _fxValue = function(d){ return d[_]};
             return _scatter;
         };
 
         _scatter.yValue = function(_){
             if (!arguments.length) return _yValue;
             _yValue = _;
+            _fyValue = function(d){
+                return d[_];
+            };
             return _scatter;
         };
 

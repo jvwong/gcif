@@ -1,6 +1,5 @@
 """
-    A sample connnection for MongoDB to store fielddef_gcif (indicator_template.csv) and
-    members_recent_gcif (recent_gcif.csv) collections
+    A sample connnection for MongoDB to store gcif data collections
 """
 
 import sys
@@ -50,7 +49,13 @@ def getdbhandle(hostname="localhost", db_name="test"):
 #           will have to make accomodations here between ISO and gcif headers
 # @output:
 #   docs - a list of dicts suitable for mongoDB insert
-def getCityDocs(datacsv):
+def getCityDocs(db_handle, datacsv):
+
+
+    # Get the performance indicator list to fill-in missing values
+    pindicators_query = db_handle.performance_indicators.find({"core": 1})
+    plist = [(p.get('indicator')).encode('UTF-8') for p in pindicators_query]
+    pmissing = []
 
     #*# open the data csv
     with open(datacsv, 'rb') as datafile:
@@ -67,10 +72,10 @@ def getCityDocs(datacsv):
 
         headers = []
 
-        gcif_replace = ["Annual average unemployment rate",
+        gcif_replace = ["City unemployment rate",
                         "Commercial/industrial assessment as a percentage of total assessment",
                         "Student/teacher ratio",
-                        "Total residential electrical use per capita (kWh/year)",
+                        "Totalrow[dataheader_index] electrical use per capita (kWh/year)",
                         "PM10 Concentration",
                         "Number of firefighters per 100,000 population",
                         "Number of fire related deaths per 100,000 population",
@@ -88,7 +93,6 @@ def getCityDocs(datacsv):
                         "Number of internet connections per 100,000 population",
                         "Number of cell phone connections per 100,000 population",
                         "Green area (hectares) per 100,000 population",
-                        "PM2.5 Concentration",
                         "Percentage of female population enrolled in schools"]
 
 
@@ -113,18 +117,29 @@ def getCityDocs(datacsv):
                        "Number of internet connections per 100 000 population",
                        "Number of cell phone connections per 100 000 population",
                        "Green area (hectares) per 100 000 population",
-                       "Fine Particulate Matter (PM2.5) concentration",
                        "Percentage of female school-aged population enrolled in schools"]
 
 
 
         for h in data_headers:
+            #ignore junk fields
             if re.match('(?:datayear)|(?:data year)|(?:comments)|(?:n/a)', h.lower()):
                 continue
             elif h in gcif_replace:
                 h = ISO_replace[gcif_replace.index(h)]
 
             headers.append(h)
+
+        #append missing performance indicator headers
+        for h in plist:
+            if h not in headers:
+                headers.append(h)
+                pmissing.append(h)
+            # else:
+            #     print h
+
+
+
 
         # create a document for each city (255 total)
         for indd, row in enumerate(csvreader):
@@ -134,93 +149,27 @@ def getCityDocs(datacsv):
             for indh, header in enumerate(headers):
 
                 # get the header index from the original data csv -- tricky
-                if header in ISO_replace:
+                if header in ISO_replace and header not in pmissing:
                     legacy_name = gcif_replace[ISO_replace.index(header)]
                     dataheader_index = data_headers.index(legacy_name)
-                else:
+                elif header not in pmissing:
                     dataheader_index = data_headers.index(header)
+                else:
+                    dataheader_index = -1
 
                 # clean up dots [.] so it's BSON-compatible
                 header_safe = re.sub('\.', ',', header)
-                doc[header_safe] = row[dataheader_index]
+
+                # This is to fill in missing performance indicators
+                if dataheader_index > -1:
+                    doc[header_safe] = row[dataheader_index]
+                else:
+                    doc[header_safe] = ""
+
 
             doclist.append(copy.deepcopy(doc))
 
     return doclist
-
-
-# function: getIndicators
-# @description: makes a json of profile/performance indicators
-# @pre-condition: valid csv file if indicator information
-# @input:
-#   indicator_csv - a csv with headers describing the indicators
-# @output:
-#   docs - a list of indicator dicts
-def getIndicators(indicator_csv):
-
-    doclist = []
-
-    # open the csv and format this for retrieval below
-    with open(indicator_csv, 'rb') as schemafile:
-
-        #Instantiate a csv reader
-        csvreader = csv.reader(schemafile, delimiter=',')
-        #Read in first row of headers
-        headers = csvreader.next()
-
-        for indr, row in enumerate(csvreader):
-
-            document = {}
-
-            for indc, col in enumerate(headers):
-
-                if row[indc] == "true":
-                    row[indc] = 1
-                elif row[indc] == "false":
-                    row[indc] = 0
-
-                document[col] = row[indc]
-
-            doclist.append(copy.deepcopy(document))
-
-    return doclist
-
-
-
-# function: getCoreJson
-# @description: outputs json of the cities (key = CityUniqueID_) and data for core indicators
-# @pre-condition: valid mongo collections
-# @input:
-#   dbhandle - the pymongo data base handle
-# @output:
-#   coreOut - a json of { CityUniqueID_: [{core_indicator1: val1,...,core_indicatorN: valN}] }
-def getCoreJson(dbhandle):
-
-    #Output as json
-    cityjson = {}
-
-    # Get the document collections for the schema and data
-    schema = dbhandle.schema_gcif.find({"type": "core"}) #all core
-    cities = dbhandle.members_recent_gcif_simple.find()
-
-    # Write out the core indicator list
-    corenames = [core.get("name").encode('UTF-8') for core in schema]
-    corenames.insert(0, 'CityUniqueID_')
-    corenames.insert(0, 'CityName')
-
-    ###loop over each city (255)
-    for city in cities:
-
-        #store the embedded json of data here
-        citydata = {}
-
-        ### loop over the core indicator names (39)
-        for corename in corenames:
-            citydata[corename] = (city[corename]).encode('UTF-8')
-
-        cityjson[city["CityUniqueID_"]] = copy.deepcopy(citydata)
-
-    return cityjson
 
 
 
@@ -313,31 +262,17 @@ def main():
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
 
 
-
-
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
     # #
     # # ****************** prepare gcif collections
-    # root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
-    # root = "/shared/Documents/GCIF/docs/ISO_Indicators/"
-    # #
-    # ###  ********** indicator collections
-    # profile_indicators_csv = root + "profile_indicators_ISO.csv"
-    # profile_docs = getIndicators(profile_indicators_csv)
-    # gcif_handle.profile_indicators.insert(profile_docs, safe=True)
-    #
-    # performance_indicators_csv = root + "performance_indicators_ISO.csv"
-    # performance_docs = getIndicators(performance_indicators_csv)
-    # gcif_handle.performance_indicators.insert(performance_docs, safe=True)
+    # ********** US cities (gcif)
+    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/us/"
+    # root = "/shared/Documents/GCIF/data/datasets/us/"
+    us_data_csv = root + "usa_census_2011.csv"
+    us_docs = getCityDocs(gcif_handle, us_data_csv)
 
-    # #  ********** member city data (gcif)
-    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
-    # root = "/shared/Documents/GCIF/data/datasets/member/cleaned/recent/"
-    member_data_csv = root + "recent_gcif.csv"
-    member_docs = getCityDocs(member_data_csv)
-
-    gcif_handle.gcif_combined.insert(member_docs, safe=True)
-    gcif_handle.member_cities.insert(member_docs, safe=True)
+    gcif_handle.us_cities.insert(us_docs, safe=True)
+    gcif_handle.gcif_combined.insert(us_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 
