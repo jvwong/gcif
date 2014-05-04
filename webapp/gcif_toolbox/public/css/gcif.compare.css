@@ -12,12 +12,12 @@ svg{
 .gcif-compare.chart .foreground path {
     fill: none;
     stroke-opacity: .7;
-    stroke-width: 1;
+    stroke-width: 2;
 }
 
     .gcif-compare.chart .foreground path.highlight {
         stroke: orange;
-        stroke-width: 4.5;
+        stroke-width: 7;
     }
 
 

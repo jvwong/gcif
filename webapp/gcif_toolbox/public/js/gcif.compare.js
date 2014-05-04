@@ -35,10 +35,6 @@ gcif.compare = (function () {
                                 '<div class="col-sm-11">' +
                                     '<select id="theme-dropdown" class="form-control"></select>' +
                                 '</div>' +
-                                '<label for="region-dropdown" class="col-sm-1 control-label">Region </label>' +
-                                '<div class="col-sm-11">' +
-                                    '<select id="region-dropdown" class="form-control"></select>' +
-                                '</div>' +
                                 '<label for="highlight-dropdown" class="col-sm-1 control-label">Highlight </label>' +
                                 '<div class="col-sm-11">' +
                                     '<select id="highlight-dropdown" class="form-control"></select>' +
@@ -92,7 +88,9 @@ gcif.compare = (function () {
           , flagged_indicators        : ["Percentage of population with access to improved sanitation"]
           , theme                     : undefined
           , highlight_selected        : undefined
-          , region                    : undefined
+
+//          , legend_queue              : undefined
+//          , clean_legend_queue        : undefined
 
           , color                     : undefined
 
@@ -125,7 +123,6 @@ gcif.compare = (function () {
         jqueryMap = {
             $container           : $container
           , $theme_dropdown      : $container.find(".form-group.gcif-compare.graphical.menu #theme-dropdown")
-          , $region_dropdown     : $container.find(".form-group.gcif-compare.graphical.menu #region-dropdown")
           , $highlight_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu #highlight-dropdown")
         };
     };
@@ -135,7 +132,6 @@ gcif.compare = (function () {
               d3compare              : d3.select(".gcif-compare.chart")
 
             , d3theme_dropdown       : d3.select(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
-            , d3region_dropdown      : d3.select(".form-group.gcif-compare.graphical.menu select#region-dropdown")
             , d3highlight_dropdown   : d3.select(".form-group.gcif-compare.graphical.menu select#highlight-dropdown")
 
             , d3clear_highlights     : d3.select(".btn-group.gcif-compare.graphical button#clear-highlights")
@@ -188,18 +184,6 @@ gcif.compare = (function () {
 
             //by default, cache the top member cities in the stateMap
             stateMap.cities = stateMap.cities_db().limit(800).get();
-
-            // setup the region drop down
-            var dropdata = stateMap.cities_db().distinct("Region");
-
-            dropdata.splice(0, 0, "all");
-            //Load (top) regions into dropdown menu
-            d3Map.d3region_dropdown.selectAll("option")
-                .data(dropdata)
-                .enter()
-                .append("option")
-                .text(function(theme) { return theme; });
-            stateMap.region = "all";
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
@@ -309,30 +293,51 @@ gcif.compare = (function () {
         });
 
         dispatch.on("legend_change", function(colors){
+
+            var legend_queue = colors.domain();
+            var clean_legend_queue = legend_queue.map(function(d){
+                return d.replace(/\-/g,"").replace(/ /g,"");
+            });
             d3Map.d3legend.html("");
             var legendEnter = d3Map.d3legend.selectAll(".legend-entry")
                           .data(colors.domain())
                          .enter()
                           .append("a")
                           .attr("href", "#")
-                          .attr("class", "legend-entry")
+                          .attr("class", function(d){
+                                return d.replace(/\-/g,"").replace(/ /g,"");
+                          })
                           .style({
                               color: function(d, i){ return colors.range()[i] }
                             , "font-size" : "1em"
                           })
                           .html(function(d){
-                                return d;
+                                return d + "&nbsp / ";
                           })
             ;
 
-            stateMap.cities = [];
-
             legendEnter.on("click", function(d){
-                var added = stateMap.cities_db({"Region": d}).get();
-                added.forEach(function(d){
-                    stateMap.cities.push(d);
+                var clean_name = d.replace(/\-/g,"").replace(/ /g,"")
+                  , index = clean_legend_queue.indexOf(clean_name)
+                  , anchor = d3Map.d3legend.select("." + clean_name)
+                ;
+
+                if(index >= 0){
+                    legend_queue.splice(index, 1);
+                    clean_legend_queue.splice(index, 1);
+                    anchor.style("opacity", "0.3");
+                }else{
+                    legend_queue.push(d);
+                    clean_legend_queue.push(clean_name);
+                    anchor.style("opacity", "1");
+                }
+
+                stateMap.cities = [];
+                legend_queue.forEach(function(region){
+                    (stateMap.cities_db({"Region": region}).get()).forEach(function(d){
+                        stateMap.cities.push(d);
+                    });
                 });
-                console.log(stateMap.cities.length);
                 redraw();
             });
         });
@@ -340,19 +345,7 @@ gcif.compare = (function () {
 
 
         // --- FILTER ---
-        // listen to changes in region dropdown --- FILTER
-        d3Map.d3region_dropdown.on("change", function(){
-            stateMap.region = d3Map.d3region_dropdown.node().value;
-            var cities = stateMap.cities_db().get();
-
-            stateMap.cities = stateMap.region === "all" ? cities :
-                stateMap.cities_db(function(){
-                    return this["Region"] === stateMap.region;
-                }).get();
-            redraw();
-        });
-
-        //listen to changes in theme dropdown
+            //listen to changes in theme dropdown
         d3Map.d3theme_dropdown.on("change", function(){
             stateMap.theme = d3Map.d3theme_dropdown.node().value;
             stateMap.indicators = stateMap.theme === "all" ?
