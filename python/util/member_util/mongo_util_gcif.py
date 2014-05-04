@@ -331,8 +331,8 @@ def main():
     # gcif_handle.performance_indicators.insert(performance_docs, safe=True)
 
     # #  ********** member city data (gcif)
-    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
-    # root = "/shared/Documents/GCIF/data/datasets/member/cleaned/recent/"
+    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
+    root = "/shared/Documents/GCIF/data/datasets/member/cleaned/recent/"
     member_data_csv = root + "recent_gcif.csv"
     member_docs = getCityDocs(member_data_csv)
 

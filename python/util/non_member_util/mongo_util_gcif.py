@@ -421,7 +421,8 @@ def main():
     ### ******************************** DATABASE OPERATIONS *****************************************************
     #
     # ****************** prepare gcif collections
-    schemacsv = "/home/jvwong/Public/Documents/GCIF/data/standards/generic/indicator_template.csv"
+    # schemacsv = "/home/jvwong/Public/Documents/GCIF/data/standards/generic/indicator_template.csv"
+    schemacsv = "/shared/Documents/GCIF/data/standards/generic/indicator_template.csv"
     slist = getSchemaDoc(schemacsv)
     gcif_handle.schema_gcif.insert(slist, safe=True)
 
@@ -430,7 +431,8 @@ def main():
     # ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
     # ### *** open the gcif database
 
-    root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
+    # root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
+    root = '/shared/Documents/GCIF/data/datasets/non_member/cleaned/'
     files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
              'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
 
