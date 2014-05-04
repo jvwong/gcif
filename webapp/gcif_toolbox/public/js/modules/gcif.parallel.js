@@ -187,7 +187,7 @@ gcif.parallel = (function () {
             switch (type)
             {
                 case "Region":
-                    var t = _datadb().distinct("Region");
+                    var t = _datadb({Region:{isUndefined:false}}).distinct("Region");
                     _hcolor.domain( t ).range( _colors10.slice(0,t.length) );
                     break;
 

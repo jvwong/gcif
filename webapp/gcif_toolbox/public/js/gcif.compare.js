@@ -89,13 +89,7 @@ gcif.compare = (function () {
           , theme                     : undefined
           , highlight_selected        : undefined
 
-//          , legend_queue              : undefined
-//          , clean_legend_queue        : undefined
-
-          , color                     : undefined
-
           , cities_db                 : TAFFY()
-
           , performance_indicators_db : TAFFY()
 
           , topThemes                : ["education","finance","health","safety","urban planning"]
@@ -170,7 +164,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/member_cities/list", function(city_data) {
+        d3.json("/gcif_combined/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });
@@ -295,6 +289,7 @@ gcif.compare = (function () {
         dispatch.on("legend_change", function(colors){
 
             var legend_queue = colors.domain();
+
             var clean_legend_queue = legend_queue.map(function(d){
                 return d.replace(/\-/g,"").replace(/ /g,"");
             });
@@ -341,8 +336,6 @@ gcif.compare = (function () {
                 redraw();
             });
         });
-
-
 
         // --- FILTER ---
             //listen to changes in theme dropdown
