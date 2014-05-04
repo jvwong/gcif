@@ -266,8 +266,8 @@ def main():
     # #
     # # ****************** prepare gcif collections
     # ********** US cities (gcif)
-    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/us/"
-    # root = "/shared/Documents/GCIF/data/datasets/us/"
+    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/us/"
+    root = "/shared/Documents/GCIF/data/datasets/us/"
     us_data_csv = root + "usa_census_2011.csv"
     us_docs = getCityDocs(gcif_handle, us_data_csv)
 
