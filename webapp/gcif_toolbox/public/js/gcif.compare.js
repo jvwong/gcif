@@ -181,11 +181,11 @@ gcif.compare = (function () {
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
-                .data(["Region","GDP","Population",""])
+                .data(["Region","GDP","Total city population",""])
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.highlight_selected = "Region";
+            stateMap.highlight_selected = "Total city population";
         });
 
         dispatch.on("load_indicators", function(data){
@@ -264,8 +264,6 @@ gcif.compare = (function () {
 
         //listen to the clear all button
         d3Map.d3refresh.on("click", function(){
-            console.log("refreshing");
-
             resetState();
             loadData();
 
@@ -291,28 +289,57 @@ gcif.compare = (function () {
 
         //listen to changes in highlight dropdown
         d3Map.d3highlight_dropdown.on("change", function(){
-            console.log("highlight change");
-
             stateMap.highlight_selected = d3Map.d3highlight_dropdown.node().value;
             dispatch.highlight(stateMap.highlight_selected);
             redraw();
         });
 
-        dispatch.on("legend_change", function(colors){
+        dispatch.on("legend_change", function(highlight, colors){
 
-            var legend_queue = colors.domain();
+            // Class names cannot be digits, so prefix a "_" to any category
+            var prefix = "_"
+              , domain
+              , bins = true
+            ;
 
-            var clean_legend_queue = legend_queue.map(function(d){
-                return d.replace(/\-/g,"").replace(/ /g,"");
-            });
+            if (highlight === "Region"){
+                bins = false;
+                domain = colors.domain();
+            }else{
+                domain = colors.range().map(function(color, index, array){
+
+                    //format a nice string for output
+                    var interval = colors.invertExtent(color);
+                    var tag = String();
+
+                    if (index === 0){
+                        tag += "0-" + interval[1];
+                    }else if(index === array.length - 1){
+                        tag += interval[0] + "-Infinity";
+                    }else{
+                        tag += interval[0] + "-" + interval[1];
+                    }
+
+                    return tag;
+
+                });
+            }
+
+            var legend_queue = (domain).map(function(d){ return prefix + d})
+              , clean_legend_queue = legend_queue.map(function(d){
+                    return String(d).replace(/ /g,"");
+                })
+              ;
+
+            // clear the legend
             d3Map.d3legend.html("");
             var legendEnter = d3Map.d3legend.selectAll(".legend-entry")
-                          .data(colors.domain())
+                          .data(domain)
                          .enter()
                           .append("a")
                           .attr("href", "#")
                           .attr("class", function(d){
-                                return d.replace(/\-/g,"").replace(/ /g,"");
+                                return prefix + String(d).replace(/ /g,"");
                           })
                           .style({
                               color: function(d, i){ return colors.range()[i] }
@@ -323,27 +350,41 @@ gcif.compare = (function () {
                           })
             ;
 
+
             legendEnter.on("click", function(d){
-                var clean_name = d.replace(/\-/g,"").replace(/ /g,"")
-                  , index = clean_legend_queue.indexOf(clean_name)
-                  , anchor = d3Map.d3legend.select("." + clean_name)
-                ;
+
+                var clean_name = prefix + String(d).replace(/ /g,"");
+                var index = clean_legend_queue.indexOf(clean_name);
+                var anchor = d3Map.d3legend.select("." + clean_name);
 
                 if(index >= 0){
                     legend_queue.splice(index, 1);
                     clean_legend_queue.splice(index, 1);
                     anchor.style("opacity", "0.3");
                 }else{
-                    legend_queue.push(d);
+                    legend_queue.push(prefix + String(d));
                     clean_legend_queue.push(clean_name);
                     anchor.style("opacity", "1");
                 }
 
+
                 stateMap.cities = [];
-                legend_queue.forEach(function(region){
-                    (stateMap.cities_db({"Region": region}).get()).forEach(function(d){
-                        stateMap.cities.push(d);
-                    });
+                domain.forEach(function(category){
+                    if (bins){
+
+                        var interval = category.split("-");
+                        console.log(highlight);
+                        console.log(interval[0]);
+                        console.log(stateMap.cities_db({"Total city population": {gte: +interval[0]}}).get());
+
+                        (stateMap.cities_db({"Total city population": {gte: +interval[0]}}).get()).forEach(function(d){
+                            stateMap.cities.push(d);
+                        });
+                    }else{
+                        (stateMap.cities_db({"Region": category.substring(1)}).get()).forEach(function(d){
+                            stateMap.cities.push(d);
+                        });
+                    }
                 });
                 redraw();
             });
@@ -352,8 +393,6 @@ gcif.compare = (function () {
         // --- FILTER ---
             //listen to changes in theme dropdown
         d3Map.d3theme_dropdown.on("change", function(){
-
-            console.log("theme change");
             stateMap.theme = d3Map.d3theme_dropdown.node().value;
             stateMap.indicators = stateMap.theme === "all" ?
                 (stateMap.performance_indicators_db(function(){

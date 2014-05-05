@@ -139,8 +139,6 @@ def getCityDocs(db_handle, datacsv):
             #     print h
 
 
-
-
         # create a document for each city (255 total)
         for indd, row in enumerate(csvreader):
             doc = {}
@@ -157,8 +155,9 @@ def getCityDocs(db_handle, datacsv):
                 else:
                     dataheader_index = -1
 
-                # clean up dots [.] so it's BSON-compatible
+                # cascade through substitutions
                 header_safe = re.sub('\.', ',', header)
+                header_safe = re.sub('US\$', 'USD', header_safe)
 
                 # This is to fill in missing performance indicators
                 if dataheader_index > -1:
@@ -266,8 +265,8 @@ def main():
     # #
     # # ****************** prepare gcif collections
     # ********** US cities (gcif)
-    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/us/"
-    root = "/shared/Documents/GCIF/data/datasets/us/"
+    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/us/"
+    # root = "/shared/Documents/GCIF/data/datasets/us/"
     us_data_csv = root + "usa_census_2011.csv"
     us_docs = getCityDocs(gcif_handle, us_data_csv)
 

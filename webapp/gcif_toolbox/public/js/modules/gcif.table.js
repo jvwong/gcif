@@ -70,7 +70,7 @@ gcif.table = (function () {
             //append a <tr class="city") for each city
             row = _tbody.selectAll(".datarow")
                 .data(_data, function(d) {
-                    return d["CityUniqueID"];
+                    return d["_id"];
                 })
             ;
 
@@ -94,6 +94,9 @@ gcif.table = (function () {
             });
 
             row.exit().remove();
+
+//            console.log(_data);
+
 
         }
 

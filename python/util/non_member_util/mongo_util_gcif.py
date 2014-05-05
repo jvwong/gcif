@@ -289,7 +289,7 @@ def getCategoryCounts(dbhandle):
 def alignHeaders(db_handle, fcsv):
 
 
-    added = []
+    added_performance = []
 
     corejson = {}
 
@@ -372,7 +372,7 @@ def alignHeaders(db_handle, fcsv):
         for ind, core in enumerate(coreindicators):
             name = ((core.get("name")).encode('UTF-8')).split("_")[0]
 
-            #replace the name if it's in the badlist
+            #replace the name if it's in the bad list
             if name in goodnames:
                 name = badnames[goodnames.index(name)]
 
@@ -388,7 +388,7 @@ def alignHeaders(db_handle, fcsv):
 
                     # add the database name with the sample "result" value
                     corejson[name] = row[1].strip()
-                    added.append(name)
+                    added_performance.append(name)
                     continue
 
             csvfile.seek(0)
@@ -400,12 +400,41 @@ def alignHeaders(db_handle, fcsv):
 
 
     # Get the performance indicator list to fill-in missing values
-    pindicators_query = db_handle.performance_indicators.find({"core": 1})
-    plist = [(p.get('indicator')).encode('UTF-8') for p in pindicators_query]
+    plist = [(p.get('indicator')).encode('UTF-8') for p in db_handle.performance_indicators.find({"core": 1})]
     for p in plist:
-        if p not in added:
+        if p not in added_performance:
             header_safe = re.sub('\.', ',', p)
             corejson[header_safe] = ""
+
+
+    added_profile = []
+    # Do the profile indicators
+    with open(fcsv, 'rb') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=',')
+
+        #Read in first row of headers
+        header = csvreader.next()
+
+        # Add profile indicators (be sure to substitute "USD" for "US$")
+        profileindicators = [(p.get('characteristic')).encode('UTF-8') for p in db_handle.profile_indicators.find()]
+
+        #loop through all core indicator names
+        for ind, characteristic in enumerate(profileindicators):
+
+            ## stupid substitutions
+            if characteristic == "Male to female ratio (# of males per 100 females)":
+                characteristic = "Male to female ratio (number of males per 100 females)"
+
+            name = re.sub('USD', 'US$', characteristic)
+
+            for indr, row in enumerate(csvreader):
+                if row[0].lower().strip() == name.lower().strip():
+                    header_safe = re.sub('\.', ',', characteristic)
+                    corejson[header_safe] = row[1].strip()
+                    added_profile.append(characteristic)
+                    continue
+
+            csvfile.seek(0)
 
     return corejson
 
@@ -422,45 +451,37 @@ def main():
     #
     # ****************** prepare gcif collections
     # schemacsv = "/home/jvwong/Public/Documents/GCIF/data/standards/generic/indicator_template.csv"
-    schemacsv = "/shared/Documents/GCIF/data/standards/generic/indicator_template.csv"
-    slist = getSchemaDoc(schemacsv)
-    gcif_handle.schema_gcif.insert(slist, safe=True)
+    # schemacsv = "/shared/Documents/GCIF/data/standards/generic/indicator_template.csv"
+    # slist = getSchemaDoc(schemacsv)
+    # gcif_handle.schema_gcif.insert(slist, safe=True)
 
 
     # ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     # ### *********** Align headers for non members, and insert into collection nonmembers_gcif **********************
     # ### *** open the gcif database
 
-    # root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
-    root = '/shared/Documents/GCIF/data/datasets/non_member/cleaned/'
+    root = '/home/jvwong/Public/Documents/GCIF/data/datasets/non_member/cleaned/'
+    # root = '/shared/Documents/GCIF/data/datasets/non_member/cleaned/'
     files = ['london_gcif.csv', 'windsor_gcif.csv', 'greater_sudbury_gcif.csv', 'saultstemarie_gcif.csv',
              'vilnius_gcif.csv', 'prague_gcif.csv', 'brno_gcif.csv', 'ostrava_gcif.csv']
 
     for file in files:
         path = root + file
         jsonout = alignHeaders(gcif_handle, path)
-        #
+
         gcif_handle.gcif_combined.insert(jsonout, safe=True)
         gcif_handle.nonmember_cities.insert(jsonout, safe=True)
 
 
     # #### add a Region field
-    citynames = ["LONDON", "SAULT STE MARIE", "GREATER SUDBURY", "WINDSOR",
-                 "VILNIUS", "BRNO", "OSTRAVA", "PRAGUE"]
-    regions   = ["NORTH AMERICA", "NORTH AMERICA", "NORTH AMERICA", "NORTH AMERICA",
-                 "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA"]
-
-    for ind, city in enumerate(citynames):
-        gcif_handle.gcif_combined.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
-        gcif_handle.nonmember_cities.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
-
-    # found = 0
-    # for city in citynames:
-    #     result = gcif_handle.nonmember_cities.find_one({"CityName": city})
-    #     print result
-    #     found += 1
+    # citynames = ["LONDON", "SAULT STE MARIE", "GREATER SUDBURY", "WINDSOR",
+    #              "VILNIUS", "BRNO", "OSTRAVA", "PRAGUE"]
+    # regions   = ["NORTH AMERICA", "NORTH AMERICA", "NORTH AMERICA", "NORTH AMERICA",
+    #              "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA", "EUROPE - CENTRAL ASIA"]
     #
-    # print found
+    # for ind, city in enumerate(citynames):
+    #     gcif_handle.gcif_combined.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
+    #     gcif_handle.nonmember_cities.update({"CityName": city}, {"$set": {"Region": regions[ind]}})
 
 
     ### *** Data: Generate a json of cities and it's core indicators

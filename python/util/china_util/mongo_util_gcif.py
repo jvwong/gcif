@@ -138,8 +138,10 @@ def getCityDocs(datacsv):
                 else:
                     dataheader_index = data_headers.index(header)
 
-                # clean up dots [.] so it's BSON-compatible
+                # cascade through substitutions
                 header_safe = re.sub('\.', ',', header)
+                header_safe = re.sub('US\$', 'USD', header_safe)
+
                 doc[header_safe] = row[dataheader_index]
 
             doclist.append(copy.deepcopy(doc))
@@ -220,6 +222,25 @@ def main():
     gcifhost = "localhost"
     gcif_handle = getdbhandle(gcifhost, gcifname)
 
+
+    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
+    # #
+    # # ****************** prepare gcif collections
+    # ********** chinese cities (gcif)
+    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/china/raw/"
+    # root = "/shared/Documents/GCIF/data/datasets/china/raw/"
+    china_data_csv = root + "china_gcif_May052014.csv"
+    china_docs = getCityDocs(china_data_csv)
+
+    # print china_docs
+
+    gcif_handle.gcif_combined.insert(china_docs, safe=True)
+    gcif_handle.chinese_cities.insert(china_docs, safe=True)
+    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
+
+
+
+
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
     ### *** Data: Generate a json of cities and it's core indicators
     # foutcore = '/home/jvwong/Projects/GCIF/webapp/public/member_core_byID.json'
@@ -235,22 +256,6 @@ def main():
     #     writer = csv.writer(ffoutcatcount)
     #     writer.writerows(themecounts)
     ### ******************************** DOCUMENT GENERATION OPERATIONS ******************************************
-
-
-    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
-    # #
-    # # ****************** prepare gcif collections
-    # ********** chinese cities (gcif)
-    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/china/raw/"
-    root = "/shared/Documents/GCIF/data/datasets/china/raw/"
-    china_data_csv = root + "china_gcif.csv"
-    china_docs = getCityDocs(china_data_csv)
-
-    # print china_docs
-
-    gcif_handle.gcif_combined.insert(china_docs, safe=True)
-    gcif_handle.chinese_cities.insert(china_docs, safe=True)
-    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
 
 
 if __name__ == "__main__":
