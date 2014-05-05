@@ -164,7 +164,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(city_data) {
+        d3.json("/member_cities/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });
@@ -264,23 +264,35 @@ gcif.compare = (function () {
 
         //listen to the clear all button
         d3Map.d3refresh.on("click", function(){
+            console.log("refreshing");
+
             resetState();
             loadData();
 
             dispatch.on("done_load", function(){
-                jqueryMap.$theme_dropdown.find("option").filter(function() {
-                        return $(this).text() === "all";
-                }).prop('selected', true);
-                jqueryMap.$region_dropdown.find("option").filter(function() {
-                        return $(this).text() === "all";
-                }).prop('selected', true);
 
-                redraw();
+                jqueryMap.$theme_dropdown
+                .find("option").filter(function() {
+                        return $(this).text() === "all";
+                })
+                .prop('selected', true)
+                ;
+                d3Map.d3theme_dropdown.on("change")();
+
+                jqueryMap.$highlight_dropdown
+                .find("option").filter(function() {
+                        return $(this).text() === "Region";
+                })
+                .prop('selected', true)
+                ;
+                d3Map.d3highlight_dropdown.on("change")();
             });
         });
 
         //listen to changes in highlight dropdown
         d3Map.d3highlight_dropdown.on("change", function(){
+            console.log("highlight change");
+
             stateMap.highlight_selected = d3Map.d3highlight_dropdown.node().value;
             dispatch.highlight(stateMap.highlight_selected);
             redraw();
@@ -340,6 +352,8 @@ gcif.compare = (function () {
         // --- FILTER ---
             //listen to changes in theme dropdown
         d3Map.d3theme_dropdown.on("change", function(){
+
+            console.log("theme change");
             stateMap.theme = d3Map.d3theme_dropdown.node().value;
             stateMap.indicators = stateMap.theme === "all" ?
                 (stateMap.performance_indicators_db(function(){
