@@ -375,7 +375,10 @@ gcif.compare = (function () {
                         var interval = category.split("-");
                         console.log(highlight);
                         console.log(interval[0]);
-                        console.log(stateMap.cities_db({"Total city population": {gte: +interval[0]}}).get());
+                        console.log(stateMap.cities_db(function(){
+                                this["Total city population"] >= +interval[0];
+                            }).get()
+                        );
 
                         (stateMap.cities_db({"Total city population": {gte: +interval[0]}}).get()).forEach(function(d){
                             stateMap.cities.push(d);
