@@ -51,7 +51,9 @@ gcif.parallel = (function () {
                        "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2",
                        "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#17becf",
                        "#9edae5", "#e7969c", "#7b4173", "#a55194", "#637939"]
-        , _hcolor
+
+        , _setHcolor = function(){ return d3.scale.ordinal().domain("").range("steelblue")}
+        , _hcolor = _setHcolor()
 
         , _tooltip
         , _dispatch
@@ -182,6 +184,45 @@ gcif.parallel = (function () {
             _dispatch.brush(brushedCities);
         }
 
+
+        /* set the highlight colour domain and range */
+        function setHighColors(type){
+
+            var h, t;
+            switch (type)
+            {
+                case "Region":
+                    t = _datadb({Region:{isUndefined:false}}).distinct("Region");
+                    h = d3.scale.ordinal().domain( t ).range( _colors10.slice(0,t.length) );
+                    break;
+
+                case "Total city population":
+                    t = [1e5, 5e5, 1e6, 2.5e6, 5e6];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Land Area (Square Kilometers)":
+                    t = [100, 300, 600, 1e3];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Gross capital budget (USD)":
+                    t = [1e6, 1e7, 1e8, 1e9];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Country's GDP per capita (USD)":
+                    t = [2.5e3, 5e3, 1e4, 2.5e4, 5e4];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                default:
+                    t = "";
+                    h = d3.scale.ordinal().domain(t).range("steelblue");
+            }
+            return h;
+        }
+
         function setColor(d){
 
             if (_highlight){
@@ -198,24 +239,7 @@ gcif.parallel = (function () {
 
         }
 
-        /* set the highlight colour domain and range */
-        function setHighColors(type){
-            switch (type)
-            {
-                case "Region":
-                    var t = _datadb({Region:{isUndefined:false}}).distinct("Region");
-                    _hcolor = d3.scale.ordinal().domain( t ).range( _colors10.slice(0,t.length) );
-                    break;
 
-                case "Total city population":
-                    var t = [1e5, 5e5, 1e6, 2.5e6, 5e6];
-                    _hcolor = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
-                    break;
-
-                default:
-                    _hcolor = d3.scale.ordinal().domain("").range("steelblue");
-            }
-        }
 
         function renderBody(){
 
@@ -475,8 +499,8 @@ gcif.parallel = (function () {
             //register the dispatch listeners.
             _dispatch.on("highlight", function(data){
                 _highlight = data;
-                setHighColors(data);
-                 _dispatch.legend_change(_highlight, _hcolor);
+                _hcolor = setHighColors(data);
+                _dispatch.legend_change(_highlight, _hcolor);
             });
             return _parallel;
         };

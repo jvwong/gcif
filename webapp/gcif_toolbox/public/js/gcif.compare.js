@@ -164,7 +164,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/member_cities/list", function(city_data) {
+        d3.json("/gcif_combined/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });
@@ -181,11 +181,14 @@ gcif.compare = (function () {
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
-                .data(["Region","GDP","Total city population",""])
+                .data(
+                ["Region","Total city population","Country's GDP per capita (USD)",
+                 "Gross capital budget (USD)","Land Area (Square Kilometers)",""]
+                )
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.highlight_selected = "Total city population";
+            stateMap.highlight_selected = "Region";
         });
 
         dispatch.on("load_indicators", function(data){
@@ -354,7 +357,7 @@ gcif.compare = (function () {
                             , "font-size" : "1em"
                           })
                           .html(function(d){
-                                return d + "&nbsp / ";
+                                return d + "&nbsp  &nbsp";
                           })
             ;
 
@@ -434,6 +437,11 @@ gcif.compare = (function () {
 
     };
 
+    //--------------------- BEGIN HELPERS ----------------------
+
+    //--------------------- END HELPERS ----------------------
+
+
     redraw = function(listonly){
         listonly = typeof listonly !== 'undefined' ? listonly : false;
 
@@ -443,14 +451,18 @@ gcif.compare = (function () {
 
         function renderAll(listonly){
 
+            var c = stateMap.cities.sort(function(a, b){
+                return  a["CityName"] <= b["CityName"] ? -1 : 1;
+            });
+
             list.metadata( stateMap.indicators );
-            list.data( stateMap.cities.sort() );
+            list.data(c);
             list.render();
 
             if (!listonly){
 
                 parallelChart.metadata( stateMap.indicators );
-                parallelChart.data( stateMap.cities );
+                parallelChart.data(c);
                 parallelChart.render();
             }
         }
