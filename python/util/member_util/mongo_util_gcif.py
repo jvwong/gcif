@@ -140,8 +140,10 @@ def getCityDocs(datacsv):
                 else:
                     dataheader_index = data_headers.index(header)
 
-                # clean up dots [.] so it's BSON-compatible
+                # cascade through substitutions
                 header_safe = re.sub('\.', ',', header)
+                header_safe = re.sub('US\$', 'USD', header_safe)
+
                 doc[header_safe] = row[dataheader_index]
 
             doclist.append(copy.deepcopy(doc))
@@ -315,30 +317,30 @@ def main():
 
 
 
-    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
+    # ### ******************************** gcif DATABASE OPERATIONS ***************************************************
     # #
     # # ****************** prepare gcif collections
     # root = "/home/jvwong/Public/Documents/GCIF/docs/ISO_Indicators/"
-    root = "/shared/Documents/GCIF/docs/ISO_Indicators/"
-    # #
+    # root = "/shared/Documents/GCIF/docs/ISO_Indicators/"
+    # #s
     # ###  ********** indicator collections
-    profile_indicators_csv = root + "profile_indicators_ISO.csv"
-    profile_docs = getIndicators(profile_indicators_csv)
-    gcif_handle.profile_indicators.insert(profile_docs, safe=True)
-
-    performance_indicators_csv = root + "performance_indicators_ISO.csv"
-    performance_docs = getIndicators(performance_indicators_csv)
-    gcif_handle.performance_indicators.insert(performance_docs, safe=True)
+    # profile_indicators_csv = root + "profile_indicators_ISO.csv"
+    # profile_docs = getIndicators(profile_indicators_csv)
+    # gcif_handle.profile_indicators.insert(profile_docs, safe=True)
+    #
+    # performance_indicators_csv = root + "performance_indicators_ISO.csv"
+    # performance_docs = getIndicators(performance_indicators_csv)
+    # gcif_handle.performance_indicators.insert(performance_docs, safe=True)
 
     # #  ********** member city data (gcif)
-    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
+    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
     # root = "/shared/Documents/GCIF/data/datasets/member/cleaned/recent/"
-    # member_data_csv = root + "recent_gcif.csv"
-    # member_docs = getCityDocs(member_data_csv)
-    #
-    # gcif_handle.gcif_combined.insert(member_docs, safe=True)
-    # gcif_handle.member_cities.insert(member_docs, safe=True)
-    # ### ******************************** gcif DATABASE OPERATIONS *****************************************************
+    member_data_csv = root + "recent_gcif.csv"
+    member_docs = getCityDocs(member_data_csv)
+
+    gcif_handle.gcif_combined.insert(member_docs, safe=True)
+    gcif_handle.member_cities.insert(member_docs, safe=True)
+    # ### ******************************** gcif DATABASE OPERATIONS ***************************************************
 
 
 if __name__ == "__main__":

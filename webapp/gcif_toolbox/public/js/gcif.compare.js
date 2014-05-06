@@ -181,7 +181,10 @@ gcif.compare = (function () {
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
-                .data(["Region","GDP","Population",""])
+                .data(
+                ["Region","Total city population","Country's GDP per capita (USD)",
+                 "Gross capital budget (USD)","Land Area (Square Kilometers)",""]
+                )
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
@@ -268,14 +271,22 @@ gcif.compare = (function () {
             loadData();
 
             dispatch.on("done_load", function(){
-                jqueryMap.$theme_dropdown.find("option").filter(function() {
-                        return $(this).text() === "all";
-                }).prop('selected', true);
-                jqueryMap.$region_dropdown.find("option").filter(function() {
-                        return $(this).text() === "all";
-                }).prop('selected', true);
 
-                redraw();
+                jqueryMap.$theme_dropdown
+                .find("option").filter(function() {
+                        return $(this).text() === "all";
+                })
+                .prop('selected', true)
+                ;
+                d3Map.d3theme_dropdown.on("change")();
+
+                jqueryMap.$highlight_dropdown
+                .find("option").filter(function() {
+                        return $(this).text() === "Region";
+                })
+                .prop('selected', true)
+                ;
+                d3Map.d3highlight_dropdown.on("change")();
             });
         });
 
@@ -286,52 +297,110 @@ gcif.compare = (function () {
             redraw();
         });
 
-        dispatch.on("legend_change", function(colors){
+        dispatch.on("legend_change", function(highlight, colors){
 
-            var legend_queue = colors.domain();
+            // Class names cannot be digits, so prefix a "_" to any category
+            var prefix = "_"
+              , domain
+              , bins = true
 
-            var clean_legend_queue = legend_queue.map(function(d){
-                return d.replace(/\-/g,"").replace(/ /g,"");
-            });
+              , query = {}
+              , operator = []
+            ;
+
+            // initialize the query object with a column {column:}
+            // to be filled in with the "operator" and "value" {column: {operator: value}}
+            query[highlight] = {};
+
+
+            if (highlight === "Region"){
+                bins = false;
+                domain = colors.domain();
+                operator.push("===");
+            }else{
+                domain = colors.range().map(function(color, index, array){
+                    //format a nice string for output
+                    var interval = colors.invertExtent(color);
+                    var tag = String();
+
+                    if (index === 0){
+                        tag += "0-" + interval[1];
+                    }else if(index === array.length - 1){
+                        tag += interval[0] + "-Infinity";
+                    }else{
+                        tag += interval[0] + "-" + interval[1];
+                    }
+                    return tag;
+                });
+                operator.push("gte"); //left endpoint
+                operator.push("lt");  //right endpoint
+            }
+
+            var legend_queue = (domain).map(function(d){ return prefix + d})
+              , clean_legend_queue = legend_queue.map(function(d){
+                    return String(d).replace(/ /g,"");
+                })
+              ;
+
+            // clear the legend
             d3Map.d3legend.html("");
             var legendEnter = d3Map.d3legend.selectAll(".legend-entry")
-                          .data(colors.domain())
+                          .data(domain)
                          .enter()
                           .append("a")
                           .attr("href", "#")
                           .attr("class", function(d){
-                                return d.replace(/\-/g,"").replace(/ /g,"");
+                                return prefix + String(d).replace(/ /g,"");
                           })
                           .style({
                               color: function(d, i){ return colors.range()[i] }
                             , "font-size" : "1em"
                           })
                           .html(function(d){
-                                return d + "&nbsp / ";
+                                return d + "&nbsp  &nbsp";
                           })
             ;
 
             legendEnter.on("click", function(d){
-                var clean_name = d.replace(/\-/g,"").replace(/ /g,"")
+                var clean_name = prefix + String(d).replace(/ /g,"")
                   , index = clean_legend_queue.indexOf(clean_name)
                   , anchor = d3Map.d3legend.select("." + clean_name)
                 ;
+
 
                 if(index >= 0){
                     legend_queue.splice(index, 1);
                     clean_legend_queue.splice(index, 1);
                     anchor.style("opacity", "0.3");
                 }else{
-                    legend_queue.push(d);
+                    legend_queue.push(prefix + String(d));
                     clean_legend_queue.push(clean_name);
                     anchor.style("opacity", "1");
                 }
 
                 stateMap.cities = [];
-                legend_queue.forEach(function(region){
-                    (stateMap.cities_db({"Region": region}).get()).forEach(function(d){
-                        stateMap.cities.push(d);
-                    });
+                legend_queue.forEach(function(category){
+
+                    //split off the leading underscore
+                    var name = category.substring(1);
+
+                    if (bins){
+
+                        //split the bins appropriately
+                        var interval = name.split("-");
+                        query[highlight][operator[0]] = +interval[0]; //left query
+                        query[highlight][operator[1]] = +interval[1]; //right query
+
+                        (stateMap.cities_db(query).get()).forEach(function(d){
+                            stateMap.cities.push(d);
+                        });
+                    }else{
+                        //declare the value for the query, retrieve, then push elements into cities
+                        query[highlight][operator[0]] = name;
+                        (stateMap.cities_db(query).get()).forEach(function(d){
+                            stateMap.cities.push(d);
+                        });
+                    }
                 });
                 redraw();
             });
@@ -368,6 +437,11 @@ gcif.compare = (function () {
 
     };
 
+    //--------------------- BEGIN HELPERS ----------------------
+
+    //--------------------- END HELPERS ----------------------
+
+
     redraw = function(listonly){
         listonly = typeof listonly !== 'undefined' ? listonly : false;
 
@@ -377,14 +451,18 @@ gcif.compare = (function () {
 
         function renderAll(listonly){
 
+            var c = stateMap.cities.sort(function(a, b){
+                return  a["CityName"] <= b["CityName"] ? -1 : 1;
+            });
+
             list.metadata( stateMap.indicators );
-            list.data( stateMap.cities );
+            list.data(c);
             list.render();
 
             if (!listonly){
 
                 parallelChart.metadata( stateMap.indicators );
-                parallelChart.data( stateMap.cities );
+                parallelChart.data(c);
                 parallelChart.render();
             }
         }

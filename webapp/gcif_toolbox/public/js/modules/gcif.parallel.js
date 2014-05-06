@@ -51,8 +51,9 @@ gcif.parallel = (function () {
                        "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2",
                        "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#17becf",
                        "#9edae5", "#e7969c", "#7b4173", "#a55194", "#637939"]
-        , _hcolor = d3.scale.ordinal()
-        , _tcolor = d3.scale.ordinal()
+
+        , _setHcolor = function(){ return d3.scale.ordinal().domain("").range("steelblue")}
+        , _hcolor = _setHcolor()
 
         , _tooltip
         , _dispatch
@@ -124,9 +125,20 @@ gcif.parallel = (function () {
 
         // Returns the path for a given data point.
         function path(d) {
-            return _line(_metadata.map(function(p) {
-                    return [position(p), _y[p](d[p])]; })
-            );
+
+            var p;
+            try
+            {
+                p = _line(_metadata.map(function(p) {
+                        return [position(p), _y[p](d[p])]; })
+                );
+            }
+            catch(err)
+            {
+                console.log("header missing: %s", err);
+            }
+            return p;
+
         }
 
         // Handles a brush event, toggling the display of foreground lines.
@@ -172,31 +184,70 @@ gcif.parallel = (function () {
             _dispatch.brush(brushedCities);
         }
 
+
+        /* set the highlight colour domain and range */
+        function setHighColors(type){
+
+            var h, t;
+            switch (type)
+            {
+                case "Region":
+                    t = _datadb({Region:{isUndefined:false}}).distinct("Region");
+                    h = d3.scale.ordinal().domain( t ).range( _colors10.slice(0,t.length) );
+                    break;
+
+                case "Total city population":
+                    t = [1e5, 5e5, 1e6, 2.5e6, 5e6];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Land Area (Square Kilometers)":
+                    t = [100, 300, 600, 1e3];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Gross capital budget (USD)":
+                    t = [1e6, 1e7, 1e8, 1e9];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Country's GDP per capita (USD)":
+                    t = [2.5e3, 5e3, 1e4, 2.5e4, 5e4];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                default:
+                    t = "";
+                    h = d3.scale.ordinal().domain(t).range("steelblue");
+            }
+            return h;
+        }
+
         function setColor(d){
 
             if (_highlight){
-                return _hcolor(d[_highlight]);
+                if (typeof d === "number") {
+                    return _hcolor(+d[_highlight]);
+                }
+                else
+                {
+                    return _hcolor(d[_highlight]);
+                }
             } else {
                 return "steelblue";
             }
 
         }
 
-        /* set the highlight colour domain and range */
-        function setHighColors(type){
-            switch (type)
-            {
-                case "Region":
-                    var t = _datadb({Region:{isUndefined:false}}).distinct("Region");
-                    _hcolor.domain( t ).range( _colors10.slice(0,t.length) );
-                    break;
 
-                default:
-                    _hcolor.domain("").range("steelblue");
-            }
-        }
 
         function renderBody(){
+
+//            var t = (_datadb({"Total city population":{isUndefined:false}}).get()).map(function(d){
+//                return +d["Total city population"];
+//            }).sort(function(a, b){return a-b});;
+//            console.log(t);
+
 
             var
               g
@@ -289,7 +340,6 @@ gcif.parallel = (function () {
                 .attr("text-anchor", "middle")
                 .attr("fill", function(d){
                       return "black";
-//                      return _tcolor(_metadb({indicator: d}).select("theme"));
                 })
                 .attr("y", _height)
                 .attr("dy", "2em")
@@ -335,10 +385,12 @@ gcif.parallel = (function () {
 
                     var pathdata = d3.select(this).data()[0];
 
+
                     //In this case, loops through each city along any axis and asks:
-                    // Is this city the same city (CityUniqueID_) being highlighted?
+                    // Is this city the same city (_id) being highlighted?
                     _point.attr("class", function(pointdata){
-                        if (pointdata["CityUniqueID"] === pathdata["CityUniqueID"]){
+
+                        if (pointdata["_id"] === pathdata["_id"]){
                             return d3.select(this).attr("class").search("unhighlight") >= 0 ?
                                    d3.select(this).attr("class").replace("unhighlight", "highlight") :
                                    d3.select(this).attr("class").replace("highlight", "unhighlight");
@@ -437,8 +489,6 @@ gcif.parallel = (function () {
 
             // set the theme indicator colors
             var t = _metadb().distinct("theme");
-            _tcolor.domain(t)
-                   .range(_colors20.slice(0,t.length));
             return _parallel;
         };
 
@@ -449,8 +499,8 @@ gcif.parallel = (function () {
             //register the dispatch listeners.
             _dispatch.on("highlight", function(data){
                 _highlight = data;
-                setHighColors(data);
-                 _dispatch.legend_change(_hcolor);
+                _hcolor = setHighColors(data);
+                _dispatch.legend_change(_highlight, _hcolor);
             });
             return _parallel;
         };
