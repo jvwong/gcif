@@ -300,14 +300,22 @@ gcif.compare = (function () {
             var prefix = "_"
               , domain
               , bins = true
+
+              , query = {}
+              , operator = []
             ;
+
+            // initialize the query object with a column {column:}
+            // to be filled in with the "operator" and "value" {column: {operator: value}}
+            query[highlight] = {};
+
 
             if (highlight === "Region"){
                 bins = false;
                 domain = colors.domain();
+                operator.push("===");
             }else{
                 domain = colors.range().map(function(color, index, array){
-
                     //format a nice string for output
                     var interval = colors.invertExtent(color);
                     var tag = String();
@@ -319,10 +327,10 @@ gcif.compare = (function () {
                     }else{
                         tag += interval[0] + "-" + interval[1];
                     }
-
                     return tag;
-
                 });
+                operator.push("gte"); //left endpoint
+                operator.push("lt");  //right endpoint
             }
 
             var legend_queue = (domain).map(function(d){ return prefix + d})
@@ -350,12 +358,12 @@ gcif.compare = (function () {
                           })
             ;
 
-
             legendEnter.on("click", function(d){
+                var clean_name = prefix + String(d).replace(/ /g,"")
+                  , index = clean_legend_queue.indexOf(clean_name)
+                  , anchor = d3Map.d3legend.select("." + clean_name)
+                ;
 
-                var clean_name = prefix + String(d).replace(/ /g,"");
-                var index = clean_legend_queue.indexOf(clean_name);
-                var anchor = d3Map.d3legend.select("." + clean_name);
 
                 if(index >= 0){
                     legend_queue.splice(index, 1);
@@ -367,24 +375,26 @@ gcif.compare = (function () {
                     anchor.style("opacity", "1");
                 }
 
-
                 stateMap.cities = [];
-                domain.forEach(function(category){
+                legend_queue.forEach(function(category){
+
+                    //split off the leading underscore
+                    var name = category.substring(1);
+
                     if (bins){
 
-                        var interval = category.split("-");
-                        console.log(highlight);
-                        console.log(interval[0]);
-                        console.log(stateMap.cities_db(function(){
-                                this["Total city population"] >= +interval[0];
-                            }).get()
-                        );
+                        //split the bins appropriately
+                        var interval = name.split("-");
+                        query[highlight][operator[0]] = +interval[0]; //left query
+                        query[highlight][operator[1]] = +interval[1]; //right query
 
-                        (stateMap.cities_db({"Total city population": {gte: +interval[0]}}).get()).forEach(function(d){
+                        (stateMap.cities_db(query).get()).forEach(function(d){
                             stateMap.cities.push(d);
                         });
                     }else{
-                        (stateMap.cities_db({"Region": category.substring(1)}).get()).forEach(function(d){
+                        //declare the value for the query, retrieve, then push elements into cities
+                        query[highlight][operator[0]] = name;
+                        (stateMap.cities_db(query).get()).forEach(function(d){
                             stateMap.cities.push(d);
                         });
                     }
@@ -434,7 +444,7 @@ gcif.compare = (function () {
         function renderAll(listonly){
 
             list.metadata( stateMap.indicators );
-            list.data( stateMap.cities );
+            list.data( stateMap.cities.sort() );
             list.render();
 
             if (!listonly){
