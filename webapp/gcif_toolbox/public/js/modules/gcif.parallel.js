@@ -52,8 +52,7 @@ gcif.parallel = (function () {
                        "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#17becf",
                        "#9edae5", "#e7969c", "#7b4173", "#a55194", "#637939"]
 
-        , _setHcolor = function(){ return d3.scale.ordinal().domain("").range("steelblue")}
-        , _hcolor = _setHcolor()
+        , _hcolor = d3.scale.ordinal().domain("").range("steelblue")
 
         , _tooltip
         , _dispatch
@@ -217,7 +216,7 @@ gcif.parallel = (function () {
                     break;
 
                 default:
-                    t = "";
+                    t = [];
                     h = d3.scale.ordinal().domain(t).range("steelblue");
             }
             return h;

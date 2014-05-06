@@ -164,7 +164,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(city_data) {
+        d3.json("/member_cities/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });
@@ -182,13 +182,13 @@ gcif.compare = (function () {
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
                 .data(
-                ["Region","Total city population","Country's GDP per capita (USD)",
-                 "Gross capital budget (USD)","Land Area (Square Kilometers)",""]
+                ["", "Region","Total city population","Country's GDP per capita (USD)",
+                 "Gross capital budget (USD)","Land Area (Square Kilometers)"]
                 )
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.highlight_selected = "Region";
+            stateMap.highlight_selected = "";
         });
 
         dispatch.on("load_indicators", function(data){
@@ -313,11 +313,17 @@ gcif.compare = (function () {
             query[highlight] = {};
 
 
-            if (highlight === "Region"){
+            if (highlight === ""){
+                bins = false;
+                domain = [];
+
+            }else if (highlight === "Region"){
+
                 bins = false;
                 domain = colors.domain();
                 operator.push("===");
             }else{
+
                 domain = colors.range().map(function(color, index, array){
                     //format a nice string for output
                     var interval = colors.invertExtent(color);
@@ -365,43 +371,48 @@ gcif.compare = (function () {
                 var clean_name = prefix + String(d).replace(/ /g,"")
                   , index = clean_legend_queue.indexOf(clean_name)
                   , anchor = d3Map.d3legend.select("." + clean_name)
+                  , interval = d.split("-")
                 ;
 
 
                 if(index >= 0){
+
+                    // d is being removed
                     legend_queue.splice(index, 1);
                     clean_legend_queue.splice(index, 1);
                     anchor.style("opacity", "0.3");
+
+
+                    //filter out the array for the relevant items
+                    if(bins){
+                        stateMap.cities = stateMap.cities.filter(function(cityobj){
+                            return cityobj[highlight] < +interval[0] ||
+                                   cityobj[highlight] >= +interval[1];
+                        });
+                    }else{
+                        stateMap.cities = stateMap.cities.filter(function(cityobj){
+                            return cityobj[highlight] !== d;
+                        });
+                    }
+
                 }else{
+
+                    // d needs to be added back
                     legend_queue.push(prefix + String(d));
                     clean_legend_queue.push(clean_name);
                     anchor.style("opacity", "1");
-                }
 
-                stateMap.cities = [];
-                legend_queue.forEach(function(category){
-
-                    //split off the leading underscore
-                    var name = category.substring(1);
-
-                    if (bins){
-
-                        //split the bins appropriately
-                        var interval = name.split("-");
+                    if(bins){
+                        //do a db query for items in the correct range
                         query[highlight][operator[0]] = +interval[0]; //left query
                         query[highlight][operator[1]] = +interval[1]; //right query
-
-                        (stateMap.cities_db(query).get()).forEach(function(d){
-                            stateMap.cities.push(d);
-                        });
+                        stateMap.cities = stateMap.cities.concat(stateMap.cities_db(query).get());
                     }else{
-                        //declare the value for the query, retrieve, then push elements into cities
-                        query[highlight][operator[0]] = name;
-                        (stateMap.cities_db(query).get()).forEach(function(d){
-                            stateMap.cities.push(d);
-                        });
+                        //do an exact db query for missing items
+                        query[highlight][operator[0]] = d;
+                        stateMap.cities = stateMap.cities.concat(stateMap.cities_db(query).get());
                     }
-                });
+                }
                 redraw();
             });
         });

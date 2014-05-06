@@ -62,14 +62,12 @@ gcif.scatter = (function () {
 
         , _x = d3.scale.linear()
         , _y = d3.scale.linear()
+        , _r = d3.scale.log()
 
         , _xValue = ""
         , _yValue = ""
         , _minXAxisVal = 50
         , _minYAxisVal = 50
-
-        , _fxValue
-        , _fyValue
 
         , _xAxis = d3.svg.axis()
         , _yAxis = d3.svg.axis()
@@ -82,7 +80,15 @@ gcif.scatter = (function () {
         , _brushDirty = false
         , _extent = [ [0,0], [0,0] ]
 
-        , _radius = 2
+
+        , _radiusKey = ""
+        , _rscaling = 0.0000015
+        , _fradmax = 0.05
+        , _point_radius = 2
+        , _radius = function(d){
+                return _point_radius;
+//                return _radiusKey === "" || _radiusKey === undefined ? _point_radius: (d[_radiusKey]) * _rscaling;
+            }
 
         , _color
         , _data_db = TAFFY()
@@ -92,14 +98,10 @@ gcif.scatter = (function () {
 
         ;
 
-        function mapdata(){
-            _data = (_data_db().get()).filter(function(d) {
-                return _fxValue.call({}, d) !== "";
-            }).map(function(d){
-                return {x: _fxValue.call({}, d), y: _fyValue.call({}, d)}
-            });
 
-
+        //filter out cities that don't have the correct
+        function set_data(){
+            _data = _data_db().get();
         }
 
 
@@ -140,7 +142,7 @@ gcif.scatter = (function () {
 
             _xAxis.scale(
                         _x.domain(
-                            [0, Math.max(d3.max(_data, function(d){ return (d.x) * 1.1; }), _minXAxisVal)]
+                            [0, Math.max(d3.max(_data, function(d){ return (d[_xValue]) * 1.1; }), _minXAxisVal)]
                           )
                           .range([0, _width])
                   )
@@ -156,7 +158,7 @@ gcif.scatter = (function () {
 
             _yAxis.scale(
                         _y.domain(
-                            [0, Math.max(d3.max(_data, function(d){ return (d.y) * 1.1; }), _minYAxisVal)]
+                            [0, Math.max(d3.max(_data, function(d){ return (d[_yValue]) * 1.2; }), _minYAxisVal)]
                         ).range([_height, 0])
                     )
                   .orient("left");
@@ -164,6 +166,27 @@ gcif.scatter = (function () {
             return _svg.append("g")
                 .attr("class", "scatter y axis")
                 .call(_yAxis);
+        }
+
+        function setRadius(){
+
+            console.log(_xValue);
+            console.log( d3.max(_data, function(d){ console.log(d[_xValue]); return d[_xValue]; } ) );
+
+//            console.log(_yValue);
+//            console.log( d3.max(_data, function(d){ return d[_yValue]; } ) );
+//
+//            console.log(_data.length);
+
+            //sets the domain upper limit to the max of the data points in the x and y direction
+            _r.domain([0,
+                           Math.max(
+                                 d3.max(_data, function(d){ return d[_xValue]; } )
+                               , d3.max(_data, function(d){ return d[_yValue]; } )
+                           )
+                      ]
+            )
+            .range([0, _width * _fradmax]);
         }
 
         function renderLabels(){
@@ -236,8 +259,13 @@ gcif.scatter = (function () {
                 .append("circle")
                 .attr("class", "scatter point")
                 .attr({
-                      cx : function(d){ return _x(d.x); }
-                    , cy : function(d){ return _y(d.y); }
+                      //we're setting empty string values to 0
+                      cx : function(d){
+                          return d[_xValue] === "" || d[_xValue] === undefined ? 0 : _x(d[_xValue])
+                      }
+                    , cy : function(d){
+                          return d[_yValue] === "" || d[_yValue] === undefined ? 0 : _y(d[_yValue])
+                    }
                     , r : _radius
                 })
             ;
@@ -245,10 +273,20 @@ gcif.scatter = (function () {
             /* update */
             points
                 .attr({
-                      cx : function(d){ return _x(d.x); }
-                    , cy : function(d){ return _y(d.y); }
+                      cx : function(d){ return d[_xValue] === "" || d[_xValue] === undefined ? 0 : _x(d[_xValue]) }
+                    , cy : function(d){ return d[_yValue] === "" || d[_yValue] === undefined ? 0 : _y(d[_yValue]) }
                 })
             ;
+
+            //get rid of the empty or undefined data points
+            points.filter(function(d){
+                return d[_yValue] === "" ||
+                    d[_yValue] === undefined ||
+                    d[_xValue] === "" ||
+                    d[_xValue] === undefined
+            })
+            .remove();
+
 
             /* update */
             points.exit().remove()
@@ -262,36 +300,35 @@ gcif.scatter = (function () {
             setsvgdim();
             rendersvg(_container);
             defineBodyClip();
-
-            mapdata();
-
             renderXAxis();
             renderYAxis();
+            setRadius();
             renderLabels();
             renderData();
         };
 
+        _scatter.radiusKey = function(_){
+            if (!arguments.length) return _radiusKey;
+            _radiusKey = _;
+            return _scatter;
+        };
+
         _scatter.data = function(_){
             if (!arguments.length) return _data;
-            //map data
-            _data = _;
             _data_db.insert(_);
+            set_data();
             return _scatter;
         };
 
         _scatter.xValue = function(_){
             if (!arguments.length) return _xValue;
             _xValue = _;
-            _fxValue = function(d){ return d[_]};
             return _scatter;
         };
 
         _scatter.yValue = function(_){
             if (!arguments.length) return _yValue;
             _yValue = _;
-            _fyValue = function(d){
-                return d[_];
-            };
             return _scatter;
         };
 

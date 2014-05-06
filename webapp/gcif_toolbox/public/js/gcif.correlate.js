@@ -61,7 +61,7 @@ gcif.correlate = (function () {
 
             , color                     : undefined
 
-            , cities_db          : TAFFY()
+            , cities_db                 : TAFFY()
             , performance_indicators_db : TAFFY()
 
 
@@ -109,6 +109,9 @@ gcif.correlate = (function () {
 
     initCharts = function(){
         scatter = gcif.scatter.Scatter( d3Map.d3correlate );
+
+        scatter.radiusKey( "Total city population" );
+
         scatter.xValue( stateMap.xValue );
         scatter.yValue( stateMap.yValue );
         scatter.title( stateMap.title );
@@ -129,7 +132,7 @@ gcif.correlate = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(cities_data){
+        d3.json("/member_cities/list", function(cities_data){
             dispatch.load_cities(cities_data);
             dispatch.done_load();
         });
@@ -159,6 +162,14 @@ gcif.correlate = (function () {
                 .enter()
                 .append("option")
                 .text(function(d) { return d["indicator"]; });
+
+            // make a particlular x/y selection
+            jqueryMap.$xVal_dropdown
+                .find("option").filter(function() {
+                    return $(this).text() === "Number of in-patient hospital beds per 100 000 population";
+                })
+                .prop('selected', true)
+            ;
             stateMap.xValue = d3Map.d3xVal_dropdown.node().value;
 
             d3Map.d3yVal_dropdown.selectAll("option")
@@ -166,8 +177,15 @@ gcif.correlate = (function () {
                 .enter()
                 .append("option")
                 .text(function(d) { return d["indicator"]; });
-            stateMap.yValue = d3Map.d3yVal_dropdown.node().value;
 
+            // make a particlular x/y selection
+            jqueryMap.$yVal_dropdown
+                .find("option").filter(function() {
+                    return $(this).text() === "Average life expectancy";
+                })
+                .prop('selected', true)
+            ;
+            stateMap.yValue = d3Map.d3yVal_dropdown.node().value;
         });
 
 
