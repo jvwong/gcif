@@ -63,7 +63,7 @@ gcif.scatter = (function () {
 
         , _x = d3.scale.linear()
         , _y = d3.scale.linear()
-        , _r = d3.scale.linear()
+        , _a = d3.scale.log()
 
         , _xValue = ""
         , _yValue = ""
@@ -82,10 +82,10 @@ gcif.scatter = (function () {
         , _extent = [ [0,0], [0,0] ]
 
 
-        , _radiusKey = ""
+        , _areaKey = ""
         , _fradmax = 8e-4
-        , _point_radius = 4
-        , _radius
+        , _point_area = 4
+        , _area
 
         , _color
         , _datadb = TAFFY()
@@ -189,27 +189,26 @@ gcif.scatter = (function () {
                 .call(_yAxis);
         }
 
-        function setRadius(){
+        function setArea(){
 
             //sets the domain upper limit to the max of the data points in the x and y direction
-            _r.domain([1,
-                       Math.max(d3.max(_data, function(d){ return (d[_xValue]) * 1.1; }),
-                                d3.max(_data, function(d){ return (d[_yValue]) * 1.1; }))
+            _a.domain([1e-1,
+                       Math.max(d3.max(_data, function(d){ return (d[_xValue]) }), d3.max(_data, function(d){ return (d[_yValue]) }))
                       ]
             )
-            .range([_point_radius, _width / 30]);
+            .range([_point_area, _width / 30]);
 
             // This is log scale, if the key is "" or undefined don't even show them
             // also filter out the missing points
-            _radius = function(d){
+            _area = function(d){
 
                 // if the key isn't defined, don't even show them
-                if(_radiusKey === "" || _radiusKey === undefined || d[_radiusKey] === "" || +d[_radiusKey] === 0 ){
+                if(_areaKey === "" || _areaKey === undefined || d[_areaKey] === "" || +d[_areaKey] === 0 ){
                     return 1e-12;
                 // Since this is log scale, if the value is "" or 0, then key isn't defined, don't even show them
                 }
-                return _point_radius;
-//                return Math.max(_r(d[_radiusKey]) * _fradmax, _point_radius);
+                return _point_area;
+//                return Math.max(_a(d[_areaKey]) * _fradmax, _point_area);
             }
         }
 
@@ -219,8 +218,8 @@ gcif.scatter = (function () {
                 .append("text")
                 .attr({
                     class : "scatter x label",
-                    x : ( _width  - 5 ),
-                    y : 40
+                    x : _width,
+                    y : _margin.bottom - 10
                 })
                 .style("text-anchor", "end")
                 .text(_xValue)
@@ -241,7 +240,7 @@ gcif.scatter = (function () {
 
 
             //try to wrap the labels
-            //d3.selectAll("g.axis > text").call(gcif.util.wrap, 300);
+            d3.selectAll("g.x.axis > text").call(gcif.util.wrap, _width);
         }
 
 
@@ -287,7 +286,7 @@ gcif.scatter = (function () {
                     , cy : function(d){
                           return _y(d[_yValue])
                     }
-                    , r : _radius
+                    , r : _area
                     , fill: setColor
                 })
             ;
@@ -336,7 +335,6 @@ gcif.scatter = (function () {
                         .style("opacity", 0);
             })
             ;
-            console.log();
         }
 
 
@@ -403,15 +401,15 @@ gcif.scatter = (function () {
             defineBodyClip();
             renderXAxis();
             renderYAxis();
-            setRadius();
+            setArea();
             renderLabels();
             renderTooltip();
             renderData();
         };
 
-        _scatter.radiusKey = function(_){
-            if (!arguments.length) return _radiusKey;
-            _radiusKey = _;
+        _scatter.areaKey = function(_){
+            if (!arguments.length) return _areaKey;
+            _areaKey = _;
             return _scatter;
         };
 

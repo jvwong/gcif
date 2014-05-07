@@ -44,9 +44,9 @@ gcif.correlate = (function () {
                                     '<div class="col-sm-11">' +
                                         '<select id="highlight-dropdown" class="form-control"></select>' +
                                     '</div>' +
-                                    '<label for="radius-dropdown" class="col-sm-1 control-label">Radius </label>' +
+                                    '<label for="area-dropdown" class="col-sm-1 control-label">Area </label>' +
                                     '<div class="col-sm-11">' +
-                                        '<select id="radius-dropdown" class="form-control"></select>' +
+                                        '<select id="area-dropdown" class="form-control"></select>' +
                                     '</div>' +
                                 '</div>' +
                             '</form>' +
@@ -104,7 +104,7 @@ gcif.correlate = (function () {
             , $xVal_dropdown       : $container.find(".form-group.gcif-correlate.graphical.menu select#xVal-dropdown")
             , $yVal_dropdown       : $container.find(".form-group.gcif-correlate.graphical.menu select#yVal-dropdown")
             , $highlight_dropdown  : $container.find(".form-group.gcif-correlate.graphical.menu select#highlight-dropdown")
-            , $radius_dropdown     : $container.find(".form-group.gcif-correlate.graphical.menu select#radius-dropdown")
+            , $area_dropdown     : $container.find(".form-group.gcif-correlate.graphical.menu select#area-dropdown")
         };
     };
 
@@ -115,7 +115,7 @@ gcif.correlate = (function () {
             , d3xVal_dropdown       : d3.select(".form-group.gcif-correlate.graphical.menu select#xVal-dropdown")
             , d3yVal_dropdown       : d3.select(".form-group.gcif-correlate.graphical.menu select#yVal-dropdown")
             , d3highlight_dropdown  : d3.select(".form-group.gcif-correlate.graphical.menu select#highlight-dropdown")
-            , d3radius_dropdown     : d3.select(".form-group.gcif-correlate.graphical.menu select#radius-dropdown")
+            , d3area_dropdown     : d3.select(".form-group.gcif-correlate.graphical.menu select#area-dropdown")
 
             , d3legend              : d3.select(".gcif-correlate.legend")
         };
@@ -124,7 +124,7 @@ gcif.correlate = (function () {
     initCharts = function(){
         scatter = gcif.scatter.Scatter( d3Map.d3correlate );
 
-        scatter.radiusKey( "Total city population" );
+        scatter.areaKey( "Total city population" );
 
         scatter.xValue( stateMap.xValue );
         scatter.yValue( stateMap.yValue );
@@ -178,8 +178,8 @@ gcif.correlate = (function () {
                 .text(function(dimension) { return dimension; });
             stateMap.highlight_selected = "Region";
 
-            //setup the radius drop down
-            d3Map.d3radius_dropdown.selectAll("option")
+            //setup the area drop down
+            d3Map.d3area_dropdown.selectAll("option")
                 .data(
                 ["", "Region","Total city population","Country's GDP per capita (USD)",
                     "Gross capital budget (USD)","Land Area (Square Kilometers)"]
@@ -187,7 +187,7 @@ gcif.correlate = (function () {
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.radius_selected = "";
+            stateMap.area_selected = "";
         });
 
         dispatch.on("load_indicators", function(data){
