@@ -96,6 +96,14 @@ svg{
         }
 
     }
+
+    /* tooltip  */
+    .scatter.tooltip{
+        font-size: 1.0em;
+        font-weight: 800;
+        color: black;
+    }
+
 /* END Scatter */
 
 

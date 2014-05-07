@@ -73,11 +73,11 @@ gcif.parallel = (function () {
 
         function renderTooltip(){
 
-            d3.select(".tooltip").remove();
+            d3.select(".parallel.tooltip").remove();
 
             _tooltip = d3.select("body")
                 .append("div")
-                .attr("class", "tooltip")
+                .attr("class", "parallel tooltip")
                 .style("opacity", 0)
                 ;
 

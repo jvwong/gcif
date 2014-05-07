@@ -54,8 +54,8 @@ svg{
     font-size: 0.8em;
 }
 
-/* labels */
-.tooltip{
+/* tooltip  */
+.parallel.tooltip{
     font-size: 1.0em;
     font-weight: 800;
     color: black;

@@ -54,8 +54,9 @@ gcif.scatter = (function () {
 
         , _svg
         , _div
+        , _tooltip
 
-        , _margin = { top: 10, right: 80, bottom: 50, left: 60 }
+        , _margin = { top: 10, right: 20, bottom: 50, left: 100 }
         , _min_height = 200
         , _width
         , _height
@@ -83,7 +84,7 @@ gcif.scatter = (function () {
 
         , _radiusKey = ""
         , _fradmax = 8e-4
-        , _point_radius = 3
+        , _point_radius = 4
         , _radius
 
         , _color
@@ -98,6 +99,19 @@ gcif.scatter = (function () {
         , _dispatch
 
         ;
+
+
+        function renderTooltip(){
+
+            d3.select(".scatter.tooltip").remove();
+
+            _tooltip = d3.select("body")
+                .append("div")
+                .attr("class", "scatter tooltip")
+                .style("opacity", 0)
+            ;
+
+        }
 
 
         //filter out cities that don't have the correct
@@ -194,7 +208,8 @@ gcif.scatter = (function () {
                     return 1e-12;
                 // Since this is log scale, if the value is "" or 0, then key isn't defined, don't even show them
                 }
-                return Math.max(_r(d[_radiusKey]) * _fradmax, _point_radius);
+                return _point_radius;
+//                return Math.max(_r(d[_radiusKey]) * _fradmax, _point_radius);
             }
         }
 
@@ -204,7 +219,7 @@ gcif.scatter = (function () {
                 .append("text")
                 .attr({
                     class : "scatter x label",
-                    x : ( ( _width + _margin.left ) / 1 ),
+                    x : ( _width  - 5 ),
                     y : 40
                 })
                 .style("text-anchor", "end")
@@ -216,8 +231,8 @@ gcif.scatter = (function () {
                 .attr({
                     class : "scatter y label",
                     transform : "rotate(-90)",
-                    x : -( (_height - _margin.bottom ) / 2.5 ),
-                    y : - 50
+                    x : -( _height - _margin.bottom ) / 2.5,
+                    y : - 65
                 })
                 .style("text-anchor", "end")
                 .text(_yValue)
@@ -242,14 +257,7 @@ gcif.scatter = (function () {
             var
               g_data
             , points
-//            , dataSafe
             ;
-
-//            dataSafe = _data.filter(function(d){
-//                return d[_xValue] !== "" && d[_xValue] !== undefined && d[_yValue] !== "" && d[_yValue] !== undefined
-//            });
-
-            console.log(_data.length);
 
             g_data = _svg.selectAll(".layer")
                 .data(["background", "foreground"])
@@ -312,8 +320,23 @@ gcif.scatter = (function () {
                 .text(_title + ": " + _data.length + " data points")
             ;
 
-//            console.log(points);
-
+            // register listener for mouseover, mouseout, and click
+            points.on("mouseover", function(d){
+                    _tooltip.transition()
+                        .duration(200)
+                        .style("opacity", .9);
+                    _tooltip.html(d["CityName"])
+                        .style("left", (d3.event.pageX + 20) + "px")
+                        .style("top", (d3.event.pageY - 20) + "px");
+                })
+                .on("mouseout", function(d){
+                    // get rid of the tooltip when mousing away
+                    _tooltip.transition()
+                        .duration(500)
+                        .style("opacity", 0);
+            })
+            ;
+            console.log();
         }
 
 
@@ -382,6 +405,7 @@ gcif.scatter = (function () {
             renderYAxis();
             setRadius();
             renderLabels();
+            renderTooltip();
             renderData();
         };
 
