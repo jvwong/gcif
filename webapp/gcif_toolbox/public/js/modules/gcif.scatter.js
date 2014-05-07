@@ -62,7 +62,7 @@ gcif.scatter = (function () {
 
         , _x = d3.scale.linear()
         , _y = d3.scale.linear()
-        , _r = d3.scale.log()
+        , _r = d3.scale.linear()
 
         , _xValue = ""
         , _yValue = ""
@@ -82,13 +82,9 @@ gcif.scatter = (function () {
 
 
         , _radiusKey = ""
-        , _rscaling = 0.0000015
-        , _fradmax = 0.05
+        , _fradmax = 2e-5
         , _point_radius = 2
-        , _radius = function(d){
-                return _point_radius;
-//                return _radiusKey === "" || _radiusKey === undefined ? _point_radius: (d[_radiusKey]) * _rscaling;
-            }
+        , _radius //= function(){ return _point_radius }
 
         , _color
         , _data_db = TAFFY()
@@ -158,7 +154,7 @@ gcif.scatter = (function () {
 
             _yAxis.scale(
                         _y.domain(
-                            [0, Math.max(d3.max(_data, function(d){ return (d[_yValue]) * 1.2; }), _minYAxisVal)]
+                            [0, Math.max(d3.max(_data, function(d){ return (d[_yValue]) * 1.1; }), _minYAxisVal)]
                         ).range([_height, 0])
                     )
                   .orient("left");
@@ -170,23 +166,25 @@ gcif.scatter = (function () {
 
         function setRadius(){
 
-            console.log(_xValue);
-            console.log( d3.max(_data, function(d){ console.log(d[_xValue]); return d[_xValue]; } ) );
-
-//            console.log(_yValue);
-//            console.log( d3.max(_data, function(d){ return d[_yValue]; } ) );
-//
-//            console.log(_data.length);
-
             //sets the domain upper limit to the max of the data points in the x and y direction
-            _r.domain([0,
-                           Math.max(
-                                 d3.max(_data, function(d){ return d[_xValue]; } )
-                               , d3.max(_data, function(d){ return d[_yValue]; } )
-                           )
+            _r.domain([1,
+                       Math.max(d3.max(_data, function(d){ return (d[_xValue]) * 1.1; }),
+                                d3.max(_data, function(d){ return (d[_yValue]) * 1.1; }))
                       ]
             )
-            .range([0, _width * _fradmax]);
+            .range([_point_radius, _width]);
+
+            // This is log scale, if the key is "" or undefined don't even show them
+            // also filter out the missing points
+            _radius = function(d){
+
+                // if the key isn't defined, don't even show them
+                if(_radiusKey === "" || _radiusKey === undefined || d[_radiusKey] === "" || +d[_radiusKey] === 0 ){
+                    return 1e-12;
+                // Since this is log scale, if the value is "" or 0, then key isn't defined, don't even show them
+                }
+                return Math.max(_r(d[_radiusKey]) * _fradmax, _point_radius);
+            }
         }
 
         function renderLabels(){
