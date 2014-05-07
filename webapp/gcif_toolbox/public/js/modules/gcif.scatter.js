@@ -83,7 +83,7 @@ gcif.scatter = (function () {
 
         , _radiusKey = ""
         , _fradmax = 2e-5
-        , _point_radius = 2
+        , _point_radius = 3
         , _radius //= function(){ return _point_radius }
 
         , _color
@@ -172,7 +172,7 @@ gcif.scatter = (function () {
                                 d3.max(_data, function(d){ return (d[_yValue]) * 1.1; }))
                       ]
             )
-            .range([_point_radius, _width / 20]);
+            .range([_point_radius, _width / 30]);
 
             // This is log scale, if the key is "" or undefined don't even show them
             // also filter out the missing points
