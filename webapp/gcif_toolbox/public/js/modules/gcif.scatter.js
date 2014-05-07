@@ -82,7 +82,7 @@ gcif.scatter = (function () {
 
 
         , _radiusKey = ""
-        , _fradmax = 2e-5
+        , _fradmax = 8e-4
         , _point_radius = 3
         , _radius
 
