@@ -84,7 +84,7 @@ gcif.scatter = (function () {
         , _radiusKey = ""
         , _fradmax = 2e-5
         , _point_radius = 3
-        , _radius //= function(){ return _point_radius }
+        , _radius
 
         , _color
         , _data_db = TAFFY()
@@ -212,11 +212,7 @@ gcif.scatter = (function () {
                 .text(_yValue)
             ;
 
-            _div.insert("div","svg")
-                .attr("class", "title")
-                .append("text")
-                .text(_title + ": " + _data.length + " data points")
-            ;
+
 
             //try to wrap the labels
             //d3.selectAll("g.axis > text").call(gcif.util.wrap, 300);
@@ -234,7 +230,13 @@ gcif.scatter = (function () {
         function renderData(){
             var
               g_data
-            , points;
+            , points
+            , dataSafe
+            ;
+
+            dataSafe = _data.filter(function(d){
+                return d[_xValue] !== "" && d[_xValue] !== undefined && d[_yValue] !== "" && d[_yValue] !== undefined
+            });
 
             g_data = _svg.selectAll(".layer")
                 .data(["background", "foreground"])
@@ -249,7 +251,7 @@ gcif.scatter = (function () {
             ;
 
             points = g_data.selectAll(".point")
-                .data(_data)
+                .data(dataSafe)
             ;
 
             /* Enter */
@@ -259,10 +261,10 @@ gcif.scatter = (function () {
                 .attr({
                       //we're setting empty string values to 0
                       cx : function(d){
-                          return d[_xValue] === "" || d[_xValue] === undefined ? 0 : _x(d[_xValue])
+                          return _x(d[_xValue])
                       }
                     , cy : function(d){
-                          return d[_yValue] === "" || d[_yValue] === undefined ? 0 : _y(d[_yValue])
+                          return _y(d[_yValue])
                     }
                     , r : _radius
                 })
@@ -271,8 +273,8 @@ gcif.scatter = (function () {
             /* update */
             points
                 .attr({
-                      cx : function(d){ return d[_xValue] === "" || d[_xValue] === undefined ? 0 : _x(d[_xValue]) }
-                    , cy : function(d){ return d[_yValue] === "" || d[_yValue] === undefined ? 0 : _y(d[_yValue]) }
+                      cx : function(d){ return _x(d[_xValue]) }
+                    , cy : function(d){ return _y(d[_yValue]) }
                 })
             ;
 
@@ -288,6 +290,12 @@ gcif.scatter = (function () {
 
             /* update */
             points.exit().remove()
+            ;
+
+            _div.insert("div","svg")
+                .attr("class", "title")
+                .append("text")
+                .text(_title + ": " + dataSafe.length + " data points")
             ;
 
         }

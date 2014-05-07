@@ -132,7 +132,7 @@ gcif.correlate = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/member_cities/list", function(cities_data){
+        d3.json("/gcif_combined/list", function(cities_data){
             dispatch.load_cities(cities_data);
             dispatch.done_load();
         });
