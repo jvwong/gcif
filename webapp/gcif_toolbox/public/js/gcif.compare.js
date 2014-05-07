@@ -116,8 +116,8 @@ gcif.compare = (function () {
 
         jqueryMap = {
             $container           : $container
-          , $theme_dropdown      : $container.find(".form-group.gcif-compare.graphical.menu #theme-dropdown")
-          , $highlight_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu #highlight-dropdown")
+          , $theme_dropdown      : $container.find(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
+          , $highlight_dropdown  : $container.find(".form-group.gcif-compare.graphical.menu select#highlight-dropdown")
         };
     };
 
@@ -164,7 +164,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(city_data) {
+        d3.json("/member_cities/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });
@@ -177,7 +177,7 @@ gcif.compare = (function () {
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(800).get();
+            stateMap.cities = stateMap.cities_db().limit(1000).get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
@@ -417,8 +417,7 @@ gcif.compare = (function () {
             });
         });
 
-        // --- FILTER ---
-            //listen to changes in theme dropdown
+        //listen to changes in theme dropdown
         d3Map.d3theme_dropdown.on("change", function(){
             stateMap.theme = d3Map.d3theme_dropdown.node().value;
             stateMap.indicators = stateMap.theme === "all" ?
@@ -443,15 +442,9 @@ gcif.compare = (function () {
 
         // window resizing
         d3.select(window).on('resize', redraw );
-
-        //--------------------- END EVENT LISTENERS ----------------------
-
     };
 
     //--------------------- BEGIN HELPERS ----------------------
-
-    //--------------------- END HELPERS ----------------------
-
 
     redraw = function(listonly){
         listonly = typeof listonly !== 'undefined' ? listonly : false;
@@ -479,6 +472,9 @@ gcif.compare = (function () {
         }
 
     };
+
+    //--------------------- END HELPERS ----------------------
+
 
     // BEGIN public method /render/
     // Example   : gcif.compare.render();

@@ -40,11 +40,18 @@ gcif.correlate = (function () {
                                     '<div class="col-sm-11">' +
                                         '<select id="yVal-dropdown" class="form-control"></select>' +
                                     '</div>' +
+                                    '<label for="highlight-dropdown" class="col-sm-1 control-label">Highlight </label>' +
+                                    '<div class="col-sm-11">' +
+                                        '<select id="highlight-dropdown" class="form-control"></select>' +
+                                    '</div>' +
+                                    '<label for="radius-dropdown" class="col-sm-1 control-label">Radius </label>' +
+                                    '<div class="col-sm-11">' +
+                                        '<select id="radius-dropdown" class="form-control"></select>' +
+                                    '</div>' +
                                 '</div>' +
                             '</form>' +
-                            '<div class="row">' +
-                                '<div class="gcif-correlate chart col-lg-6"></div>' +
-                            '</div>' +
+                            '<div class="gcif-correlate legend col-xs-12 col-md-12 col-lg-12"></div>' +
+                            '<div class="gcif-correlate chart col-lg-6"></div>' +
                         '</div>' +
                         '<div class="tab-pane fade" id="gcif-correlate-tabular">' +
                             '<div class="gcif-correlate table col-lg-12"></div>' +
@@ -54,7 +61,7 @@ gcif.correlate = (function () {
                 '</div>'
         }
         , stateMap = {
-            $container                  : undefined
+              $container                : undefined
 
             , cities                    : undefined
             , indicators                : undefined
@@ -63,19 +70,21 @@ gcif.correlate = (function () {
 
             , cities_db                 : TAFFY()
             , performance_indicators_db : TAFFY()
+            , topThemes                 : ["education","finance","health","safety","urban planning"]
 
+            , xValue                    : undefined
+            , yValue                    : undefined
+            , title                     : "Correlate"
 
-          , topThemes                  : ["education","finance","health","safety","urban planning"]
-
-          , xValue                      : undefined
-          , yValue                      : undefined
-          , title                       : "Correlation"
+            , highlight_selected        : undefined
+            , radius_selected           : undefined
         }
 
         , jqueryMap = {}, d3Map= {}
         , setJqueryMap, setd3Map
 
-        , dispatch = d3.dispatch("brush", "data_update", "load_cities", "load_indicators", "done_load")
+        , dispatch = d3.dispatch("data_update", "load_cities", "load_indicators", "done_load",
+                                 "highlight", "legend_change")
 
         , loadData, loadListeners, initCharts, resetState, render, redraw
 
@@ -91,10 +100,11 @@ gcif.correlate = (function () {
             $container = stateMap.$container;
 
         jqueryMap = {
-              $container       : $container
-            , $xVal_dropdown   : $container.find(".form-group.gcif-correlate.graphical.menu select#xVal-dropdown")
-            , $yVal_dropdown   : $container.find(".form-group.gcif-correlate.graphical.menu select#yVal-dropdown")
-
+              $container           : $container
+            , $xVal_dropdown       : $container.find(".form-group.gcif-correlate.graphical.menu select#xVal-dropdown")
+            , $yVal_dropdown       : $container.find(".form-group.gcif-correlate.graphical.menu select#yVal-dropdown")
+            , $highlight_dropdown  : $container.find(".form-group.gcif-correlate.graphical.menu select#highlight-dropdown")
+            , $radius_dropdown     : $container.find(".form-group.gcif-correlate.graphical.menu select#radius-dropdown")
         };
     };
 
@@ -104,6 +114,10 @@ gcif.correlate = (function () {
 
             , d3xVal_dropdown       : d3.select(".form-group.gcif-correlate.graphical.menu select#xVal-dropdown")
             , d3yVal_dropdown       : d3.select(".form-group.gcif-correlate.graphical.menu select#yVal-dropdown")
+            , d3highlight_dropdown  : d3.select(".form-group.gcif-correlate.graphical.menu select#highlight-dropdown")
+            , d3radius_dropdown     : d3.select(".form-group.gcif-correlate.graphical.menu select#radius-dropdown")
+
+            , d3legend              : d3.select(".gcif-correlate.legend")
         };
     };
 
@@ -116,6 +130,7 @@ gcif.correlate = (function () {
         scatter.yValue( stateMap.yValue );
         scatter.title( stateMap.title );
         scatter.data( stateMap.cities );
+        scatter.dispatch( dispatch );
         scatter.render();
 
     };
@@ -138,8 +153,9 @@ gcif.correlate = (function () {
         });
     };
 
+    //--------------------- BEGIN EVENT LISTENERS ----------------------
     loadListeners = function(){
-        //--------------------- BEGIN EVENT LISTENERS ----------------------
+
 
         dispatch.on("data_update", function(){
             redraw(true);
@@ -147,7 +163,31 @@ gcif.correlate = (function () {
 
         dispatch.on("load_cities", function(data){
             stateMap.cities_db.insert(data);
-            stateMap.cities = stateMap.cities_db().get();
+
+            //by default, cache the top member cities in the stateMap
+            stateMap.cities = stateMap.cities_db().limit(1000).get();
+
+            //setup the highlight drop down
+            d3Map.d3highlight_dropdown.selectAll("option")
+                .data(
+                ["Region","Total city population","Country's GDP per capita (USD)",
+                    "Gross capital budget (USD)","Land Area (Square Kilometers)",""]
+                )
+                .enter()
+                .append("option")
+                .text(function(dimension) { return dimension; });
+            stateMap.highlight_selected = "Region";
+
+            //setup the radius drop down
+            d3Map.d3radius_dropdown.selectAll("option")
+                .data(
+                ["", "Region","Total city population","Country's GDP per capita (USD)",
+                    "Gross capital budget (USD)","Land Area (Square Kilometers)"]
+            )
+                .enter()
+                .append("option")
+                .text(function(dimension) { return dimension; });
+            stateMap.radius_selected = "";
         });
 
         dispatch.on("load_indicators", function(data){
@@ -201,9 +241,139 @@ gcif.correlate = (function () {
             stateMap.yValue = d3Map.d3yVal_dropdown.node().value;
             redraw();
         });
-        //--------------------- END EVENT LISTENERS ----------------------
+
+        //listen to changes in highlight dropdown
+        d3Map.d3highlight_dropdown.on("change", function(){
+            stateMap.highlight_selected = d3Map.d3highlight_dropdown.node().value;
+            dispatch.highlight(stateMap.highlight_selected);
+            redraw();
+        });
+
+        dispatch.on("legend_change", function(highlight, colors){
+
+            // Class names cannot be digits, so prefix a "_" to any category
+            var prefix = "_"
+                , domain
+                , bins = true
+
+                , query = {}
+                , operator = []
+                ;
+
+            // initialize the query object with a column {column:}
+            // to be filled in with the "operator" and "value" {column: {operator: value}}
+            query[highlight] = {};
+
+
+            if (highlight === ""){
+                bins = false;
+                domain = [];
+
+            }else if (highlight === "Region"){
+                bins = false;
+                domain = colors.domain();
+                operator.push("===");
+            }else{
+
+                domain = colors.range().map(function(color, index, array){
+                    //format a nice string for output
+                    var interval = colors.invertExtent(color);
+                    var tag = String();
+
+                    if (index === 0){
+                        tag += "0-" + interval[1];
+                    }else if(index === array.length - 1){
+                        tag += interval[0] + "-Infinity";
+                    }else{
+                        tag += interval[0] + "-" + interval[1];
+                    }
+                    return tag;
+                });
+                operator.push("gte"); //left endpoint
+                operator.push("lt");  //right endpoint
+            }
+
+            var
+              legend_queue = (domain).map(function(d){ return prefix + d})
+            , clean_legend_queue = legend_queue.map(function(d){
+                return String(d).replace(/ /g,"");
+            })
+            ;
+
+            // clear the legend
+            d3Map.d3legend.html("");
+            var legendEnter = d3Map.d3legend.selectAll(".legend-entry")
+                    .data(domain)
+                    .enter()
+                    .append("a")
+                    .attr("href", "#")
+                    .attr("class", function(d){
+                        return prefix + String(d).replace(/ /g,"");
+                    })
+                    .style({
+                        color: function(d, i){ return colors.range()[i] }
+                        , "font-size" : "1em"
+                    })
+                    .html(function(d){
+                        return d + "&nbsp  &nbsp";
+                    })
+                ;
+
+            legendEnter.on("click", function(d){
+                var clean_name = prefix + String(d).replace(/ /g,"")
+                    , index = clean_legend_queue.indexOf(clean_name)
+                    , anchor = d3Map.d3legend.select("." + clean_name)
+                    , interval = d.split("-")
+                    ;
+
+
+                if(index >= 0){
+
+                    // d is being removed
+                    legend_queue.splice(index, 1);
+                    clean_legend_queue.splice(index, 1);
+                    anchor.style("opacity", "0.3");
+
+
+                    //filter out the array for the relevant items
+                    if(bins){
+                        stateMap.cities = stateMap.cities.filter(function(cityobj){
+                            return cityobj[highlight] < +interval[0] ||
+                                cityobj[highlight] >= +interval[1];
+                        });
+                    }else{
+                        stateMap.cities = stateMap.cities.filter(function(cityobj){
+                            return cityobj[highlight] !== d;
+                        });
+                    }
+
+                }else{
+
+                    // d needs to be added back
+                    legend_queue.push(prefix + String(d));
+                    clean_legend_queue.push(clean_name);
+                    anchor.style("opacity", "1");
+
+                    if(bins){
+                        //do a db query for items in the correct range
+                        query[highlight][operator[0]] = +interval[0]; //left query
+                        query[highlight][operator[1]] = +interval[1]; //right query
+                        stateMap.cities = stateMap.cities.concat(stateMap.cities_db(query).get());
+                    }else{
+                        //do an exact db query for missing items
+                        query[highlight][operator[0]] = d;
+                        stateMap.cities = stateMap.cities.concat(stateMap.cities_db(query).get());
+                    }
+                }
+
+                redraw();
+            });
+        });
+
+
 
     };
+    // --------------------- END EVENT LISTENERS ----------------------
 
     redraw = function(){
         d3.transition()
@@ -213,6 +383,7 @@ gcif.correlate = (function () {
         function renderAll(){
             scatter.xValue( stateMap.xValue );
             scatter.yValue( stateMap.yValue );
+            scatter.data( stateMap.cities );
             scatter.render();
         }
 
@@ -234,6 +405,7 @@ gcif.correlate = (function () {
 
         dispatch.on("done_load", function(){
             initCharts();
+            dispatch.highlight(stateMap.highlight_selected);
             redraw();
         });
 

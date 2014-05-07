@@ -29,9 +29,9 @@ svg{
         fill: lightgrey;
     }
 
-    .gcif-correlate.chart .foreground.scatter .scatter.point{
-        fill: #8B0000;
-    }
+    /*.gcif-correlate.chart .foreground.scatter .scatter.point{*/
+        /*fill: #8B0000;*/
+    /*}*/
 
     .gcif-correlate.chart .scatter.node {
         fill: none;
@@ -72,6 +72,28 @@ svg{
         fill: none;
         stroke: #000;
         shape-rendering: crispEdges;
+
+    }
+
+    /* legend */
+    .gcif-correlate.legend{
+        font-size: 1em;
+        margin-top: 2em;
+        margin-left: 2em;
+    }
+
+    @media (max-width: 768px) {
+        .gcif-correlate.legend{
+            font-size: 0.9em;
+            margin-top: 1em;
+            margin-left: 1em;
+        }
+
+        .gcif-correlate.chart .axis > text {
+            text-shadow: 0 1px 0 #fff;
+            cursor: move;
+            font-size: 0.9em;
+        }
 
     }
 /* END Scatter */

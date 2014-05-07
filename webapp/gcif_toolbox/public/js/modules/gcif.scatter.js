@@ -87,8 +87,13 @@ gcif.scatter = (function () {
         , _radius
 
         , _color
-        , _data_db = TAFFY()
+        , _datadb = TAFFY()
         , _data = []
+
+        , _highlight = null
+        , _hcolor = d3.scale.ordinal().domain("").range("steelblue")
+        , _colors10 = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+            "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
 
         , _dispatch
 
@@ -96,8 +101,10 @@ gcif.scatter = (function () {
 
 
         //filter out cities that don't have the correct
-        function set_data(){
-            _data = _data_db().get();
+        function set_data(data){
+            return data.filter(function(d){
+                return d[_xValue] !== "" && d[_xValue] !== undefined && d[_yValue] !== "" && d[_yValue] !== undefined
+            });
         }
 
 
@@ -235,12 +242,14 @@ gcif.scatter = (function () {
             var
               g_data
             , points
-            , dataSafe
+//            , dataSafe
             ;
 
-            dataSafe = _data.filter(function(d){
-                return d[_xValue] !== "" && d[_xValue] !== undefined && d[_yValue] !== "" && d[_yValue] !== undefined
-            });
+//            dataSafe = _data.filter(function(d){
+//                return d[_xValue] !== "" && d[_xValue] !== undefined && d[_yValue] !== "" && d[_yValue] !== undefined
+//            });
+
+            console.log(_data.length);
 
             g_data = _svg.selectAll(".layer")
                 .data(["background", "foreground"])
@@ -255,7 +264,7 @@ gcif.scatter = (function () {
             ;
 
             points = g_data.selectAll(".point")
-                .data(dataSafe)
+                .data(_data)
             ;
 
             /* Enter */
@@ -271,6 +280,7 @@ gcif.scatter = (function () {
                           return _y(d[_yValue])
                     }
                     , r : _radius
+                    , fill: setColor
                 })
             ;
 
@@ -299,9 +309,67 @@ gcif.scatter = (function () {
             _div.insert("div","svg")
                 .attr("class", "title")
                 .append("text")
-                .text(_title + ": " + dataSafe.length + " data points")
+                .text(_title + ": " + _data.length + " data points")
             ;
 
+//            console.log(points);
+
+        }
+
+
+        function setColor(d){
+
+            if (_highlight){
+                if (typeof d === "number") {
+                    return _hcolor(+d[_highlight]);
+                }
+                else
+                {
+                    return _hcolor(d[_highlight]);
+                }
+            } else {
+                return "steelblue";
+            }
+
+        }
+
+
+        /* set the highlight colour domain and range */
+        function setHighColors(type){
+
+            var h, t;
+            switch (type)
+            {
+                case "Region":
+                    t = _datadb({Region:{isUndefined:false}}).distinct("Region");
+                    h = d3.scale.ordinal().domain( t ).range( _colors10.slice(0,t.length) );
+                    break;
+
+                case "Total city population":
+                    t = [1e5, 5e5, 1e6, 2.5e6, 5e6];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Land Area (Square Kilometers)":
+                    t = [100, 300, 600, 1e3];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Gross capital budget (USD)":
+                    t = [1e6, 1e7, 1e8, 1e9];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                case "Country's GDP per capita (USD)":
+                    t = [2.5e3, 5e3, 1e4, 2.5e4, 5e4];
+                    h = d3.scale.threshold().domain( t ).range( _colors10.slice(0,t.length + 1) );
+                    break;
+
+                default:
+                    t = [];
+                    h = d3.scale.ordinal().domain(t).range("steelblue");
+            }
+            return h;
         }
 
 
@@ -325,8 +393,8 @@ gcif.scatter = (function () {
 
         _scatter.data = function(_){
             if (!arguments.length) return _data;
-            _data_db.insert(_);
-            set_data();
+            _datadb.insert(_);
+            _data = set_data(_);
             return _scatter;
         };
 
@@ -345,6 +413,13 @@ gcif.scatter = (function () {
         _scatter.dispatch = function(_){
             if (!arguments.length) return _dispatch;
             _dispatch = _;
+
+            //register the dispatch listeners.
+            _dispatch.on("highlight", function(data){
+                _highlight = data;
+                _hcolor = setHighColors(data);
+                _dispatch.legend_change(_highlight, _hcolor);
+            });
             return _scatter;
         };
 
