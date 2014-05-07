@@ -142,7 +142,9 @@ gcif.scatter = (function () {
                           )
                           .range([0, _width])
                   )
-                  .orient("bottom");
+                  .orient("bottom")
+                  .ticks(5)
+            ;
 
             return _svg.append("g")
                        .attr("class", "scatter x axis")
@@ -157,7 +159,9 @@ gcif.scatter = (function () {
                             [0, Math.max(d3.max(_data, function(d){ return (d[_yValue]) * 1.1; }), _minYAxisVal)]
                         ).range([_height, 0])
                     )
-                  .orient("left");
+                  .orient("left")
+                  .ticks(5)
+            ;
 
             return _svg.append("g")
                 .attr("class", "scatter y axis")
