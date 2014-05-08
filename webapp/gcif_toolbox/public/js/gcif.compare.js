@@ -99,7 +99,7 @@ gcif.compare = (function () {
     , setJqueryMap, setd3Map
 
     , dispatch = d3.dispatch("load_cities", "load_indicators", "done_load",
-                             "highlight", "brush", "legend_change")
+                             "highlight", "brush", "legend_change", "metadata_load")
 
     , parallelChart, list
 
@@ -164,7 +164,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(city_data) {
+        d3.json("/chinese_cities/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });

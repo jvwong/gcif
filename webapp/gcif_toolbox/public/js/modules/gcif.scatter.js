@@ -113,9 +113,9 @@ gcif.scatter = (function () {
 
 
         //filter out cities that don't have the correct
-        function set_data(data){
+        function filterData(data){
             return data.filter(function(d){
-                return d[_xValue] !== "" && d[_xValue] !== undefined && d[_yValue] !== "" && d[_yValue] !== undefined
+                return d[_xValue] !== "" && d[_xValue] !== undefined && d[_yValue] !== "" && d[_yValue] !== undefined;
             });
         }
 
@@ -250,11 +250,12 @@ gcif.scatter = (function () {
                 .text(_title + ": " + _data.length + " cities")
             ;
 
-
-
             //try to wrap the labels
             d3.selectAll("g.x.axis > text").call(gcif.util.wrap_dual, _width );
             d3.selectAll("g.y.axis > text").call(gcif.util.wrap_dual, _width );
+
+            //tag summit attendees
+
         }
 
 
@@ -294,12 +295,8 @@ gcif.scatter = (function () {
                 .attr("class", "scatter point")
                 .attr({
                       //we're setting empty string values to 0
-                      cx : function(d){
-                          return _x(d[_xValue])
-                      }
-                    , cy : function(d){
-                          return _y(d[_yValue])
-                    }
+                      cx : function(d){ return _x(d[_xValue]) }
+                    , cy : function(d){ return _y(d[_yValue]) }
                     , r : _area
                     , fill: setColor
                 })
@@ -428,7 +425,7 @@ gcif.scatter = (function () {
         _scatter.data = function(_){
             if (!arguments.length) return _data;
             _datadb.insert(_);
-            _data = set_data(_);
+            _data = filterData(_);
             _dispatch.set_areaKey(_);
             return _scatter;
         };

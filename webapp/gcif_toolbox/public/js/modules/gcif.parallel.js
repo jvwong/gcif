@@ -59,6 +59,16 @@ gcif.parallel = (function () {
         ;
 
 
+        function filterData(metad){
+            //This is what a schema is for
+            _data = _data.filter(function(d){
+                return metad.every(function(metaheader){
+                    return (d[metaheader] !== undefined);
+                });
+            });
+        }
+
+
         /* sets the svg dimensions based upon the current browser window */
         function setsvgdim(){
             var
@@ -242,12 +252,6 @@ gcif.parallel = (function () {
 
         function renderBody(){
 
-//            var t = (_datadb({"Total city population":{isUndefined:false}}).get()).map(function(d){
-//                return +d["Total city population"];
-//            }).sort(function(a, b){return a-b});;
-//            console.log(t);
-
-
             var
               g
             , points
@@ -322,7 +326,15 @@ gcif.parallel = (function () {
                    .append("circle")
                    .attr({ cy     :  function(city){
                                          var p = d3.select(this.parentNode).datum();
-                                         return _y[p](city[p]);
+                                         try
+                                         {
+                                             return _y[p](city[p]);
+                                         }
+                                         catch(e)
+                                         {
+                                             console.log(e);
+                                         }
+
                                      }
                           , cx    : 0
                           , r     : 2
@@ -429,6 +441,7 @@ gcif.parallel = (function () {
         }
 
         _parallel.render = function() {
+            _dispatch.metadata_load(_metadata);
             setsvgdim();
             _svg = rendersvg(_container);
             renderAxes();
@@ -485,9 +498,6 @@ gcif.parallel = (function () {
         _parallel.metadb = function(_){
             if (!arguments.length) return _metadb();
             _metadb.insert(_);
-
-            // set the theme indicator colors
-            var t = _metadb().distinct("theme");
             return _parallel;
         };
 
@@ -501,6 +511,9 @@ gcif.parallel = (function () {
                 _hcolor = setHighColors(data);
                 _dispatch.legend_change(_highlight, _hcolor);
             });
+
+            _dispatch.on("metadata_load", filterData);
+
             return _parallel;
         };
 

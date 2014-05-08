@@ -79,6 +79,8 @@ gcif.correlate = (function () {
             , highlight_selected        : undefined
             , area_selected             : undefined
 
+            , attendees                 : undefined
+
         }
 
         , jqueryMap = {}, d3Map= {}
@@ -143,13 +145,21 @@ gcif.correlate = (function () {
     };
 
     loadData = function(){
+
         d3.json("/performance_indicators/list", function(performance_indicators_data) {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(cities_data){
-            dispatch.load_cities(cities_data);
-            dispatch.done_load();
+        d3.json("/chinese_cities/list", function(cities_data){
+
+            d3.csv("/assets/data/attendees.csv", function(attendee_data) {
+                stateMap.attendees = attendee_data.map(function(d){return d["CityName"]});
+
+                //filter for summit attendees
+                dispatch.load_cities(cities_data);
+                dispatch.done_load();
+            });
+
         });
     };
 
@@ -365,11 +375,11 @@ gcif.correlate = (function () {
                         //do a db query for items in the correct range
                         query[highlight][operator[0]] = +interval[0]; //left query
                         query[highlight][operator[1]] = +interval[1]; //right query
-                        stateMap.cities = stateMap.cities.concat(stateMap.cities_db(query).get());
+                        stateMap.cities = stateMap.cities.concat( stateMap.cities_db(query).get() );
                     }else{
                         //do an exact db query for missing items
                         query[highlight][operator[0]] = d;
-                        stateMap.cities = stateMap.cities.concat(stateMap.cities_db(query).get());
+                        stateMap.cities = stateMap.cities.concat( stateMap.cities_db(query).get() );
                     }
                 }
 
