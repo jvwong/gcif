@@ -150,7 +150,7 @@ gcif.correlate = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/chinese_cities/list", function(cities_data){
+        d3.json("/gcif_combined/list", function(cities_data){
 
             d3.csv("/assets/data/attendees.csv", function(attendee_data) {
                 stateMap.attendees = attendee_data.map(function(d){return d["CityName"]});
