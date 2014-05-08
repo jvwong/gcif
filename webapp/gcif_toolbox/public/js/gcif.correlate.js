@@ -77,7 +77,8 @@ gcif.correlate = (function () {
             , title                     : "Correlate"
 
             , highlight_selected        : undefined
-            , radius_selected           : undefined
+            , area_selected             : undefined
+
         }
 
         , jqueryMap = {}, d3Map= {}
@@ -124,7 +125,7 @@ gcif.correlate = (function () {
     initCharts = function(){
         scatter = gcif.scatter.Scatter( d3Map.d3correlate );
 
-        scatter.areaKey( "Total city population" );
+        scatter.areaKey( stateMap.area_selected );
 
         scatter.xValue( stateMap.xValue );
         scatter.yValue( stateMap.yValue );
@@ -165,7 +166,7 @@ gcif.correlate = (function () {
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(100).get();
+            stateMap.cities = stateMap.cities_db().limit(1000).get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
@@ -187,7 +188,7 @@ gcif.correlate = (function () {
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.area_selected = "";
+            stateMap.area_selected = "Total city population";
         });
 
         dispatch.on("load_indicators", function(data){

@@ -53,7 +53,6 @@ gcif.scatter = (function () {
         ,  _container = d3container
 
         , _svg
-        , _div
         , _tooltip
 
         , _margin = { top: 10, right: 20, bottom: 80, left: 100 }
@@ -151,8 +150,6 @@ gcif.scatter = (function () {
                             .attr({ class: "body"
                                   , transform: "translate(" + _margin.left + "," + _margin.top + ")" })
             ;
-
-            _div = d3.select(_svg.node().parentNode.parentNode);
         }
 
         function renderXAxis(){
@@ -239,9 +236,21 @@ gcif.scatter = (function () {
                 .text(_yValue)
             ;
 
+            _svg.append("text")
+                .attr({
+                    class : "scatter title",
+                    x  : _width / 2,
+                    y  : "0em"
+                })
+                .style({"text-anchor":"middle", "font-size":"1.1em"})
+                .text(_title + ": " + _data.length + " data points")
+            ;
+
+
+
             //try to wrap the labels
-            d3.selectAll("g.x.axis > text").call(gcif.util.wrap, _width );
-            d3.selectAll("g.y.axis > text").call(gcif.util.wrap, _width );
+            d3.selectAll("g.x.axis > text").call(gcif.util.wrap_dual, _width );
+            d3.selectAll("g.y.axis > text").call(gcif.util.wrap_dual, _width );
         }
 
 
@@ -314,11 +323,6 @@ gcif.scatter = (function () {
             points.exit().remove()
             ;
 
-            _div.insert("div","svg")
-                .attr("class", "title")
-                .append("text")
-                .text(_title + ": " + _data.length + " data points")
-            ;
 
             // register listener for mouseover, mouseout, and click
             points.on("mouseover", function(d){
