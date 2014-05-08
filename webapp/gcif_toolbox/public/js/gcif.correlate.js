@@ -165,29 +165,29 @@ gcif.correlate = (function () {
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(100).get();
+            stateMap.cities = stateMap.cities_db().limit(1000).get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
                 .data(
-                ["Region","Total city population","Country's GDP per capita (USD)",
-                    "Gross capital budget (USD)","Land Area (Square Kilometers)",""]
+                ["", "Region","Total city population","Country's GDP per capita (USD)",
+                    "Gross capital budget (USD)","Land Area (Square Kilometers)"]
                 )
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.highlight_selected = "Region";
+            stateMap.highlight_selected = "";
 
             //setup the area drop down
             d3Map.d3area_dropdown.selectAll("option")
                 .data(
-                ["Total city population", "Region","Country's GDP per capita (USD)",
-                    "Gross capital budget (USD)","Land Area (Square Kilometers)",""]
+                ["", "Total city population", "Country's GDP per capita (USD)",
+                    "Gross capital budget (USD)","Land Area (Square Kilometers)"]
             )
                 .enter()
                 .append("option")
                 .text(function(dimension) { return dimension; });
-            stateMap.area_selected = "Total city population";
+            stateMap.area_selected = "";
         });
 
         dispatch.on("load_indicators", function(data){
