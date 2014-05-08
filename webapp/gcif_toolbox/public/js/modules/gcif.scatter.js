@@ -205,9 +205,10 @@ gcif.scatter = (function () {
                 if(_areaKey === ""){
                     return radius_min;
                 }
-                else if( d[_areaKey] === undefined || d[_areaKey] === "" || +d[_areaKey] === 0 ){
+                else if( d[_areaKey] === undefined || d[_areaKey] === "" || typeof +d[_areaKey] !== "number" ){
                     return 0;
                 }
+
                 return _a(+d[_areaKey]);
             }
         }

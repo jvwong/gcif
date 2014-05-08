@@ -165,7 +165,7 @@ gcif.correlate = (function () {
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(1000).get();
+            stateMap.cities = stateMap.cities_db().limit(500).get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
