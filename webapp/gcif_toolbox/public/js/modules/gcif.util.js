@@ -15,7 +15,7 @@
 gcif.util = (function () {
     var
       formatYear = d3.time.format("%Y")
-    , wrap
+    , wrap, wrap_y
     , initModule
     ;
 
@@ -38,12 +38,11 @@ gcif.util = (function () {
             , line = []
             , lineNumber = 0
             , lineHeight = 1.1 // ems
+            , x = text.attr("x")
             , y = text.attr("y")
             , dy = parseFloat(text.attr("dy"))
-            , tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
+            , tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em")
             ;
-            console.log(dy);
-            console.log(words);
 
             while (word = words.pop()) {
                 line.push(word);
@@ -52,13 +51,13 @@ gcif.util = (function () {
                     line.pop();
                     tspan.text(line.join(" "));
                     line = [word];
-                    tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
                 }
             }
 
         });
     };
-    // End Public method /parseData/
+    // End Public method /wrap/
 
     initModule = function ( $container ) {
         //do nothing
@@ -66,7 +65,8 @@ gcif.util = (function () {
 
     return {
           initModule : initModule
-        ,  wrap      : wrap
+        , wrap       : wrap
+        , wrap_y     : wrap_y
     };
 }());
 

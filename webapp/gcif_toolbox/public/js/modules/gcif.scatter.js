@@ -217,11 +217,12 @@ gcif.scatter = (function () {
             _svg.select(".x.axis")
                 .append("text")
                 .attr({
-                    class : "scatter x label",
-                    x     : 50
-                  , dy    : "3em"
+                    class : "scatter x label"
+                  , x     : _width / 2
+                  , y     : 0
+                  , dy    : "3.2em"
                 })
-                .style("text-anchor", "end")
+                .style("text-anchor", "middle")
                 .text(_xValue)
             ;
 
@@ -230,19 +231,17 @@ gcif.scatter = (function () {
                 .attr({
                     class : "scatter y label",
                     transform : "rotate(-90)",
-                    x : -( _height - _margin.bottom ) / 2.5,
-                    y : - 65
+                    x  : -_height / 2,
+                    y  : "-4em",
+                    dy : "-1em"
                 })
-                .style("text-anchor", "end")
+                .style("text-anchor", "middle")
                 .text(_yValue)
             ;
 
-            console.log(_svg.select(".x.axis > text"));
-
-
-
             //try to wrap the labels
-//            d3.selectAll("g.x.axis > text").call(gcif.util.wrap, _width);
+            d3.selectAll("g.x.axis > text").call(gcif.util.wrap, _width );
+            d3.selectAll("g.y.axis > text").call(gcif.util.wrap, _width );
         }
 
 
