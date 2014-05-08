@@ -85,7 +85,7 @@ gcif.correlate = (function () {
         , setJqueryMap, setd3Map
 
         , dispatch = d3.dispatch("data_update", "load_cities", "load_indicators", "done_load",
-                                 "highlight", "legend_change")
+                                 "highlight", "legend_change", "set_areaKey")
 
         , loadData, loadListeners, initCharts, resetState, render, redraw
 
@@ -124,14 +124,13 @@ gcif.correlate = (function () {
 
     initCharts = function(){
         scatter = gcif.scatter.Scatter( d3Map.d3correlate );
+        scatter.dispatch( dispatch );
 
         scatter.areaKey( stateMap.area_selected );
-
         scatter.xValue( stateMap.xValue );
         scatter.yValue( stateMap.yValue );
         scatter.title( stateMap.title );
         scatter.data( stateMap.cities );
-        scatter.dispatch( dispatch );
         scatter.render();
 
     };
@@ -166,7 +165,7 @@ gcif.correlate = (function () {
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(1000).get();
+            stateMap.cities = stateMap.cities_db().limit(100).get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
@@ -182,8 +181,8 @@ gcif.correlate = (function () {
             //setup the area drop down
             d3Map.d3area_dropdown.selectAll("option")
                 .data(
-                ["", "Region","Total city population","Country's GDP per capita (USD)",
-                    "Gross capital budget (USD)","Land Area (Square Kilometers)"]
+                ["Total city population", "Region","Country's GDP per capita (USD)",
+                    "Gross capital budget (USD)","Land Area (Square Kilometers)",""]
             )
                 .enter()
                 .append("option")
@@ -249,6 +248,13 @@ gcif.correlate = (function () {
             dispatch.highlight(stateMap.highlight_selected);
             redraw();
         });
+
+        //listen to changes in area dropdown
+        d3Map.d3area_dropdown.on("change", function(){
+            stateMap.area_selected = d3Map.d3area_dropdown.node().value;
+            redraw();
+        });
+
 
         dispatch.on("legend_change", function(highlight, colors){
 
@@ -382,6 +388,7 @@ gcif.correlate = (function () {
             .each(renderAll);
 
         function renderAll(){
+            scatter.areaKey( stateMap.area_selected );
             scatter.xValue( stateMap.xValue );
             scatter.yValue( stateMap.yValue );
             scatter.data( stateMap.cities );

@@ -62,7 +62,7 @@ gcif.scatter = (function () {
 
         , _x = d3.scale.linear()
         , _y = d3.scale.linear()
-        , _a = d3.scale.log()
+        , _a = d3.scale.linear()
 
         , _xValue = ""
         , _yValue = ""
@@ -82,9 +82,8 @@ gcif.scatter = (function () {
 
 
         , _areaKey = ""
-        , _fradmax = 8e-4
-        , _point_area = 4
         , _area
+        , _a_domain
 
         , _color
         , _datadb = TAFFY()
@@ -186,26 +185,30 @@ gcif.scatter = (function () {
                 .call(_yAxis);
         }
 
+
+
         function setArea(){
 
-            //sets the domain upper limit to the max of the data points in the x and y direction
-            _a.domain([1e-1,
-                       Math.max(d3.max(_data, function(d){ return (d[_xValue]) }), d3.max(_data, function(d){ return (d[_yValue]) }))
-                      ]
-            )
-            .range([_point_area, _width / 30]);
+            var   radius_min = 3
+                , radius_max = 20
+                ;
+
+            //sets the domain upper limit to the max of the key in question
+            _a.domain( _a_domain )
+              .range([radius_min, radius_max]);
 
             // This is log scale, if the key is "" or undefined don't even show them
             // also filter out the missing points
             _area = function(d){
 
                 // if the key isn't defined, don't even show them
-                if(_areaKey === "" || _areaKey === undefined || d[_areaKey] === "" || +d[_areaKey] === 0 ){
-                    return 1e-12;
-                // Since this is log scale, if the value is "" or 0, then key isn't defined, don't even show them
+                if(_areaKey === ""){
+                    return radius_min;
                 }
-                return _point_area;
-//                return Math.max(_a(d[_areaKey]) * _fradmax, _point_area);
+                else if( d[_areaKey] === undefined || d[_areaKey] === "" || +d[_areaKey] === 0 ){
+                    return 0;
+                }
+                return _a(+d[_areaKey]);
             }
         }
 
@@ -242,8 +245,8 @@ gcif.scatter = (function () {
                     x  : _width / 2,
                     y  : "0em"
                 })
-                .style({"text-anchor":"middle", "font-size":"1.1em"})
-                .text(_title + ": " + _data.length + " data points")
+                .style({"text-anchor":"middle", "font-size":"0.9em"})
+                .text(_title + ": " + _data.length + " cities")
             ;
 
 
@@ -415,6 +418,9 @@ gcif.scatter = (function () {
         _scatter.areaKey = function(_){
             if (!arguments.length) return _areaKey;
             _areaKey = _;
+            _dispatch.on("set_areaKey", function(data){
+                _a_domain = d3.extent(data, function(d){ return +d[_areaKey] });
+            });
             return _scatter;
         };
 
@@ -422,6 +428,7 @@ gcif.scatter = (function () {
             if (!arguments.length) return _data;
             _datadb.insert(_);
             _data = set_data(_);
+            _dispatch.set_areaKey(_);
             return _scatter;
         };
 
