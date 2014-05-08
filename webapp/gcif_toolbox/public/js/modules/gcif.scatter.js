@@ -56,7 +56,7 @@ gcif.scatter = (function () {
         , _div
         , _tooltip
 
-        , _margin = { top: 10, right: 20, bottom: 50, left: 100 }
+        , _margin = { top: 10, right: 20, bottom: 80, left: 100 }
         , _min_height = 200
         , _width
         , _height
@@ -218,8 +218,8 @@ gcif.scatter = (function () {
                 .append("text")
                 .attr({
                     class : "scatter x label",
-                    x : _width,
-                    y : _margin.bottom - 10
+                    x     : 50
+                  , dy    : "3em"
                 })
                 .style("text-anchor", "end")
                 .text(_xValue)
@@ -237,10 +237,12 @@ gcif.scatter = (function () {
                 .text(_yValue)
             ;
 
+            console.log(_svg.select(".x.axis > text"));
+
 
 
             //try to wrap the labels
-            d3.selectAll("g.x.axis > text").call(gcif.util.wrap, _width);
+//            d3.selectAll("g.x.axis > text").call(gcif.util.wrap, _width);
         }
 
 
