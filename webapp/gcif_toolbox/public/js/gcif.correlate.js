@@ -87,7 +87,7 @@ gcif.correlate = (function () {
         , setJqueryMap, setd3Map
 
         , dispatch = d3.dispatch("data_update", "load_cities", "load_indicators", "done_load",
-                                 "highlight", "legend_change", "set_areaKey")
+                                 "highlight", "legend_change", "data_change", "area_domain_update")
 
         , loadData, loadListeners, initCharts, resetState, render, redraw
 
@@ -262,6 +262,7 @@ gcif.correlate = (function () {
         //listen to changes in area dropdown
         d3Map.d3area_dropdown.on("change", function(){
             stateMap.area_selected = d3Map.d3area_dropdown.node().value;
+            dispatch.area_domain_update( stateMap.area_selected );
             redraw();
         });
 

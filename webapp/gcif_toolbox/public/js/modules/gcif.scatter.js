@@ -83,7 +83,8 @@ gcif.scatter = (function () {
 
         , _areaKey = ""
         , _area
-        , _a_domain
+        , _radius_min = 4
+        , _radius_max = 25
 
         , _color
         , _datadb = TAFFY()
@@ -185,17 +186,17 @@ gcif.scatter = (function () {
                 .call(_yAxis);
         }
 
+        function setAreaDomain( key ){
+            _a.domain( d3.extent(_data, function(d){ return +d[key] }) )
+                .range([_radius_min, _radius_max]);
+        }
 
 
         function setArea(){
 
-            var   radius_min = 3
-                , radius_max = 20
-                ;
-
             //sets the domain upper limit to the max of the key in question
-            _a.domain( _a_domain )
-              .range([radius_min, radius_max]);
+//            _a.domain( d3.extent(_data, function(d){ return +d[_areaKey] }) )
+//              .range([_radius_min, _radius_max]);
 
             // This is log scale, if the key is "" or undefined don't even show them
             // also filter out the missing points
@@ -203,9 +204,9 @@ gcif.scatter = (function () {
 
                 // if the key isn't defined, don't even show them
                 if(_areaKey === ""){
-                    return radius_min;
+                    return _radius_min;
                 }
-                else if( d[_areaKey] === undefined || d[_areaKey] === "" || typeof +d[_areaKey] !== "number" ){
+                else if( d[_areaKey] === undefined || d[_areaKey] === "" || isNaN(+d[_areaKey])){
                     return 0;
                 }
 
@@ -419,9 +420,6 @@ gcif.scatter = (function () {
         _scatter.areaKey = function(_){
             if (!arguments.length) return _areaKey;
             _areaKey = _;
-            _dispatch.on("set_areaKey", function(data){
-                _a_domain = d3.extent(data, function(d){ return +d[_areaKey] });
-            });
             return _scatter;
         };
 
@@ -429,7 +427,7 @@ gcif.scatter = (function () {
             if (!arguments.length) return _data;
             _datadb.insert(_);
             _data = filterData(_);
-            _dispatch.set_areaKey(_);
+            _dispatch.data_change();// requires _data is set
             return _scatter;
         };
 
@@ -455,6 +453,8 @@ gcif.scatter = (function () {
                 _hcolor = setHighColors(data);
                 _dispatch.legend_change(_highlight, _hcolor);
             });
+            _dispatch.on("data_change", setArea);
+            _dispatch.on("area_domain_update", setAreaDomain);
             return _scatter;
         };
 
