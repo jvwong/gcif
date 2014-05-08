@@ -327,10 +327,13 @@ gcif.scatter = (function () {
 
             // register listener for mouseover, mouseout, and click
             points.on("mouseover", function(d){
+
+                    var info = String() + d["CityName"];
+
                     _tooltip.transition()
                         .duration(200)
                         .style("opacity", .9);
-                    _tooltip.html(d["CityName"])
+                    _tooltip.html(info)
                         .style("left", (d3.event.pageX + 20) + "px")
                         .style("top", (d3.event.pageY - 20) + "px");
                 })
