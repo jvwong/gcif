@@ -80,6 +80,7 @@ gcif.scatter = (function () {
         , _brushDirty = false
         , _extent = [ [0,0], [0,0] ]
 
+        , _points
 
         , _areaKey = ""
         , _area
@@ -152,6 +153,7 @@ gcif.scatter = (function () {
             ;
         }
 
+
         function renderXAxis(){
 
             _xAxis.scale(
@@ -170,6 +172,7 @@ gcif.scatter = (function () {
                        .call(_xAxis);
         }
 
+
         function renderYAxis(){
 
             _yAxis.scale(
@@ -186,33 +189,6 @@ gcif.scatter = (function () {
                 .call(_yAxis);
         }
 
-        function setAreaDomain( key ){
-            _a.domain( d3.extent(_data, function(d){ return +d[key] }) )
-                .range([_radius_min, _radius_max]);
-        }
-
-
-        function setArea(){
-
-            //sets the domain upper limit to the max of the key in question
-//            _a.domain( d3.extent(_data, function(d){ return +d[_areaKey] }) )
-//              .range([_radius_min, _radius_max]);
-
-            // This is log scale, if the key is "" or undefined don't even show them
-            // also filter out the missing points
-            _area = function(d){
-
-                // if the key isn't defined, don't even show them
-                if(_areaKey === ""){
-                    return _radius_min;
-                }
-                else if( d[_areaKey] === undefined || d[_areaKey] === "" || isNaN(+d[_areaKey])){
-                    return 0;
-                }
-
-                return _a(+d[_areaKey]);
-            }
-        }
 
         function renderLabels(){
 
@@ -268,10 +244,11 @@ gcif.scatter = (function () {
                 .attr("height", _height);
         }
 
+
         function renderData(){
             var
               g_data
-            , points
+
             ;
 
             g_data = _svg.selectAll(".layer")
@@ -286,12 +263,12 @@ gcif.scatter = (function () {
                 .attr("clip-path", "url(#clip-" + _id + ")")
             ;
 
-            points = g_data.selectAll(".point")
+            _points = g_data.selectAll(".point")
                 .data(_data)
             ;
 
             /* Enter */
-            points.enter()
+            _points.enter()
                 .append("circle")
                 .attr("class", "scatter point")
                 .attr({
@@ -304,7 +281,7 @@ gcif.scatter = (function () {
             ;
 
             /* update */
-            points
+            _points
                 .attr({
                       cx : function(d){ return _x(d[_xValue]) }
                     , cy : function(d){ return _y(d[_yValue]) }
@@ -312,7 +289,7 @@ gcif.scatter = (function () {
             ;
 
             //get rid of the empty or undefined data points
-            points.filter(function(d){
+            _points.filter(function(d){
                 return d[_yValue] === "" ||
                     d[_yValue] === undefined ||
                     d[_xValue] === "" ||
@@ -322,12 +299,12 @@ gcif.scatter = (function () {
 
 
             /* update */
-            points.exit().remove()
+            _points.exit().remove()
             ;
 
 
             // register listener for mouseover, mouseout, and click
-            points.on("mouseover", function(d){
+            _points.on("mouseover", function(d){
 
                     var info = String() + d["CityName"];
 
@@ -404,16 +381,42 @@ gcif.scatter = (function () {
         }
 
 
+        function setArea(){
+
+            // also filter out the missing points
+            _area = function(d){
+
+                // if the key isn't defined, don't even show them
+                if(_areaKey === ""){
+                    return _radius_min;
+                }
+                else if( d[_areaKey] === undefined || d[_areaKey] === "" || isNaN(+d[_areaKey])){
+                    return 0;
+                }
+
+                return _a(+d[_areaKey]);
+            }
+        }
+
         /* Expose configuration methods */
         _scatter.render = function() {
+
             setsvgdim();
             rendersvg(_container);
             defineBodyClip();
+
             renderXAxis();
             renderYAxis();
+
             setArea();
             renderLabels();
             renderTooltip();
+            renderData();
+        };
+
+        _scatter.update = function() {
+            _points.remove();
+            defineBodyClip()
             renderData();
         };
 
@@ -453,8 +456,14 @@ gcif.scatter = (function () {
                 _hcolor = setHighColors(data);
                 _dispatch.legend_change(_highlight, _hcolor);
             });
+
+            _dispatch.on("area_change", function(key){
+                _areaKey = key;
+                _a.domain( d3.extent(_data, function(d){ return +d[key] }) )
+                  .range([_radius_min, _radius_max]);
+            });
             _dispatch.on("data_change", setArea);
-            _dispatch.on("area_domain_update", setAreaDomain);
+
             return _scatter;
         };
 

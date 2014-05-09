@@ -87,7 +87,7 @@ gcif.correlate = (function () {
         , setJqueryMap, setd3Map
 
         , dispatch = d3.dispatch("data_update", "load_cities", "load_indicators", "done_load",
-                                 "highlight", "legend_change", "data_change", "area_domain_update")
+                                 "highlight", "legend_change", "data_change", "area_change")
 
         , loadData, loadListeners, initCharts, resetState, render, redraw
 
@@ -262,7 +262,7 @@ gcif.correlate = (function () {
         //listen to changes in area dropdown
         d3Map.d3area_dropdown.on("change", function(){
             stateMap.area_selected = d3Map.d3area_dropdown.node().value;
-            dispatch.area_domain_update( stateMap.area_selected );
+            dispatch.area_change( stateMap.area_selected );
             redraw();
         });
 
@@ -384,8 +384,11 @@ gcif.correlate = (function () {
                     }
                 }
 
+//                updateAll();
                 redraw();
             });
+
+
         });
 
 
@@ -393,20 +396,24 @@ gcif.correlate = (function () {
     };
     // --------------------- END EVENT LISTENERS ----------------------
 
-    redraw = function(){
+    redraw = function(isRescaled){
+
         d3.transition()
             .duration(500)
             .each(renderAll);
-
-        function renderAll(){
-            scatter.areaKey( stateMap.area_selected );
-            scatter.xValue( stateMap.xValue );
-            scatter.yValue( stateMap.yValue );
-            scatter.data( stateMap.cities );
-            scatter.render();
-        }
-
     };
+
+    function renderAll(){
+        scatter.xValue( stateMap.xValue );
+        scatter.yValue( stateMap.yValue );
+        scatter.data( stateMap.cities );
+        scatter.render();
+    }
+
+    function updateAll(){
+        scatter.data( stateMap.cities );
+        scatter.update();
+    }
 
     // BEGIN public method /render/
     // Example   : gcif.compare.render();

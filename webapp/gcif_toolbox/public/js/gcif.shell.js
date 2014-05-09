@@ -79,7 +79,7 @@ gcif.shell = (function () {
 
     setJqueryMap = function(){
         var
-          $outerDiv = stateMap.$outerDiv
+          $outerDiv = stateMap.$outerDiv;
 
         jqueryMap = {
             $outerDiv        : $outerDiv
