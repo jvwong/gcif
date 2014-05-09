@@ -350,8 +350,7 @@ gcif.hbar = (function () {
             y.domain(cityData.map(function(d) { return d["CityUniqueID_"]; }));
 
             var bar = svg.selectAll(".gcif-hbar.chart.bar")
-                     .data(cityData, function(d) { return d["CityUnqiueID_"]; });
-
+                     .data(cityData, function(d) { return d["CityUniqueID_"]; });
 
             //define enter selections
             var barEnter = bar.enter().insert("g", ".axis") //create and insert new elements before existing elements
@@ -380,6 +379,7 @@ gcif.hbar = (function () {
                   .attr("y", y.rangeBand() / 2)
                   .attr("dy", ".35em")
                   .attr("text-anchor", "end");
+
 
             // setting category here as the value of the selected current_scategory
             barEnter.on("click", function(d) {
@@ -460,9 +460,17 @@ gcif.hbar = (function () {
     // Returns   : none
     // Throws    : none
     setDataUrls = function(source){
-        stateMap.dataUrl   = String() + "assets/data/" + source + "_category_counts.csv";
-        stateMap.countUrl  = String() + "assets/data/" + source + "_core_byID.json";
-        stateMap.schemaUrl = String() + "assets/data/category_indicators.json";
+        var root;
+
+        /* local path*/
+        root = String() + "assets/data/";
+
+        /* server path*/
+//        root = String() + "/shared/Documents/GCIF/web/";
+
+        stateMap.dataUrl   = root + source + "_category_counts.csv";
+        stateMap.countUrl  = root + source + "_core_byID.json";
+        stateMap.schemaUrl = root + "category_indicators.json";
     };
     // End PUBLIC method /setDataurl/
 
