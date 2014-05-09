@@ -92,7 +92,11 @@ gcif.compare = (function () {
           , cities_db                 : TAFFY()
           , performance_indicators_db : TAFFY()
 
-          , topThemes                : ["education","finance","health","safety","urban planning"]
+          , topThemes                 : ["education","finance","health","safety","urban planning",
+                                         "economy", "energy", "","","","","","","","","","","","",
+                                        ]
+
+          , attendees                 : []
     }
 
     , jqueryMap = {}, d3Map= {}
@@ -164,9 +168,24 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
+
         d3.json("/gcif_combined/list", function(city_data) {
-            dispatch.load_cities(city_data);
-            dispatch.done_load();
+
+            d3.csv("assets/data/attendees.csv", function(att){
+
+                stateMap.attendees =  att.map(function(d){return (d["CityName"]).toLowerCase()});
+
+                dispatch.load_cities(city_data.filter(
+                        function(cityobj){
+                            return stateMap.attendees.indexOf((cityobj["CityName"]).toLowerCase()) >= 0;
+                        }
+                    )
+                );
+
+                console.log(stateMap.cities.length);
+                dispatch.done_load();
+            });
+
         });
     };
 
