@@ -185,7 +185,7 @@ gcif.compare = (function () {
         parallelChart.datadb( stateMap.cities_db().get() );
         parallelChart.metadb( stateMap.performance_indicators_db().get() );
         parallelChart.dispatch( dispatch );
-        parallelChart.default_path_color("#99CC99");
+        parallelChart.default_path_color("#88c488");
 
         list = gcif.table.Table( d3Map.d3table );
         list.metadb( stateMap.performance_indicators_db().get() );
