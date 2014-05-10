@@ -127,6 +127,8 @@ gcif.toolbox = (function () {
     // Returns   : none
     // Throws    : none
     initModule = function ( $container ) {
+
+
         //store container in stateMap
         stateMap.$container = $container;
         $container.html(configMap.main_html);

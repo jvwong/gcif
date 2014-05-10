@@ -114,22 +114,22 @@ gcif.compare = (function () {
 
           , topThemes                 : [
                                             "economy",
-                                            "education",
-                                            "finance",
-                                            "health",
-                                            "recreation",
-                                            "safety",
-                                            "shelter",
-                                            "technology and innovation",
-                                            "transportation",
-                                            "urban planning",
-                                            "wastewater",
-                                            "water and sanitation",
-                                            "fire and emergency response",
-                                            "governance",
-                                            "energy",
-                                            "environment",
-                                            "solid waste"
+                                            "education"
+//                                            "finance",
+//                                            "health",
+//                                            "recreation",
+//                                            "safety",
+//                                            "shelter",
+//                                            "technology and innovation",
+//                                            "transportation",
+//                                            "urban planning",
+//                                            "wastewater",
+//                                            "water and sanitation",
+//                                            "fire and emergency response",
+//                                            "governance",
+//                                            "energy",
+//                                            "environment",
+//                                            "solid waste"
                                         ]
           , attendees                 : []
     }

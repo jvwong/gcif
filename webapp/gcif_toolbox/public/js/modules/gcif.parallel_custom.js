@@ -78,8 +78,8 @@ gcif.parallel = (function () {
             , horizontalScaling = 0.75
             ;
 
-//            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
-            _width = 2500;
+            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
+//            _width = 3100;
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
             _x.rangePoints([0, _width], 1);
         }
@@ -264,7 +264,7 @@ gcif.parallel = (function () {
             _background = _svg.append("g")
                             .attr("class", "background")
                             .selectAll("path")
-                            .data(_data)
+                            .data(_data, function(d){ return d["___id"]; })
                             .enter().append("path")
                             .attr("d", path);
 
@@ -272,7 +272,7 @@ gcif.parallel = (function () {
             _foreground = _svg.append("g")
                             .attr("class", "foreground")
                             .selectAll("path")
-                            .data(_data)
+                            .data(_data, function(d){ return d["___id"]; })
                             .enter()
                             .append("path")
                             .attr("class", function(d){
@@ -324,7 +324,7 @@ gcif.parallel = (function () {
             points = _svg.selectAll(".dimension")
                              .append("g").attr("class","points");
             _point = points.selectAll(".point")
-                   .data(_data)
+                   .data(_data, function(d){ return d["___id"]; })
                   .enter()
                    .append("circle")
                    .attr({ cy     :  function(city){
@@ -396,9 +396,30 @@ gcif.parallel = (function () {
                         .style("opacity", 0);
                 })
                 .on("click", function(d){
+                    var tooltip;
+
+                    if (d3.selectAll(".parallel.tooltip." + d["___id"]).empty()){
+                        tooltip = d3.select("body")
+                                .append("div")
+                                .attr("class", "parallel tooltip " + d["___id"])
+                                .style("opacity", 0)
+                            ;
+
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(d["CityName"])
+                            .style("left", (d3.event.pageX + 20) + "px")
+                            .style("top", (d3.event.pageY - 20) + "px");
+
+                    }else{
+                        d3.selectAll(".parallel.tooltip." + d["___id"]).remove();
+                    }
 
                     var pathdata = d3.select(this).data()[0];
 
+                    //remove and repaint on top
+                    gcif.util.moveToFront(d3.select(this));
 
                     //In this case, loops through each city along any axis and asks:
                     // Is this city the same city (_id) being highlighted?

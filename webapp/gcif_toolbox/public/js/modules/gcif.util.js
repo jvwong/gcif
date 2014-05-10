@@ -14,8 +14,9 @@
 
 gcif.util = (function () {
     var
-      formatYear = d3.time.format("%Y")
-    , wrap, wrap_y
+      wrap
+    , wrap_dual
+    , moveToFront
     , initModule
     ;
 
@@ -87,6 +88,13 @@ gcif.util = (function () {
     };
     // End Public method /wrap/
 
+    //declare this function
+    moveToFront = function($selection) {
+        return $selection.each(function(){
+            this.parentNode.appendChild(this);
+        });
+    };
+
     initModule = function ( $container ) {
         //do nothing
     };
@@ -95,6 +103,7 @@ gcif.util = (function () {
           initModule    : initModule
         , wrap          : wrap
         , wrap_dual     : wrap_dual
+        , moveToFront   : moveToFront
     };
 }());
 
