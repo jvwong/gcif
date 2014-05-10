@@ -44,6 +44,7 @@ gcif.parallel = (function () {
         , _point
 
         , _highlight = null
+        , _default_path_color = "steelblue"
 
         , _colors10 = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
                        "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
@@ -56,6 +57,8 @@ gcif.parallel = (function () {
 
         , _tooltip
         , _dispatch
+
+
         ;
 
 
@@ -78,8 +81,8 @@ gcif.parallel = (function () {
             , horizontalScaling = 0.75
             ;
 
-            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
-//            _width = 3100;
+//            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
+            _width = 3100;
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
             _x.rangePoints([0, _width], 1);
         }
@@ -230,7 +233,7 @@ gcif.parallel = (function () {
 
                 default:
                     t = [];
-                    h = d3.scale.ordinal().domain(t).range("steelblue");
+                    h = d3.scale.ordinal().domain(t).range(_default_path_color);
             }
             return h;
         }
@@ -246,7 +249,7 @@ gcif.parallel = (function () {
                     return _hcolor(d[_highlight]);
                 }
             } else {
-                return "steelblue";
+                return _default_path_color;
             }
 
         }
@@ -522,6 +525,12 @@ gcif.parallel = (function () {
         _parallel.metadb = function(_){
             if (!arguments.length) return _metadb();
             _metadb.insert(_);
+            return _parallel;
+        };
+
+        _parallel.default_path_color = function(_){
+            if (!arguments.length) return _default_path_color;
+            _default_path_color = _;
             return _parallel;
         };
 

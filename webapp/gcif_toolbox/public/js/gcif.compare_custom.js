@@ -114,22 +114,22 @@ gcif.compare = (function () {
 
           , topThemes                 : [
                                             "economy",
-                                            "education"
-//                                            "finance",
-//                                            "health",
-//                                            "recreation",
-//                                            "safety",
-//                                            "shelter",
-//                                            "technology and innovation",
-//                                            "transportation",
-//                                            "urban planning",
+                                            "education",
+                                            "finance",
+                                            "health",
+                                            "recreation",
+                                            "safety",
+                                            "shelter",
+                                            "technology and innovation",
+                                            "transportation",
+                                            "urban planning",
 //                                            "wastewater",
-//                                            "water and sanitation",
-//                                            "fire and emergency response",
-//                                            "governance",
-//                                            "energy",
-//                                            "environment",
-//                                            "solid waste"
+                                            "water and sanitation",
+                                            "fire and emergency response",
+                                            "governance",
+                                            "energy",
+                                            "environment",
+                                            "solid waste"
                                         ]
           , attendees                 : []
     }
@@ -185,6 +185,7 @@ gcif.compare = (function () {
         parallelChart.datadb( stateMap.cities_db().get() );
         parallelChart.metadb( stateMap.performance_indicators_db().get() );
         parallelChart.dispatch( dispatch );
+        parallelChart.default_path_color("#99CC99");
 
         list = gcif.table.Table( d3Map.d3table );
         list.metadb( stateMap.performance_indicators_db().get() );
@@ -322,7 +323,7 @@ gcif.compare = (function () {
 
                 jqueryMap.$highlight_dropdown
                 .find("option").filter(function() {
-                        return $(this).text() === "Region";
+                        return $(this).text() === "";
                 })
                 .prop('selected', true)
                 ;

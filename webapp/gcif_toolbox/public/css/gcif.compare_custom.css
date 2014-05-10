@@ -16,8 +16,8 @@ svg{
 }
 
     .gcif-compare.chart .foreground path.highlight {
-        stroke: orange;
-        stroke-width: 7;
+        stroke: #993300;
+        stroke-width: 5;
     }
 
 
@@ -26,10 +26,6 @@ svg{
     fill-opacity: .7;
     stroke-width: 0.2;
 }
-
-    /*.gcif-compare.chart circle.point.unhighlight {*/
-        /*fill: steelblue;*/
-    /*}*/
 
     .gcif-compare.chart circle.point.highlight {
         fill: orange;
