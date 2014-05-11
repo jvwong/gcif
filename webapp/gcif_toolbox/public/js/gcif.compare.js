@@ -205,9 +205,7 @@ gcif.compare = (function () {
         });
 
         d3.json("/gcif_combined/list", function(city_data) {
-            dispatch.load_cities(city_data.filter(function(d){
-                return d["Region"] !== "EAST ASIA - PACIFIC";
-            }));
+            dispatch.load_cities(city_data);
             dispatch.done_load();
         });
     };
