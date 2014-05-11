@@ -44,6 +44,7 @@ gcif.parallel = (function () {
         , _point
 
         , _highlight = null
+        , _default_path_color = "steelblue"
 
         , _colors10 = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
                        "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
@@ -56,6 +57,8 @@ gcif.parallel = (function () {
 
         , _tooltip
         , _dispatch
+
+
         ;
 
 
@@ -79,7 +82,7 @@ gcif.parallel = (function () {
             ;
 
             _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
-//            _width = 5000;
+//            _width = 3100;
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
             _x.rangePoints([0, _width], 1);
         }
@@ -230,7 +233,7 @@ gcif.parallel = (function () {
 
                 default:
                     t = [];
-                    h = d3.scale.ordinal().domain(t).range("steelblue");
+                    h = d3.scale.ordinal().domain(t).range(_default_path_color);
             }
             return h;
         }
@@ -246,7 +249,7 @@ gcif.parallel = (function () {
                     return _hcolor(d[_highlight]);
                 }
             } else {
-                return "steelblue";
+                return _default_path_color;
             }
 
         }
@@ -264,7 +267,7 @@ gcif.parallel = (function () {
             _background = _svg.append("g")
                             .attr("class", "background")
                             .selectAll("path")
-                            .data(_data)
+                            .data(_data, function(d){ return d["___id"]; })
                             .enter().append("path")
                             .attr("d", path);
 
@@ -272,7 +275,7 @@ gcif.parallel = (function () {
             _foreground = _svg.append("g")
                             .attr("class", "foreground")
                             .selectAll("path")
-                            .data(_data)
+                            .data(_data, function(d){ return d["___id"]; })
                             .enter()
                             .append("path")
                             .attr("class", function(d){
@@ -324,7 +327,7 @@ gcif.parallel = (function () {
             points = _svg.selectAll(".dimension")
                              .append("g").attr("class","points");
             _point = points.selectAll(".point")
-                   .data(_data)
+                   .data(_data, function(d){ return d["___id"]; })
                   .enter()
                    .append("circle")
                    .attr({ cy     :  function(city){
@@ -396,9 +399,30 @@ gcif.parallel = (function () {
                         .style("opacity", 0);
                 })
                 .on("click", function(d){
+                    var tooltip;
+
+                    if (d3.selectAll(".parallel.tooltip." + d["___id"]).empty()){
+                        tooltip = d3.select("body")
+                                .append("div")
+                                .attr("class", "parallel tooltip " + d["___id"])
+                                .style("opacity", 0)
+                            ;
+
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html(d["CityName"])
+                            .style("left", (d3.event.pageX + 20) + "px")
+                            .style("top", (d3.event.pageY - 20) + "px");
+
+                    }else{
+                        d3.selectAll(".parallel.tooltip." + d["___id"]).remove();
+                    }
 
                     var pathdata = d3.select(this).data()[0];
 
+                    //remove and repaint on top
+                    gcif.util.moveToFront(d3.select(this));
 
                     //In this case, loops through each city along any axis and asks:
                     // Is this city the same city (_id) being highlighted?
@@ -478,6 +502,8 @@ gcif.parallel = (function () {
                         d3.select(this).attr("class").replace("highlight", "unhighlight");
                 });
             });
+
+           d3.selectAll(".parallel.tooltip").remove();
         };
 
         _parallel.data = function(_){
@@ -501,6 +527,12 @@ gcif.parallel = (function () {
         _parallel.metadb = function(_){
             if (!arguments.length) return _metadb();
             _metadb.insert(_);
+            return _parallel;
+        };
+
+        _parallel.default_path_color = function(_){
+            if (!arguments.length) return _default_path_color;
+            _default_path_color = _;
             return _parallel;
         };
 

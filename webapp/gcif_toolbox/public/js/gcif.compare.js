@@ -78,22 +78,42 @@ gcif.compare = (function () {
 
                 '</div>' +
             '</div>'
-    }
+      }
     , stateMap = {
             $container                : undefined
 
           , source                    : undefined
           , cities                    : undefined
           , indicators                : undefined
-          , flagged_indicators        : ["Percentage of population with access to improved sanitation"]
+          , flagged_indicators        : ["Percentage of city population with authorized electrical service"
+                                        ,"Energy consumption of public buildings per year (kWh/m2)"
+                                        ,"Percentage of total energy derived from renewable sources, as a share of the city’s total energy consumption"
+                                        ,"Fine Particulate Matter (PM2,5) concentration"
+                                        ,"Particulate Matter (PM10) concentration"
+                                        ,"Number of natural disaster related deaths per 100 000 population"
+                                        ,"Women as a percentage of total elected to city-level office"
+                                        ,"Number of homicides per 100 000 population"
+                                        ,"Total collected municipal solid waste per capita"
+                                        ,"Kilometres of high capacity public transport system per 100 000 population"
+                                        ,"Kilometres of light passenger public transport system per 100 000 population"
+                                        ,"Total domestic water consumption per capita (litres/day)"
+                                        ,"Percentage of population with access to improved sanitation"
+                                        ,"Percentage of city population with potable water supply service"
+                                        ,"performance,wastewater,Percentage of the city's wastewater that has received no treatment"
+                                        ,"Percentage of the city's wastewater receiving primary treatment"
+                                        ,"Percentage of the city's wastewater receiving secondary treatment"
+                                        ,"Percentage of the city's wastewater receiving tertiary treatment"
+                                        ,"Number of fire related deaths per 100 000 population"
+                                        ,"Percentage of city population living in slums"
+                                         ]
           , theme                     : undefined
           , highlight_selected        : undefined
 
           , cities_db                 : TAFFY()
           , performance_indicators_db : TAFFY()
 
-//          , topThemes                 : ["education","finance","health","safety","urban planning"]
-            , topThemes                 : [	"economy",
+          , topThemes                 : [
+                                            "economy",
                                             "education",
                                             "finance",
                                             "health",
@@ -103,13 +123,13 @@ gcif.compare = (function () {
                                             "technology and innovation",
                                             "transportation",
                                             "urban planning",
-                                            "wastewater",
+//                                            "wastewater",
                                             "water and sanitation",
-//                                            "fire and emergency response",
-//                                            "governance",
-//                                            "energy",
-//                                            "environment",
-//                                            "solid waste"
+                                            "fire and emergency response",
+                                            "governance",
+                                            "energy",
+                                            "environment",
+                                            "solid waste"
                                         ]
           , attendees                 : []
     }
@@ -165,6 +185,7 @@ gcif.compare = (function () {
         parallelChart.datadb( stateMap.cities_db().get() );
         parallelChart.metadb( stateMap.performance_indicators_db().get() );
         parallelChart.dispatch( dispatch );
+        parallelChart.default_path_color("#88c488");
 
         list = gcif.table.Table( d3Map.d3table );
         list.metadb( stateMap.performance_indicators_db().get() );
@@ -183,24 +204,11 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-
         d3.json("/gcif_combined/list", function(city_data) {
-
-            d3.csv("assets/data/attendees.csv", function(att){
-
-                stateMap.attendees =  att.map(function(d){return (d["CityName"]).toLowerCase()});
-
-                dispatch.load_cities(city_data.filter(
-                        function(cityobj){
-//                            return true;
-                            return stateMap.attendees.indexOf((cityobj["CityName"]).toLowerCase()) >= 0;
-                        }
-                    )
-                );
-//                console.log(stateMap.cities.length);
-                dispatch.done_load();
-            });
-
+            dispatch.load_cities(city_data.filter(function(d){
+                return d["Region"] !== "EAST ASIA - PACIFIC";
+            }));
+            dispatch.done_load();
         });
     };
 
@@ -317,7 +325,7 @@ gcif.compare = (function () {
 
                 jqueryMap.$highlight_dropdown
                 .find("option").filter(function() {
-                        return $(this).text() === "Region";
+                        return $(this).text() === "";
                 })
                 .prop('selected', true)
                 ;

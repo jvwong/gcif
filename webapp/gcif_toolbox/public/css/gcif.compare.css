@@ -16,8 +16,8 @@ svg{
 }
 
     .gcif-compare.chart .foreground path.highlight {
-        stroke: orange;
-        stroke-width: 7;
+        stroke: #710909;
+        stroke-width: 5;
     }
 
 
@@ -26,10 +26,6 @@ svg{
     fill-opacity: .7;
     stroke-width: 0.2;
 }
-
-    /*.gcif-compare.chart circle.point.unhighlight {*/
-        /*fill: steelblue;*/
-    /*}*/
 
     .gcif-compare.chart circle.point.highlight {
         fill: orange;
@@ -56,9 +52,9 @@ svg{
 
 /* tooltip  */
 .parallel.tooltip{
-    font-size: 1.0em;
+    font-size: 2em;
     font-weight: 800;
-    color: black;
+    color: #d2047d;
 }
 
 /* legend */
