@@ -81,8 +81,8 @@ gcif.parallel = (function () {
             , horizontalScaling = 0.75
             ;
 
-            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
-//            _width = 3100;
+//            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
+            _width = 3100;
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
             _x.rangePoints([0, _width], 1);
         }
