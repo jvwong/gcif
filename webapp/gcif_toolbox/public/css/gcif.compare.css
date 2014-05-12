@@ -6,18 +6,18 @@ svg{
     fill: none;
     stroke: #ccc;
     stroke-opacity: .4;
-    shape-rendering: crispEdges;
+    /*shape-rendering: crispEdges;*/
 }
 
 .gcif-compare.chart .foreground path {
     fill: none;
     stroke-opacity: .7;
-    stroke-width: 2;
+    stroke-width: 3;
 }
 
     .gcif-compare.chart .foreground path.highlight {
         stroke: #710909;
-        stroke-width: 5;
+        stroke-width: 4;
     }
 
 
@@ -35,61 +35,43 @@ svg{
 .gcif-compare.chart .brush .extent {
     fill-opacity: .3;
     stroke: #fff;
-    shape-rendering: crispEdges;
+    /*shape-rendering: crispEdges;*/
 }
 
 .gcif-compare.chart .axis line, .gcif-compare.chart .axis path {
     fill: none;
     stroke: #000;
-    shape-rendering: crispEdges;
+    /*shape-rendering: crispEdges;*/
 }
 
+
+/* vertical axis label */
 .gcif-compare.chart .axis text {
     text-shadow: 0 1px 0 #fff;
     cursor: move;
     font-size: 0.8em;
 }
 
+/* horizontal axis label */
+.gcif-compare.chart .axis > text {
+    text-shadow: 0 1px 0 #fff;
+    cursor: move;
+    font-size: 1.0em;
+}
+
 /* tooltip  */
 .parallel.tooltip{
-    font-size: 1.2em;
+    font-size: 2.0em;
     font-weight: 800;
     color: #d2047d;
 }
 
 /* legend */
 .gcif-compare.legend{
-    font-size: 1em;
+    font-size: 1.2em;
     margin-top: 2em;
     margin-left: 2em;
 }
-
-.gcif-compare.chart .axis > text {
-    text-shadow: 0 1px 0 #fff;
-    cursor: move;
-    font-size: 1.1em;
-}
-
-
-@media (max-width: 768px) {
-    .gcif-compare.legend{
-        font-size: 0.9em;
-        margin-top: 1em;
-        margin-left: 1em;
-    }
-
-    .gcif-compare.chart .axis > text {
-        text-shadow: 0 1px 0 #fff;
-        cursor: move;
-        font-size: 0.9em;
-    }
-
-}
-
-
-
-
-
 
 
 /*tabular */

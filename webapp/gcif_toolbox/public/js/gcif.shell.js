@@ -47,29 +47,29 @@ gcif.shell = (function () {
 
         sidebar_html : String() +
 
-            ' <div class="container-fluid">' +
+//            ' <div class="container-fluid">' +
                 '<div class="row">' +
-
-                    '<div class="col-sm-3 col-md-2 gcif-shell sidebar">' +
-                        '<ul class="nav nav-sidebar">' +
-                            '<li id="tally"><a href="#">Tally</a></li>' +
-                            '<li id="toolbox"><a href="#">Toolbox</a></li>' +
-                            '<li><a href="#">--</a></li>' +
-                            '<li><a href="#">--</a></li>' +
-                        '</ul>' +
-                    '</div>' +
-
+//
+//                    '<div class="col-sm-3 col-md-2 gcif-shell sidebar">' +
+//                        '<ul class="nav nav-sidebar">' +
+//                            '<li id="tally"><a href="#">Tally</a></li>' +
+//                            '<li id="toolbox"><a href="#">Toolbox</a></li>' +
+//                            '<li><a href="#">--</a></li>' +
+//                            '<li><a href="#">--</a></li>' +
+//                        '</ul>' +
+//                    '</div>' +
+//
                     '<div id="content"></div>' +
-
-                '</div>' +
-            '</div>'
+//
+                '</div>'
+//            '</div>'
     }
     , stateMap = {
         $outerDiv : undefined
     }
     , jqueryMap = {}
     , setJqueryMap
-    , onClickTally, onClickToolbox
+//    , onClickTally, onClickToolbox
     , initModule;
 
     //---------------- END MODULE SCOPE VARIABLES --------------
@@ -85,8 +85,8 @@ gcif.shell = (function () {
             $outerDiv        : $outerDiv
           , $content         : $outerDiv.find('#content')
 
-          , $sidebar_tally   : $outerDiv.find('.gcif-shell.sidebar li#tally')
-          , $sidebar_toolbox : $outerDiv.find('.gcif-shell.sidebar li#toolbox')
+//          , $sidebar_tally   : $outerDiv.find('.gcif-shell.sidebar li#tally')
+//          , $sidebar_toolbox : $outerDiv.find('.gcif-shell.sidebar li#toolbox')
 
         };
     };
@@ -95,13 +95,13 @@ gcif.shell = (function () {
 
 
     //------------------- BEGIN EVENT HANDLERS -------------------
-    onClickTally = function(){
-        gcif.tally.initModule( jqueryMap.$content );
-    };
-
-    onClickToolbox = function(){
-        gcif.toolbox.initModule( jqueryMap.$content );
-    };
+//    onClickTally = function(){
+//        gcif.tally.initModule( jqueryMap.$content );
+//    };
+//
+//    onClickToolbox = function(){
+//        gcif.toolbox.initModule( jqueryMap.$content );
+//    };
 
     //-------------------- END EVENT HANDLERS --------------------
 
@@ -131,10 +131,11 @@ gcif.shell = (function () {
         setJqueryMap();
 
         // event listeners for navbar
-        jqueryMap.$sidebar_tally.on("click", onClickTally);
-        jqueryMap.$sidebar_toolbox.on("click", onClickToolbox);
+//        jqueryMap.$sidebar_tally.on("click", onClickTally);
+//        jqueryMap.$sidebar_toolbox.on("click", onClickToolbox);
 
-        jqueryMap.$sidebar_toolbox.click();
+//        jqueryMap.$sidebar_toolbox.click();
+        gcif.toolbox.initModule( jqueryMap.$content );
     };
     // End PUBLIC method /initModule/
 
