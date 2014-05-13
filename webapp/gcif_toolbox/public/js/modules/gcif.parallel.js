@@ -9,7 +9,7 @@
  regexp : true,    sloppy : true,       vars : false,
  white  : true
  */
-/*global $, d3, gcif*/
+/* global $, d3, gcif */
 
 gcif.parallel = (function () {
 
@@ -519,6 +519,8 @@ gcif.parallel = (function () {
            d3.selectAll(".parallel.tooltip").remove();
         };
 
+
+        //setting data and metadata
         _parallel.data = function(_){
             if (!arguments.length) return _data;
             _data = _;
@@ -526,7 +528,7 @@ gcif.parallel = (function () {
         };
 
         _parallel.datadb = function(_){
-            if (!arguments.length) return _datadb();
+            if (!arguments.length) return _datadb;
             _datadb.insert(_);
             return _parallel;
         };
@@ -538,7 +540,7 @@ gcif.parallel = (function () {
         };
 
         _parallel.metadb = function(_){
-            if (!arguments.length) return _metadb();
+            if (!arguments.length) return _metadb;
             _metadb.insert(_);
             return _parallel;
         };
@@ -549,6 +551,7 @@ gcif.parallel = (function () {
             return _parallel;
         };
 
+        //setting dispatches
         _parallel.dispatch = function(_){
             if (!arguments.length) return _dispatch;
             _dispatch = _;
@@ -581,4 +584,7 @@ gcif.parallel = (function () {
     return { Parallel   : Parallel };
     //------------------- END PUBLIC METHODS ---------------------
 })();
+
+/* NODE-JASMINE testing only */
+module.exports = gcif.parallel;
 

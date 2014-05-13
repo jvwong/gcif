@@ -338,8 +338,13 @@ def main():
     member_data_csv = root + "recent_gcif.csv"
     member_docs = getCityDocs(member_data_csv)
 
-    gcif_handle.gcif_combined.insert(member_docs, safe=True)
-    gcif_handle.member_cities.insert(member_docs, safe=True)
+    for doc in member_docs:
+        if doc.get("CityName") == "TORONTO" or doc.get("CityName") == "AMMAN" or doc.get("CityName") == "BUENOS AIRES" \
+                or doc.get("CityName") == "HAIPHONG" or doc.get("CityName") == "LISBON":
+            print doc
+
+    # gcif_handle.gcif_combined.insert(member_docs, safe=True)
+    # gcif_handle.member_cities.insert(member_docs, safe=True)
     # ### ******************************** gcif DATABASE OPERATIONS ***************************************************
 
 

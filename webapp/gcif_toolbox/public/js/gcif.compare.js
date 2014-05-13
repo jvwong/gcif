@@ -222,10 +222,10 @@ gcif.compare = (function () {
         d3Map.d3graphical_tab.on("click", function(){
            dispatch.click_graph();
         });
+
         d3Map.d3tabular_tab.on("click", function(){
             dispatch.click_table();
         });
-
 
         //data loading
         dispatch.on("load_cities", function(data){

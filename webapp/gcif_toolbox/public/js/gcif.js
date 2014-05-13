@@ -26,3 +26,6 @@ gcif = (function () {
     return { initModule: initModule };
 }());
 
+/* NODE-JASMINE testing only */
+//exports.gcif = gcif;
+

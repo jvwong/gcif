@@ -1,102 +1,99 @@
-svg{
-    /*background-color: lightgoldenrodyellow;*/
-}
+/* chart / graphical */
+    .gcif-compare.chart .background path {
+        fill: none;
+        stroke: #ccc;
+        stroke-opacity: .4;
+        /*shape-rendering: crispEdges;*/
+    }
 
-.gcif-compare.chart .background path {
-    fill: none;
-    stroke: #ccc;
-    stroke-opacity: .4;
-    /*shape-rendering: crispEdges;*/
-}
+    .gcif-compare.chart .foreground path {
+        fill: none;
+        stroke-opacity: .7;
+        stroke-width: 2;
+    }
 
-.gcif-compare.chart .foreground path {
-    fill: none;
-    stroke-opacity: .7;
-    stroke-width: 2;
-}
+        .gcif-compare.chart .foreground path.highlight {
+            /*stroke: #FF0099;*/
+            stroke-width: 8;
+        }
 
-    .gcif-compare.chart .foreground path.highlight {
-        /*stroke: #FF0099;*/
-        stroke-width: 8;
+
+    .gcif-compare.chart circle.point {
+        stroke: black;
+        fill-opacity: .7;
+        stroke-width: 0.2;
+    }
+
+        .gcif-compare.chart circle.point.highlight {
+            fill: orange;
+        }
+
+
+    .gcif-compare.chart .brush .extent {
+        fill-opacity: .3;
+        stroke: #fff;
+        /*shape-rendering: crispEdges;*/
+    }
+
+    .gcif-compare.chart .axis line, .gcif-compare.chart .axis path {
+        fill: none;
+        stroke: #000;
+        /*shape-rendering: crispEdges;*/
     }
 
 
-.gcif-compare.chart circle.point {
-    stroke: black;
-    fill-opacity: .7;
-    stroke-width: 0.2;
-}
-
-    .gcif-compare.chart circle.point.highlight {
-        fill: orange;
+    /* vertical axis label */
+    .gcif-compare.chart .axis text {
+        text-shadow: 0 1px 0 #fff;
+        cursor: move;
+        font-size: 0.8em;
     }
 
-
-.gcif-compare.chart .brush .extent {
-    fill-opacity: .3;
-    stroke: #fff;
-    /*shape-rendering: crispEdges;*/
-}
-
-.gcif-compare.chart .axis line, .gcif-compare.chart .axis path {
-    fill: none;
-    stroke: #000;
-    /*shape-rendering: crispEdges;*/
-}
-
-
-/* vertical axis label */
-.gcif-compare.chart .axis text {
-    text-shadow: 0 1px 0 #fff;
-    cursor: move;
-    font-size: 0.8em;
-}
-
-/* horizontal axis label */
-.gcif-compare.chart .axis > text {
-    text-shadow: 0 1px 0 #fff;
-    cursor: move;
-    font-size: 1.2em;
-}
+    /* horizontal axis label */
+    .gcif-compare.chart .axis > text {
+        text-shadow: 0 1px 0 #fff;
+        cursor: move;
+        font-size: 1.2em;
+    }
 
 /* tooltip  */
-.parallel.tooltip{
-    font-size: 1.2em;
-    font-weight: 800;
-    color: #d2047d;
-}
+    .parallel.tooltip{
+        font-size: 1.2em;
+        font-weight: 800;
+        color: #d2047d;
+    }
 
 /* legend */
-.gcif-compare.legend{
-    font-size: 1.2em;
-    margin-top: 2em;
-    margin-left: 2em;
-}
+    .gcif-compare.legend{
+        font-size: 1.2em;
+        margin-top: 2em;
+        margin-left: 2em;
+    }
 
 
 /*tabular */
-div.gcif-compare.table{
-    margin-top: 2em;
-}
+    div.gcif-compare.table{
+        margin-top: 2em;
+    }
 
-div.gcif-compare.table tbody:nth-child(even)
-{
-    background:rgba(76, 80, 169, 0.10);
-}
+    div.gcif-compare.table tbody:nth-child(even)
+    {
+        background:rgba(76, 80, 169, 0.10);
+    }
 
-div.gcif-compare.table tr:hover td{
-    background-color: rgba(76, 80, 169, 0.10);
-}
+    div.gcif-compare.table tr:hover td{
+        background-color: rgba(76, 80, 169, 0.10);
+    }
 
-.gcif-compare.table th.header{
-    text-align: center;
-}
+    .gcif-compare.table th.header{
+        text-align: center;
+    }
 
-.gcif-compare.table td.indicator{
-    text-align: center;
-}
+    .gcif-compare.table td.indicator{
+        text-align: center;
+    }
 
-.gcif-compare.table td.key.indicator{
-    text-align: left;
-}
+    .gcif-compare.table td.key.indicator{
+        text-align: left;
+    }
 
