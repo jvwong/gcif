@@ -24,8 +24,8 @@ gcif.compare = (function () {
 
             '<div class="row">' +
                 '<ul id="myTab" class="nav nav-tabs">' +
-                    '<li class="active"><a href="#gcif-compare-graphical" data-toggle="tab">Graphical</a></li>' +
-                    '<li class=""><a href="#gcif-compare-tabular" data-toggle="tab">Tablular</a></li>' +
+                    '<li class="active"><a class="gcif-compare-graphical-tab" href="#gcif-compare-graphical" data-toggle="tab">Graphical</a></li>' +
+                    '<li class=""><a class="gcif-compare-tabular-tab" href="#gcif-compare-tabular" data-toggle="tab">Tablular</a></li>' +
                 '</ul>' +
                 '<div id="myTabContent" class="tab-content">' +
                     '<div class="tab-pane fade active in" id="gcif-compare-graphical">' +
@@ -137,7 +137,8 @@ gcif.compare = (function () {
     , jqueryMap = {}, d3Map= {}
     , setJqueryMap, setd3Map
 
-    , dispatch = d3.dispatch("load_cities", "load_indicators", "done_load",
+    , dispatch = d3.dispatch("click_graph", "click_table",
+                             "load_cities", "load_indicators", "done_load",
                              "highlight", "brush", "legend_change", "metadata_load")
 
     , parallelChart, list
@@ -164,6 +165,9 @@ gcif.compare = (function () {
         d3Map = {
               d3compare              : d3.select(".gcif-compare.chart")
 
+            , d3graphical_tab        : d3.select(".gcif-compare-graphical-tab")
+            , d3tabular_tab          : d3.select(".gcif-compare-tabular-tab")
+
             , d3theme_dropdown       : d3.select(".form-group.gcif-compare.graphical.menu select#theme-dropdown")
             , d3highlight_dropdown   : d3.select(".form-group.gcif-compare.graphical.menu select#highlight-dropdown")
 
@@ -185,8 +189,8 @@ gcif.compare = (function () {
         parallelChart.datadb( stateMap.cities_db().get() );
         parallelChart.metadb( stateMap.performance_indicators_db().get() );
         parallelChart.dispatch( dispatch );
-        parallelChart.default_path_color("#88c488");
-//        parallelChart.default_path_color("steelblue");
+//        parallelChart.default_path_color("#88c488");
+        parallelChart.default_path_color("lightgrey");
 
         list = gcif.table.Table( d3Map.d3table );
         list.metadb( stateMap.performance_indicators_db().get() );
@@ -214,6 +218,16 @@ gcif.compare = (function () {
     loadListeners = function(){
         //--------------------- BEGIN EVENT LISTENERS ----------------------
 
+        //tab navigation
+        d3Map.d3graphical_tab.on("click", function(){
+           dispatch.click_graph();
+        });
+        d3Map.d3tabular_tab.on("click", function(){
+            dispatch.click_table();
+        });
+
+
+        //data loading
         dispatch.on("load_cities", function(data){
             stateMap.cities_db.insert(data);
 

@@ -46,7 +46,7 @@ gcif.parallel = (function () {
         , _highlight = null
         , _default_path_color = "steelblue"
 
-        , _colors10 = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
+        , _colors10 = ["#1f77b4", "#ff7f0e", "#d62728", "#9467bd",
                        "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
         , _colors20 = ["#1f77b4", "#ff7f0e", "#ffbb78", "#2ca02c", "#d62728",
                        "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2",
@@ -54,6 +54,7 @@ gcif.parallel = (function () {
                        "#9edae5", "#e7969c", "#7b4173", "#a55194", "#637939"]
 
         , _hcolor = d3.scale.ordinal().domain("").range("steelblue")
+        , _pcolor = d3.scale.ordinal().domain("").range(_colors10.slice(0,9))
 
         , _tooltip
         , _dispatch
@@ -81,15 +82,15 @@ gcif.parallel = (function () {
             , horizontalScaling = 0.75
             ;
 
-//            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
-            _width = 2450;
+            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
+//            _width = 2450;
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
             _x.rangePoints([0, _width], 1);
         }
 
         function renderTooltip(){
 
-            d3.select(".parallel.tooltip").remove();
+            d3.selectAll(".parallel.tooltip").remove();
 
             _tooltip = d3.select("body")
                 .append("div")
@@ -262,6 +263,9 @@ gcif.parallel = (function () {
               g
             , points
             ;
+
+
+
 
             // Add grey background lines for context.
             _background = _svg.append("g")
@@ -438,11 +442,20 @@ gcif.parallel = (function () {
                     });
 
                     //toggle the color of clicked paths
-                    d3.select(this).attr("class", function(d){
+                    d3.select(this)
+                      .attr("stroke", function(d,i){
+                            return d3.select(this).attr("class").search("unhighlight") >= 0 ?
+                                   _pcolor(d["CityName"]) :
+                                   _default_path_color
+                      })
+                      .attr("stroke-width", "8")
+                      .attr("class", function(d){
                         return d3.select(this).attr("class").search("unhighlight") >= 0 ?
                                d3.select(this).attr("class").replace("unhighlight", "highlight") :
                                d3.select(this).attr("class").replace("highlight", "unhighlight");
-                    });
+                    })
+                    ;
+
                 })
                 ;
 
@@ -548,6 +561,15 @@ gcif.parallel = (function () {
             });
 
             _dispatch.on("metadata_load", filterData);
+
+            //tab navigation
+            _dispatch.on("click_graph", function(){
+                d3.selectAll(".parallel.tooltip").style("opacity", "0.9")
+            });
+
+            _dispatch.on("click_table", function(){
+                d3.selectAll(".parallel.tooltip").style("opacity", "0")
+            });
 
             return _parallel;
         };
