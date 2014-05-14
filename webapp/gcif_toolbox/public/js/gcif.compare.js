@@ -232,7 +232,7 @@ gcif.compare = (function () {
             stateMap.cities_db.insert(data);
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(1000).get();
+            stateMap.cities = stateMap.cities_db().limit(50).get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
@@ -262,11 +262,18 @@ gcif.compare = (function () {
                 .text(function(theme) { return theme; });
 
 
-            stateMap.theme = "all";
+            stateMap.theme = "health";
+            jqueryMap.$theme_dropdown
+                .find("option").filter(function() {
+                    return $(this).text() === stateMap.theme;
+                })
+                .prop('selected', true)
+            ;
             stateMap.indicators = (stateMap.performance_indicators_db(function(){
-                return stateMap.topThemes.indexOf(this["theme"]) >= 0 &&
+                return this["theme"] === stateMap.theme && //matches that in stateMap.theme
                     this["core"] === 1 &&
-                    stateMap.flagged_indicators.indexOf(this["indicator"]) < 0;
+                    stateMap.flagged_indicators.indexOf(this["indicator"]) < 0 //not flagged
+                    ;
             }).get())
             .map(function(d){
                return d["indicator"]

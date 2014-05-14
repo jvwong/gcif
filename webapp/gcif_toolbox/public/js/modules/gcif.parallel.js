@@ -46,8 +46,8 @@ gcif.parallel = (function () {
         , _highlight = null
         , _default_path_color = "steelblue"
 
-        , _colors10 = ["#1f77b4", "#ff7f0e", "#d62728", "#9467bd",
-                       "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"]
+        , _colors10 = ["#1f77b4", "#ff7f0e", "#d62728", "#9467bd", "#637939",
+                       "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#9edae5"]
         , _colors20 = ["#1f77b4", "#ff7f0e", "#ffbb78", "#2ca02c", "#d62728",
                        "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2",
                        "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#17becf",
@@ -113,7 +113,7 @@ gcif.parallel = (function () {
                               , height: _height + _margin.top + _margin.bottom
                             })
                             .append("g")
-                            .attr({ class: "body"
+                            .attr({ class: "parallel body"
                                 , transform: "translate(" + _margin.left + "," + _margin.top + ")" })
             ;
         }
@@ -477,6 +477,8 @@ gcif.parallel = (function () {
                 })
             ;
 
+            console.log(_svg);
+
 
         }
 
@@ -586,5 +588,5 @@ gcif.parallel = (function () {
 })();
 
 /* NODE-JASMINE testing only */
-module.exports = gcif.parallel;
+//module.exports = gcif.parallel;
 
