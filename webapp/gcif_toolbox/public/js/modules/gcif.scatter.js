@@ -25,26 +25,6 @@ gcif.scatter = (function () {
     var
     Scatter = function( d3container ) {
 
-        var _configMap = {
-
-            main_html : String() +
-
-                '<div class="title"></div>' +
-                '<form class="form" role="form">' +
-                    '<div class="form-group gcif-correlate graphical menu">' +
-                        '<label for="xVal-dropdown" class="col-sm-1 control-label">X Axis</label>' +
-                        '<div class="col-sm-11">' +
-                            '<select id="xVal-dropdown" class="form-control"></select>' +
-                        '</div>' +
-                        '<label for="yVal-dropdown" class="col-sm-1 control-label">Y Axis</label>' +
-                        '<div class="col-sm-11">' +
-                            '<select id="yVal-dropdown" class="form-control"></select>' +
-                        '</div>' +
-                    '</div>' +
-                '</form>'
-
-        };
-
         var _scatter = {};
 
         var
@@ -148,7 +128,7 @@ gcif.scatter = (function () {
                               , height: _height + _margin.top + _margin.bottom
                             })
                             .append("g")
-                            .attr({ class: "body"
+                            .attr({ class: "scatter body"
                                   , transform: "translate(" + _margin.left + "," + _margin.top + ")" })
             ;
         }
@@ -322,6 +302,7 @@ gcif.scatter = (function () {
                         .style("opacity", 0);
             })
             ;
+//            console.log(_svg);
         }
 
 

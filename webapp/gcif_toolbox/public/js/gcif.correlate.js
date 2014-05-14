@@ -172,10 +172,10 @@ gcif.correlate = (function () {
         });
 
         dispatch.on("load_cities", function(data){
-            stateMap.cities_db.insert(data);
+            stateMap.cities_db.insert(data.slice(0,50));
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(1000).get();
+            stateMap.cities = stateMap.cities_db().get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")
@@ -276,6 +276,8 @@ gcif.correlate = (function () {
 
                 , query = {}
                 , operator = []
+
+                , city_cache = []
                 ;
 
             // initialize the query object with a column {column:}
@@ -345,6 +347,7 @@ gcif.correlate = (function () {
                     ;
 
 
+                //design note: these city objects should be cached somewhere rather than hitting the TAFFY database
                 if(index >= 0){
 
                     // d is being removed
@@ -356,8 +359,7 @@ gcif.correlate = (function () {
                     //filter out the array for the relevant items
                     if(bins){
                         stateMap.cities = stateMap.cities.filter(function(cityobj){
-                            return cityobj[highlight] < +interval[0] ||
-                                cityobj[highlight] >= +interval[1];
+                            return cityobj[highlight] < +interval[0] ||  cityobj[highlight] >= +interval[1];
                         });
                     }else{
                         stateMap.cities = stateMap.cities.filter(function(cityobj){
@@ -366,7 +368,6 @@ gcif.correlate = (function () {
                     }
 
                 }else{
-
                     // d needs to be added back
                     legend_queue.push(prefix + String(d));
                     clean_legend_queue.push(clean_name);
@@ -383,8 +384,6 @@ gcif.correlate = (function () {
                         stateMap.cities = stateMap.cities.concat( stateMap.cities_db(query).get() );
                     }
                 }
-
-//                updateAll();
                 redraw();
             });
 
@@ -396,7 +395,7 @@ gcif.correlate = (function () {
     };
     // --------------------- END EVENT LISTENERS ----------------------
 
-    redraw = function(isRescaled){
+    redraw = function(){
 
         d3.transition()
             .duration(500)
@@ -408,11 +407,6 @@ gcif.correlate = (function () {
         scatter.yValue( stateMap.yValue );
         scatter.data( stateMap.cities );
         scatter.render();
-    }
-
-    function updateAll(){
-        scatter.data( stateMap.cities );
-        scatter.update();
     }
 
     // BEGIN public method /render/

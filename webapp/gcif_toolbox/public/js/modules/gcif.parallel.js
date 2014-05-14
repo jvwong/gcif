@@ -408,7 +408,7 @@ gcif.parallel = (function () {
                     if (d3.selectAll(".parallel.tooltip." + d["___id"]).empty()){
                         tooltip = d3.select("body")
                                 .append("div")
-                                .attr("class", "parallel tooltip " + d["___id"])
+                                .attr("class", "parallel tooltip click " + d["___id"])
                                 .style("opacity", 0)
                             ;
 
@@ -420,7 +420,7 @@ gcif.parallel = (function () {
                             .style("top", (d3.event.pageY - 20) + "px");
 
                     }else{
-                        d3.selectAll(".parallel.tooltip." + d["___id"]).remove();
+                        d3.selectAll(".parallel.tooltip.click." + d["___id"]).remove();
                     }
 
                     var pathdata = d3.select(this).data()[0];
@@ -477,9 +477,7 @@ gcif.parallel = (function () {
                 })
             ;
 
-            console.log(_svg);
-
-
+//            console.log(_svg);
         }
 
         _parallel.render = function() {
@@ -518,7 +516,7 @@ gcif.parallel = (function () {
                 });
             });
 
-           d3.selectAll(".parallel.tooltip").remove();
+           d3.selectAll(".parallel.tooltip.click").remove();
         };
 
 

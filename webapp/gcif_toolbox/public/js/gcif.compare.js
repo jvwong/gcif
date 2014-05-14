@@ -189,7 +189,6 @@ gcif.compare = (function () {
         parallelChart.datadb( stateMap.cities_db().get() );
         parallelChart.metadb( stateMap.performance_indicators_db().get() );
         parallelChart.dispatch( dispatch );
-//        parallelChart.default_path_color("#88c488");
         parallelChart.default_path_color("lightgrey");
 
         list = gcif.table.Table( d3Map.d3table );
@@ -229,10 +228,10 @@ gcif.compare = (function () {
 
         //data loading
         dispatch.on("load_cities", function(data){
-            stateMap.cities_db.insert(data);
+            stateMap.cities_db.insert(data.slice(0,50));
 
             //by default, cache the top member cities in the stateMap
-            stateMap.cities = stateMap.cities_db().limit(50).get();
+            stateMap.cities = stateMap.cities_db().get();
 
             //setup the highlight drop down
             d3Map.d3highlight_dropdown.selectAll("option")

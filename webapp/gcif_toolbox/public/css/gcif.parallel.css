@@ -6,7 +6,7 @@
     fill: none;
     stroke: #ccc;
     stroke-opacity: .4;
-    /*shape-rendering: crispEdges;*/
+    shape-rendering: crispEdges;
 }
 
 .parallel.body .foreground path {
@@ -15,6 +15,9 @@
     stroke-width: 2;
 }
 
+    .parallel.body .foreground path.unhighlight {
+        stroke: #ccc;
+    }
     .parallel.body .foreground path.highlight {
         stroke-width: 8;
     }
