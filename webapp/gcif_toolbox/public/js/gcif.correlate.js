@@ -172,7 +172,7 @@ gcif.correlate = (function () {
         });
 
         dispatch.on("load_cities", function(data){
-            stateMap.cities_db.insert(data.slice(0,50));
+            stateMap.cities_db.insert(data.slice(0));
 
             //by default, cache the top member cities in the stateMap
             stateMap.cities = stateMap.cities_db().get();
