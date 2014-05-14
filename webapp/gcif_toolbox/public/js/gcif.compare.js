@@ -188,7 +188,7 @@ gcif.compare = (function () {
             , d3export_csv           : d3.select(".btn-group.gcif-compare.tabular button#export-csv")
             , d3downloadanchor       : d3.select(".btn-group.gcif-compare.tabular a")
 
-            , d3legend                : d3.select(".gcif-compare.legend")
+            , d3legend               : d3.select(".gcif-compare.legend")
         };
     };
 
@@ -197,7 +197,7 @@ gcif.compare = (function () {
         parallelChart.datadb( stateMap.cities_db().get() );
         parallelChart.metadb( stateMap.performance_indicators_db().get() );
         parallelChart.dispatch( dispatch );
-        parallelChart.default_path_color("lightgrey");
+        parallelChart.default_path_color( "lightgrey" );
 
         list = gcif.table.Table( d3Map.d3table );
         list.metadb( stateMap.performance_indicators_db().get() );

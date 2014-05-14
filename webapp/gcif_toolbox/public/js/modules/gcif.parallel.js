@@ -59,34 +59,33 @@ gcif.parallel = (function () {
         , _tooltip
         , _dispatch
 
+        , _debug_mode = false
+
 
         ;
 
 
-        function filterData(metad){
-            //This is what a schema is for
-            _data = _data.filter(function(d){
-
-                return metad.every(function(metaheader){
-                    return (d[metaheader] !== undefined);
-                });
-
-            });
-        }
-
-
         /* sets the svg dimensions based upon the current browser window */
         function setsvgdim(){
+
             var
-              verticalScaling = 0.60
-            , horizontalScaling = 0.75
-            , numDimension = _metadata.length
-            , resize_width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width])
-            , fix_width = d3.max([(100 * numDimension), (resize_width *2) ])
+                verticalScaling = 0.60
+                , horizontalScaling = 0.75
+                , numDimension = _metadata.length
             ;
 
-            _width  = numDimension > 4 ? fix_width : resize_width;
-            _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
+            if(_debug_mode){
+                _width  = 250;
+                _height = 250;
+            }else{
+                var resize_width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width])
+                , fix_width = d3.max([(100 * numDimension), (resize_width *2) ])
+                ;
+
+                _width  = numDimension > 4 ? fix_width : resize_width;
+                _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
+
+            }
             _x.rangePoints([0, _width], 1);
         }
 
@@ -95,10 +94,10 @@ gcif.parallel = (function () {
             d3.selectAll(".parallel.tooltip").remove();
 
             _tooltip = d3.select("body")
-                .append("div")
-                .attr("class", "parallel tooltip")
-                .style("opacity", 0)
-                ;
+                         .append("div")
+                         .attr("class", "parallel tooltip")
+                         .style("opacity", 0)
+                         ;
 
         }
 
@@ -489,6 +488,17 @@ gcif.parallel = (function () {
             renderAxes();
             renderTooltip();
             renderBody();
+//                d3.select('svg')
+//                    .select('g')
+//                    .selectAll(".dimension")
+//                    .selectAll(".axis")
+//                    .each(function(d){
+//                        console.log(d3.select(this).data())
+//                    })
+//            ;
+//
+//            console.log(_svg);
+
         };
 
         _parallel.clearBrush = function(d3brushes){
@@ -497,9 +507,6 @@ gcif.parallel = (function () {
                 d3.select(this).call( _y[indicator].brush );
                 d3.select(this).call( brush );
             })
-        };
-
-         _parallel.subsetBrush = function(){
         };
 
         _parallel.clearHighlight = function(d3paths, d3points){
@@ -565,8 +572,6 @@ gcif.parallel = (function () {
                 _dispatch.legend_change(_highlight, _hcolor);
             });
 
-            _dispatch.on("metadata_load", filterData);
-
             //tab navigation
             _dispatch.on("click_graph", function(){
                 d3.selectAll(".parallel.tooltip").style("opacity", "0.9")
@@ -579,6 +584,12 @@ gcif.parallel = (function () {
             return _parallel;
         };
 
+        _parallel.debug = function(_){
+            if(!arguments.length) return _debug_mode;
+            _debug_mode = _;
+            return _parallel;
+        };
+
         return _parallel;
 
     };//END /Parallel/
@@ -586,7 +597,3 @@ gcif.parallel = (function () {
     return { Parallel   : Parallel };
     //------------------- END PUBLIC METHODS ---------------------
 })();
-
-/* NODE-JASMINE testing only */
-//module.exports = gcif.parallel;
-

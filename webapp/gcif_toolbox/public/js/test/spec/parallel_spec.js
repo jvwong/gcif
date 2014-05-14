@@ -1,18 +1,24 @@
-describe('testChart', function () {
+describe('Parallel Chart', function () {
 
     global.jQuery = require('jquery');
     global.$      = global.jQuery;
     global.d3     = require('d3');
     global.TAFFY  = require('../../lib/taffydb/taffy-min.js').taffy;
 
+    var jsdom = require("jsdom").jsdom;
+    var document = jsdom("<html><head></head><body><div></div></body></html>");
+    window = document.parentWindow;
+
     global.gcif = null;
     require("../../gcif");
     require("../../modules/gcif.parallel");
+    require("../../modules/gcif.util");
 
     var div
         , parallel
         , cities
         , indicators
+        , margin = { top: 25, right: 5, bottom: 150, left: 5 }
         , data = [
               {'Children completing primary education': '', 'Number of Teachers': '1', 'Tonnes of solid waste that is burned openly': '', 'Electrical use in kilowatt hours per year': '', 'Kilometres of high capacity public transport system per 100 000 population': '0', 'Students completing primary and secondary education': '18936', 'Persons per unit': '5', 'Number of higher education degrees per 100,000': '1094.81', 'Number of transit trips': '', 'Annual number of public transport trips per capita': '0', 'Children completing secondary education': '18936', 'City product per capita (USD)': '5232.04', 'Percentage of students completing secondary education': '50.15', 'Percentage of city population served by wastewater collection': '80.9', 'Capital spending as percentage of total expenditures': '13.1', "City's unemployment rate": '11.7', 'Total amount of solid waste': '1', 'Volume of water receiving primary treatment': '', 'Number of police officers': '', 'Voter participation in last municipal election (as a percent of eligible voters)': '48', 'Tax collected as percentage of tax billed': '71.8', "Percentage of the city's wastewater receiving tertiary treatment": '0', 'Percentage of population that are adult (aged 25-64)': '37.58', 'Total water consumption per capita (litres/day)': '151.12', 'Number of nursing and midwifery personnel per 100,000 population': '274.04', "City product as percentage of Country's GDP": '24.9', 'Percentage of female school-aged population enrolled in schools': '89.19', 'Gross operating budget per capita (USD)': '', 'Number of two-wheel motorized vehicles per capita': '0', 'Population living in slums': '188003', 'Total long-term debt servicing costs': '', 'CityUniqueID': '45', 'City product per capita': '3831', 'Region': 'WEST ASIA - NORTH AFRICA', 'Percentage of population that are youth (aged 15-24)': '21.56', 'Total km of high capacity public transportation system': '', 'Residential electrical use in kilowatt hours per year': '', 'Volume of water receiving secondary treatment': '', 'Population Dependency Ratio': '47', 'Gross operating budget (USD)': '', 'Number of homicides per 100 000 population': '30.16', 'Volume of water receiving tertiary treatment': '', "Percentage of the city's wastewater that has received no treatment": '0', 'Number of violent crimes': '', 'Number of Students': '', "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)": '62', 'Number of jobs in the cultural sector': '11000', 'Percentage of students completing primary and secondary education: survival rate': '14.31', 'Commercial Air Connectivity (number of nonstop commercial air destinations)': '0.1', 'Primary education student/teacher ratio': '17.22', 'Total own source revenue': '1', 'Total revenue': '1', 'The average number of electrical interruptions per customer per year': '360', 'Total city population': '2419600', 'Number of local officials elected to office': '', 'Volume of air sampled': '', 'Labour force': '1', 'Public outdoor recreation space in square meters': '', 'Average annual rainfall (mm)': '265', 'Total number of school aged population': '1', 'Number of cell phone connections per 100 000 population': '140638.7', 'Total number of customer interruptions per year': '', 'CityName': 'AMMAN', 'Total employment': '167391', 'Number of physicians': '', 'Total electrical use per capita (kWh/year)': '2160', 'Number of new patents per year': '', 'Average life expectancy': '73.3', 'Climate Type': 'MEDITERRANEAN', 'Public indoor recreation space in square meters': '', 'Particulate Matter (PM10) concentration': '30', 'Land Area (Square Kilometers)': '1670', 'Volume of water receiving no treatment': '', 'Annual average temperature (Celsius)': '18', 'Annual population change': '', 'Population density (per square kilometer)': '1448.8', 'Size of informal settlements': '', 'Total number of jobs': '492994', 'Fine Particulate Matter (PM2,5) concentration': '', "Country's GDP (USD)": '31243324000', 'Population': '1', 'Percentage of non-residential area (square kilometers)': '39.12', 'Total number of female school aged population': '1', 'Percentage of city population with potable water supply service': '99.8', 'Eligible voters': '503166', "Percentage of the city's solid waste that is disposed of in a sanitary landfill": '100', "Percentage of the city's solid waste that is disposed of in an open dump": '0', 'Percentage of students completing primary education': '95.96', 'Participating voters': '241520', 'Number of male school aged population enrolled at primary and secondary levels in public and private schools': '', 'Tonnes disposed of by other means': '', 'Number of internet connections': '', 'Percentage of school-aged  population enrolled in schools': '89.17', 'Population with access to the following types of water supply: piped water, public tap, borehole or pump, protected well, prote': '', 'Percentage of women employed in the city government workforce': '15.12', 'Total residential electrical energy use per capita (kWh/year)': '1800', 'Percentage of city population with sustainable access to an improved water source': '99.8', 'Response time for fire department from initial call': '10.8', 'Assessed value of commercial and industrial properties as a percentage of total assessed value of all properties': '11.1', 'Total number of male school aged population': '1', 'Sum of all customer interruption duration': '', 'Average length of electrical interruptions (in hours)': '6', 'Number of Firefighters': '', 'Number of cell phone connections': '', 'Total domestic water consumption per capita (litres/day)': '151.12', 'Number of firefighters per 100 000 population': '35.09', 'Percentage of persons in full time employment': '40.5', 'Number of children in school cohort': '37762', 'Employment percentage change since base year (Base Year is 1991)': '', 'Number of new patents per 100,000 per year': '0.16', 'Total Population': '1', 'Income distribution (Gini Coefficient)': '0.44', 'Number of women employees in the city government workforce': '', 'Type of government (e,g, Local, Regional, County)': 'LOCAL', 'Areal size of informal settlements as a percent of city area': '0.09', 'Total mass of collected particles in the PM10 size range': '', "Percentage of city's solid waste that is recycled": '0', "Percentage of the city's solid waste that is burned openly": '0', 'Greenhouse gas emissions measured in tonnes per capita': '2.17', 'Number of personal automobiles per capita': '0.18', "Percentage of the city's wastewater receiving primary treatment": '0', 'Tax billed': '1', 'Volume of all wastewater collected': '1', 'Total city area': '1', 'Population living in poverty': '', 'Number of post-secondary degrees': '', 'Number of female school aged population enrolled at primary and secondary levels in public and private schools': '', 'Average annual snowfall (cm)': '', 'Tonnes disposed of in a sanitary landfill': '', 'Transportation fatalities per 100,000 population': '9.7', 'Kilometres of light passenger public transport system per 100 000 population': '40.03', 'Number of people within the city that are served by a potable water supply': '', 'Violent crime rate per 100,000 population': '194.55', "Percentage of the city's solid waste that is disposed of by other means": '0', 'Tonnes disposed of in an incinerator': '', 'Percentage of water loss': '33.7', 'Gross capital budget (USD)': '', 'Total expenditures': '1', "Percentage of the city's wastewater receiving secondary treatment": '100', "Citizen's representation: number of local officials elected to office per 100,000 population": '1.22', 'Average annual hours of water service interruption per household': '', 'Number of people served by wastewater collection': '', 'Number of internet connections per 100 000 population': '4096.99', 'Number of fire related deaths': '', 'Employment percentage change based on the last 5 years': '6.9', 'Cost of living': '', 'Number of nurses and midwives': '', 'Number of fire related deaths per 100 000 population': '0.57', 'Percentage of population that are senior citizens (aged 65+)': '3.23', 'Number of in-patient hospital beds per 100 000 population': '245.01', 'Number of homeless people per 100,000 population': '0.09', 'City product': '', 'Under age five mortality': '', 'Square meters of public indoor recreation space per capita': '0.53', 'Number of pupils in school cohort': '1', 'Population with authorized electrical service': '', 'Total number of school aged population enrolled at primary and secondary schools in public and private schools': '', "Country's GDP per capita (USD)": '4945.13', 'Total number of registered automobiles': '', 'Dwelling density (per Square Kilometer)': '', 'Sum of each interruption of hours of service interrupted times number of households impacted': '', 'City unemployment rate': '10.3', 'Total water consumption in litres per day': '', "Percentage of country's population": '38.72', 'Total number of households': '483920', 'Own-source revenue as a percent of total revenues': '22.3', 'Number of telephone connections (landlines and cell phones) per 100,000 population': '98100', 'Number of dwelling units': '433609', 'Number of businesses per 1000 Population': '', 'Total number of unemployed': '', "Percentage of the city's solid waste that is disposed of in an incinerator": '0', 'Tonnes disposed of in an open dump': '', 'Total number of customers served per year': '1', 'Annual inflation rate based on average of last 5 years': '6.9', 'Gross capital budget per capita (USD)': '', 'Capital spending': '', 'Own-source revenue': '', 'Total amount of waste': '1', 'Green area (hectares) per 100 000 population': '807.24', 'Percentage of population that are new immigrants': '5.9', 'Number of police officers per 100 000 population': '190.31', 'Total domestic water consumption in litres per day': '', 'Percentage of city population with authorized electrical service': '99.9', 'Number of physicians per 100 000 population': '113.93', 'Square metres of public outdoor recreation space per capita': '0.72', 'Number of landline phone connections': '', 'Total number of customer interruptions': '1', 'Percentage of city population living in poverty': '24.6', 'Number of live births divided by 1,000': '1', 'Percentage of jobs in the cultural sector': '6.57', 'Number of homeless people': '', 'Population with regular solid waste collection': '', 'Under age five mortality per 1000 live births': '21', 'Percentage of city population with regular solid waste collection (residential)': '100', 'Number of households without registered legal title': '', 'Country': 'JORDAN', 'Tonnes recycled': '', 'Green area in hectares': '', 'Population percentage change since base year (base year is 1991)': '143.9', 'Number of students in school cohort': '132365', 'Average household income (USD)': '4505.54', 'Total number of transportation fatalities': '', 'Greenhouse gas emissions in tonnes': '12999700', 'Total population': '5980000', 'Total km of light transit transportation system': '', 'Population divided by 100,000': '1', 'Number of persons in full time employment': '', 'Tax collected': '', 'Total mass of collected particles that are 2,5 microns or less in diameter': '', 'Jobs/Housing ratio': '1.14', 'Total number of employees in the city government workforce': '1', 'Percentage of population that are migrating from elsewhere in the country': '', 'Total number of occupied dwelling units (owned & rented)': '433609', 'Number of telephone connections in the city including land lines and cellular connections': '', 'Percentage of households that exist without registered legal titles': '0', 'Male to female ratio (# of males per 100 females)': '105.8', 'Number of landline phone connections per 100,000 population': '10745.61', 'Percentage of male population enrolled in schools': '86.81', 'Number of homicides': '', 'Number of in-patient hospital beds': '', 'Percentage of population that are children (aged 0-14)': '24.72', 'Total number of two-wheel motorized vehicles': '', 'Percentage of city population living in slums': '8.3', 'Total population divided by 100,000': '1'}
             , {'Children completing primary education': '', 'Number of Teachers': '1', 'Tonnes of solid waste that is burned openly': '', 'Electrical use in kilowatt hours per year': '1150280', 'Kilometres of high capacity public transport system per 100 000 population': '167.75', 'Students completing primary and secondary education': '', 'Persons per unit': '2.3', 'Number of higher education degrees per 100,000': '39600', 'Number of transit trips': '823693000', 'Annual number of public transport trips per capita': '285', 'Children completing secondary education': '', 'City product per capita (USD)': '24821', 'Percentage of students completing secondary education': '94.1', 'Percentage of city population served by wastewater collection': '98', 'Capital spending as percentage of total expenditures': '1.56', "City's unemployment rate": '5.9', 'Total amount of solid waste': '', 'Volume of water receiving primary treatment': '', 'Number of police officers': '19400', 'Voter participation in last municipal election (as a percent of eligible voters)': '74.2', 'Tax collected as percentage of tax billed': '', "Percentage of the city's wastewater receiving tertiary treatment": '', 'Percentage of population that are adult (aged 25-64)': '53.6', 'Total water consumption per capita (litres/day)': '669', 'Number of nursing and midwifery personnel per 100,000 population': '245.29', "City product as percentage of Country's GDP": '23', 'Percentage of female school-aged population enrolled in schools': '99.4', 'Gross operating budget per capita (USD)': '2587', 'Number of two-wheel motorized vehicles per capita': '1', 'Population living in slums': '', 'Total long-term debt servicing costs': '', 'CityUniqueID': '366', 'City product per capita': '', 'Region': 'LATIN AMERICA - CARIBBEAN', 'Percentage of population that are youth (aged 15-24)': '13.7', 'Total km of high capacity public transportation system': '48479', 'Residential electrical use in kilowatt hours per year': '4389078000', 'Volume of water receiving secondary treatment': '', 'Population Dependency Ratio': '48', 'Gross operating budget (USD)': '7478409091', 'Number of homicides per 100 000 population': '6.57', 'Volume of water receiving tertiary treatment': '', "Percentage of the city's wastewater that has received no treatment": '1', 'Number of violent crimes': '466', 'Number of Students': '', "Debt service ratio (debt service expenditure as a percent of a municipality's own-source revenue)": '23', 'Number of jobs in the cultural sector': '', 'Percentage of students completing primary and secondary education: survival rate': '96.9', 'Commercial Air Connectivity (number of nonstop commercial air destinations)': '50', 'Primary education student/teacher ratio': '142', 'Total own source revenue': '1', 'Total revenue': '1', 'The average number of electrical interruptions per customer per year': '6', 'Total city population': '2890151', 'Number of local officials elected to office': '', 'Volume of air sampled': '', 'Labour force': '1', 'Public outdoor recreation space in square meters': '', 'Average annual rainfall (mm)': '1215', 'Total number of school aged population': '1', 'Number of cell phone connections per 100 000 population': '138408.3', 'Total number of customer interruptions per year': '', 'CityName': 'BUENOS AIRES', 'Total employment': '2800000', 'Number of physicians': '30696', 'Total electrical use per capita (kWh/year)': '0.4', 'Number of new patents per year': '', 'Average life expectancy': '76', 'Climate Type': 'MARITIME CLIMATE', 'Public indoor recreation space in square meters': '9488419', 'Particulate Matter (PM10) concentration': '33', 'Land Area (Square Kilometers)': '203', 'Volume of water receiving no treatment': '', 'Annual average temperature (Celsius)': '17.9', 'Annual population change': '0.46', 'Population density (per square kilometer)': '15013', 'Size of informal settlements': '2', 'Total number of jobs': '2800000', 'Fine Particulate Matter (PM2,5) concentration': '', "Country's GDP (USD)": '470532788510', 'Population': '2890000', 'Percentage of non-residential area (square kilometers)': '35.6', 'Total number of female school aged population': '1', 'Percentage of city population with potable water supply service': '100', 'Eligible voters': '1', "Percentage of the city's solid waste that is disposed of in a sanitary landfill": '95', "Percentage of the city's solid waste that is disposed of in an open dump": '', 'Percentage of students completing primary education': '99.8', 'Participating voters': '', 'Number of male school aged population enrolled at primary and secondary levels in public and private schools': '', 'Tonnes disposed of by other means': '', 'Number of internet connections': '4748324', 'Percentage of school-aged  population enrolled in schools': '99.1', 'Population with access to the following types of water supply: piped water, public tap, borehole or pump, protected well, prote': '', 'Percentage of women employed in the city government workforce': '563', 'Total residential electrical energy use per capita (kWh/year)': '1518.63', 'Percentage of city population with sustainable access to an improved water source': '99', 'Response time for fire department from initial call': '15', 'Assessed value of commercial and industrial properties as a percentage of total assessed value of all properties': '22.2', 'Total number of male school aged population': '1', 'Sum of all customer interruption duration': '', 'Average length of electrical interruptions (in hours)': '', 'Number of Firefighters': '1040', 'Number of cell phone connections': '4000000', 'Total domestic water consumption per capita (litres/day)': '600', 'Number of firefighters per 100 000 population': '35.99', 'Percentage of persons in full time employment': '263', 'Number of children in school cohort': '1', 'Employment percentage change since base year (Base Year is 1991)': '', 'Number of new patents per 100,000 per year': '', 'Total Population': '2890151', 'Income distribution (Gini Coefficient)': '0.41', 'Number of women employees in the city government workforce': '', 'Type of government (e,g, Local, Regional, County)': 'LOCAL', 'Areal size of informal settlements as a percent of city area': '0.99', 'Total mass of collected particles in the PM10 size range': '', "Percentage of city's solid waste that is recycled": '5', "Percentage of the city's solid waste that is burned openly": '', 'Greenhouse gas emissions measured in tonnes per capita': '19', 'Number of personal automobiles per capita': '0.45', "Percentage of the city's wastewater receiving primary treatment": '', 'Tax billed': '', 'Volume of all wastewater collected': '1', 'Total city area': '203', 'Population living in poverty': '', 'Number of post-secondary degrees': '1144440', 'Number of female school aged population enrolled at primary and secondary levels in public and private schools': '', 'Average annual snowfall (cm)': '0', 'Tonnes disposed of in a sanitary landfill': '', 'Transportation fatalities per 100,000 population': '6.61', 'Kilometres of light passenger public transport system per 100 000 population': '4.29', 'Number of people within the city that are served by a potable water supply': '', 'Violent crime rate per 100,000 population': '16.12', "Percentage of the city's solid waste that is disposed of by other means": '1', 'Tonnes disposed of in an incinerator': '', 'Percentage of water loss': '41', 'Gross capital budget (USD)': '1312727273', 'Total expenditures': '127322338', "Percentage of the city's wastewater receiving secondary treatment": '', "Citizen's representation: number of local officials elected to office per 100,000 population": '51', 'Average annual hours of water service interruption per household': '', 'Number of people served by wastewater collection': '', 'Number of internet connections per 100 000 population': '164301.87', 'Number of fire related deaths': '6', 'Employment percentage change based on the last 5 years': '15', 'Cost of living': '250', 'Number of nurses and midwives': '7089', 'Number of fire related deaths per 100 000 population': '0.21', 'Percentage of population that are senior citizens (aged 65+)': '16', 'Number of in-patient hospital beds per 100 000 population': '257.37', 'Number of homeless people per 100,000 population': '6', 'City product': '', 'Under age five mortality': '', 'Square meters of public indoor recreation space per capita': '3.28', 'Number of pupils in school cohort': '1', 'Population with authorized electrical service': '', 'Total number of school aged population enrolled at primary and secondary schools in public and private schools': '', "Country's GDP per capita (USD)": '11452', 'Total number of registered automobiles': '1300000', 'Dwelling density (per Square Kilometer)': '7049', 'Sum of each interruption of hours of service interrupted times number of households impacted': '', 'City unemployment rate': '59', 'Total water consumption in litres per day': '1933511019', "Percentage of country's population": '7.1', 'Total number of households': '1150134', 'Own-source revenue as a percent of total revenues': '92', 'Number of telephone connections (landlines and cell phones) per 100,000 population': '172185.95', 'Number of dwelling units': '1200000', 'Number of businesses per 1000 Population': '2321', 'Total number of unemployed': '', "Percentage of the city's solid waste that is disposed of in an incinerator": '', 'Tonnes disposed of in an open dump': '', 'Total number of customers served per year': '1', 'Annual inflation rate based on average of last 5 years': '15', 'Gross capital budget per capita (USD)': '454', 'Capital spending': '1985652', 'Own-source revenue': '', 'Total amount of waste': '1', 'Green area (hectares) per 100 000 population': '95.12', 'Percentage of population that are new immigrants': '2.2', 'Number of police officers per 100 000 population': '671.28', 'Total domestic water consumption in litres per day': '', 'Percentage of city population with authorized electrical service': '99.51', 'Number of physicians per 100 000 population': '1062.15', 'Square metres of public outdoor recreation space per capita': '464', 'Number of landline phone connections': '976174', 'Total number of customer interruptions': '', 'Percentage of city population living in poverty': '7.1', 'Number of live births divided by 1,000': '1', 'Percentage of jobs in the cultural sector': '43', 'Number of homeless people': '', 'Population with regular solid waste collection': '2832347', 'Under age five mortality per 1000 live births': '8', 'Percentage of city population with regular solid waste collection (residential)': '98', 'Number of households without registered legal title': '135716', 'Country': 'ARGENTINA', 'Tonnes recycled': '', 'Green area in hectares': '2749', 'Population percentage change since base year (base year is 1991)': '', 'Number of students in school cohort': '1', 'Average household income (USD)': '1303', 'Total number of transportation fatalities': '191', 'Greenhouse gas emissions in tonnes': '', 'Total population': '1', 'Total km of light transit transportation system': '1240', 'Population divided by 100,000': '', 'Number of persons in full time employment': '', 'Tax collected': '', 'Total mass of collected particles that are 2,5 microns or less in diameter': '', 'Jobs/Housing ratio': '2.33', 'Total number of employees in the city government workforce': '1', 'Percentage of population that are migrating from elsewhere in the country': '26.2', 'Total number of occupied dwelling units (owned & rented)': '1082998', 'Number of telephone connections in the city including land lines and cellular connections': '4976174', 'Percentage of households that exist without registered legal titles': '11.8', 'Male to female ratio (# of males per 100 females)': '85.2', 'Number of landline phone connections per 100,000 population': '33777.65', 'Percentage of male population enrolled in schools': '99', 'Number of homicides': '190', 'Number of in-patient hospital beds': '7438', 'Percentage of population that are children (aged 0-14)': '16.3', 'Total number of two-wheel motorized vehicles': '', 'Percentage of city population living in slums': '5.7', 'Total population divided by 100,000': '28.9'}
@@ -32,15 +38,87 @@ describe('testChart', function () {
         ];
 
     beforeEach(function(){
+        this.addMatchers({
+            toBeEmpty: function() {
+                return this.actual.empty();
+            }
+        });
+
         div = d3.select('body').append('div');
         parallel = gcif.parallel.Parallel(div);
+        parallel.debug(true);
+
         cities = TAFFY(data);
         indicators = TAFFY(metadata);
     });
 
+    describe('.render', function () {
+        var dispatch;
+        console.log(metadata.map(function(d){return d["indicator"]}));
 
-    describe('.data, .datadb, .metadata, and .metadb', function () {
+        beforeEach(function(){
+            dispatch = d3.dispatch("click_graph", "click_table", "load_cities", "load_indicators",
+                "done_load", "highlight", "brush", "legend_change", "metadata_load");
+            parallel.dispatch( dispatch );
 
+            parallel.data( data );
+//            parallel.metadata( metadata.map(function(d){return d["indicator"]}) );
+            parallel.metadb( metadata );
+            parallel.datadb( data );
+            parallel.default_path_color( "lightgrey" );
+        });
+
+        describe('svg', function () {
+            it('should generate svg', function () {
+                parallel.render();
+                expect(svg()).not.toBeEmpty();
+            });
+
+            it('should set default svg height and width', function () {
+                parallel.render();
+                expect(svg().attr('width')).toBe(String(250 + margin.left + margin.right));
+                expect(svg().attr('height')).toBe(String(250 + margin.top + margin.bottom));
+            });
+
+            it('should set <g> (parallel body) class correctly', function () {
+                parallel.render();
+                expect(chartBody().attr("class")).toBe("parallel body");
+            });
+        });
+
+        describe('axes', function () {
+            it('should generate svg', function () {
+                parallel.render();
+
+                var dimnames = [];
+
+                var axes = d3.select('svg')
+                             .select('g.parallel.body')
+                             .selectAll(".dimension")
+                             .selectAll(".axis")
+                    ;
+
+//                console.log(parallel.metadata());
+
+//                axes.each(function(d){
+//                    console.log(d3.select(this).data());
+//                });
+                expect(true).toBe(true);
+            });
+        });
+
+        describe('tooltip', function () {
+            it('should generate svg', function () {
+                parallel.render();
+                expect(svg()).not.toBeEmpty();
+            });
+        });
+
+
+    });
+
+
+    describe('.data', function () {
         it('should allow setting and retrieval of data', function () {
             expect(parallel.data(data).data()).toBe(data);
         });
@@ -55,15 +133,55 @@ describe('testChart', function () {
         });
 
         it('should allow setting and retrieval of the metadata database', function () {
-            expect(parallel.metadb(metadata).metadb()({core: 1}).count())
-                .toEqual(8);
+            expect(parallel.metadb(metadata).metadb()({core: 1}).count()).toEqual(8);
         });
     });
 
-//    describe('.dispatch', function () {
-//        it('should allow true', function () {
-//            expect(parallel.data(data).data()).toBe(data);
-//        });
-//    });
+    describe('.dispatch', function () {
 
+        var   dispatch
+            , _highlight
+            , _hcolor
+            ;
+
+        beforeEach(function(){
+            dispatch = d3.dispatch("click_graph", "click_table", "load_cities", "load_indicators",
+                                       "done_load", "highlight", "brush", "legend_change", "metadata_load");
+            parallel.dispatch( dispatch );
+            dispatch.on("legend_change", function(highlight, colors){
+                _highlight = highlight;
+                _hcolor = colors;
+            });
+            dispatch.highlight("Region");
+        });
+
+        it('should set and retrieve a dispatcher ', function () {
+            expect( parallel.dispatch() ).toBe(dispatch);
+        });
+
+        it("dispatching highlight event should set the highlight", function() {
+            expect( _highlight ).toBe( "Region" );
+        });
+
+        it("dispatching highlight event should set the color", function() {
+            expect( _hcolor ).not.toBe( undefined );
+        });
+    });
+
+
+    function svg() {
+        return div.select('svg');
+    }
+
+    function chartBody() {
+        return svg().select('g.parallel.body');
+    }
+
+    function chartDims() {
+        return chartBody().selectAll('.dimension');
+    }
+
+    function chartAxes() {
+        return chartDims().selectAll('.axis');
+    }
 });
