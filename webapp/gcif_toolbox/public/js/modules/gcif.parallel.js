@@ -80,10 +80,12 @@ gcif.parallel = (function () {
             var
               verticalScaling = 0.60
             , horizontalScaling = 0.75
+            , numDimension = _metadata.length
+            , resize_width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width])
+            , fix_width = d3.max([(100 * numDimension), (resize_width *2) ])
             ;
 
-            _width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width]);
-//            _width = 2450;
+            _width  = numDimension > 4 ? fix_width : resize_width;
             _height = d3.max([$( window ).height() * verticalScaling - _margin.top - _margin.bottom, _min_height]);
             _x.rangePoints([0, _width], 1);
         }

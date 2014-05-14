@@ -137,8 +137,8 @@ gcif.toolbox = (function () {
 
         //register listeners
         jqueryMap.$toolSelection.click(onClickTool);
-//        $('.gcif-toolbox-tool.compare h4').click();
-        $('.gcif-toolbox-tool.correlate h4').click();
+        $('.gcif-toolbox-tool.compare h4').click();
+//        $('.gcif-toolbox-tool.correlate h4').click();
 
     };
     // End PUBLIC method /initModule/
