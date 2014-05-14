@@ -15,9 +15,9 @@
     stroke-width: 2;
 }
 
-    .parallel.body .foreground path.unhighlight {
-        stroke: #ccc;
-    }
+    /*.parallel.body .foreground path.unhighlight {*/
+        /*stroke: #ccc;*/
+    /*}*/
     .parallel.body .foreground path.highlight {
         stroke-width: 8;
     }

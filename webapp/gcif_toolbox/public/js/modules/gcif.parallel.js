@@ -448,7 +448,7 @@ gcif.parallel = (function () {
                       .attr("stroke", function(d,i){
                             return d3.select(this).attr("class").search("unhighlight") >= 0 ?
                                    _pcolor(d["CityName"]) :
-                                   _default_path_color
+                                   _highlight !== "" ? _hcolor(d[_highlight]) : _default_path_color
                       })
                       .attr("stroke-width", "8")
                       .attr("class", function(d){

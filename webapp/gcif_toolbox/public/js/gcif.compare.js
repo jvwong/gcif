@@ -57,6 +57,14 @@ gcif.compare = (function () {
                                 '</div>' +
                             '</div>' +
                         '</form>' +
+//                        '<div class="row">' +
+//                            '<div class="col-sm-12">' +
+//                                '<div class="input-group col-sm-12">' +
+//                                    '<input type="text" class="form-control" placeholder="Search...">' +
+//                                '</div>' +
+//                            '</div>' +
+//                        '</div>' +
+
                         '<div class="gcif-compare legend col-xs-12 col-md-12 col-lg-12"></div>' +
                         '<div class="gcif-compare chart col-lg-12"></div>' +
                     '</div>' +
