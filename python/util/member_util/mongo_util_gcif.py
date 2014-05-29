@@ -289,6 +289,71 @@ def getThemeCounts(db_handle):
     return themecounts
 
 
+# function: confuseData
+# @description: perturb gcif member city data in random fashion
+# @pre-condition: valid mongoDB member city collection
+# @input:
+#   dbhandle - the pymongo data base handle
+# @output:
+#   none
+
+def confuseData(db_handle):
+
+    import random
+
+    #The output
+    doclist = []
+
+    categorical_headers = [
+        "Region"
+      , "CityName"
+      , "CityUniqueID"
+      , "ChineseCityName"
+      , "Square metres of public outdoor recreation space per capita"
+      , "State"
+      , "Climate Type"
+      , "Type of government (e,g, Local, Regional, County)"
+      , "Type of government (e,g, local, regional, county)"
+      , "Response time for fire department from initial call"
+      , "Gross capital budget per capita (USD)"
+      , "Gross capital budget (USD)"
+      , "Country"
+      , "_id"
+    ]
+
+    cityCursor = db_handle.gcif_combined.find()
+
+    for citydoc in cityCursor:
+
+        doc = {}
+
+        for header in citydoc:
+
+            #make sure the header isn't in the categorical
+            if header in categorical_headers:
+                doc[header] = citydoc[header]
+                continue
+
+            #make sure the value isn't empty
+            elif citydoc.get(header) == "":
+                doc[header] = citydoc[header]
+                continue
+
+            #Perturb the value by selecting new value between (0, value)
+            value = citydoc.get(header)
+            try:
+                value = float(value)
+            except ValueError:
+                print header
+
+            v_perturb = random.random() * value
+            doc[header] = round(v_perturb, 2)
+
+        doclist.append(copy.deepcopy(doc))
+
+    return doclist
+
+
 
 
 def main():
@@ -333,19 +398,21 @@ def main():
     # gcif_handle.performance_indicators.insert(performance_docs, safe=True)
 
     # #  ********** member city data (gcif)
-    root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
+    # root = "/home/jvwong/Public/Documents/GCIF/data/datasets/member/cleaned/recent/"
     # root = "/shared/Documents/GCIF/data/datasets/member/cleaned/recent/"
-    member_data_csv = root + "recent_gcif.csv"
-    member_docs = getCityDocs(member_data_csv)
-
-    for doc in member_docs:
-        if doc.get("CityName") == "TORONTO" or doc.get("CityName") == "AMMAN" or doc.get("CityName") == "BUENOS AIRES" \
-                or doc.get("CityName") == "HAIPHONG" or doc.get("CityName") == "LISBON":
-            print doc
+    # member_data_csv = root + "recent_gcif.csv"
+    # member_docs = getCityDocs(member_data_csv)
 
     # gcif_handle.gcif_combined.insert(member_docs, safe=True)
     # gcif_handle.member_cities.insert(member_docs, safe=True)
-    # ### ******************************** gcif DATABASE OPERATIONS ***************************************************
+
+    ###  ********** confusion for member city data
+    # gcif_handle.combined_confused.insert(confuseData(gcif_handle), safe=True)
+
+
+
+
+    ### ******************************** gcif DATABASE OPERATIONS ***************************************************
 
 
 if __name__ == "__main__":

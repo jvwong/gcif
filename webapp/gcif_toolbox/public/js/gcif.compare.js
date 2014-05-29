@@ -216,7 +216,7 @@ gcif.compare = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(city_data) {
+        d3.json("/combined_confused/list", function(city_data) {
             dispatch.load_cities(city_data);
             dispatch.done_load();
         });
@@ -237,6 +237,7 @@ gcif.compare = (function () {
         //data loading
         dispatch.on("load_cities", function(data){
             stateMap.cities_db.insert(data.slice(0));
+            stateMap.cities_db({Region: "EAST ASIA - PACIFIC"}).remove();
 
             //by default, cache the top member cities in the stateMap
             stateMap.cities = stateMap.cities_db().get();

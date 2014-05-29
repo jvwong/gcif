@@ -34,7 +34,8 @@ var
                     , 'us_cities': {}
                     , 'chinese_cities': {}
                     , 'gcif_combined': {}
-                    };
+                    , 'combined_confused': {}
+    };
 // ------------- END MODULE SCOPE VARIABLES ---------------
 
 // ---------------- BEGIN UTILITY METHODS -----------------
