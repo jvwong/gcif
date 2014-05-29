@@ -79,8 +79,6 @@ gcif.correlate = (function () {
             , highlight_selected        : undefined
             , area_selected             : undefined
 
-            , attendees                 : undefined
-
         }
 
         , jqueryMap = {}, d3Map= {}
@@ -150,16 +148,9 @@ gcif.correlate = (function () {
             dispatch.load_indicators(performance_indicators_data);
         });
 
-        d3.json("/gcif_combined/list", function(cities_data){
-
-            d3.csv("/assets/data/attendees.csv", function(attendee_data) {
-                stateMap.attendees = attendee_data.map(function(d){return d["CityName"]});
-
-                //filter for summit attendees
-                dispatch.load_cities(cities_data);
-                dispatch.done_load();
-            });
-
+        d3.json("/combined_confused/list", function(cities_data){
+            dispatch.load_cities(cities_data);
+            dispatch.done_load();
         });
     };
 
