@@ -79,7 +79,7 @@ gcif.parallel = (function () {
                 _height = 250;
             }else{
                 var resize_width = d3.max([$( window ).width() * horizontalScaling - _margin.left - _margin.right, _min_width])
-                , fix_width = d3.max([(100 * numDimension), (resize_width *2) ])
+                , fix_width = d3.max([(125 * numDimension), (resize_width *2) ])
                 ;
 
                 _width  = numDimension > 4 ? fix_width : resize_width;

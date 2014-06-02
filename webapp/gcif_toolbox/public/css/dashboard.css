@@ -75,18 +75,3 @@ a:link, a:hover {
     margin-top: 0;
 }
 
-/*
-* toolbox
-*/
-
-.gcif-shell-dash-toolbox {
-    min-width: 10em;
-    margin-bottom: 30px;
-    text-align: center;
-}
-.gcif-shell-dash-toolbox h4 {
-    text-align: center;
-    margin-bottom: 0;
-}
-
-
